@@ -14,5 +14,6 @@ public class MenuBot extends Robot {
         gui.addMenu("Menu 1", new ScrollingListTestMenu(gui));
         gui.addMenu("Menu 2", new ScrollingListTestMenu(gui));
         gui.addMenu("Menu 3", new ScrollingListTestMenu(gui));
+        telemetry.setAutoClear(false);
     }
 }

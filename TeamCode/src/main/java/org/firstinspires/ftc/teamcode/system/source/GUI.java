@@ -143,7 +143,7 @@ public class GUI {
     }
 
     protected void clearScreen() {
-        robot.telemetry.update();
+        robot.telemetry.clearAll();
         robot.telemetry.update();
     }
 
