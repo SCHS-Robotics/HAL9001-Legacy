@@ -11,15 +11,38 @@ import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 
 import java.util.ArrayList;
 
+/**
+ * An abstract class extending Menu.java that represents a common typ of menu.
+ */
 public abstract class ScrollingListMenu extends Menu {
 
     private int menuNumber;
 
-    public ScrollingListMenu(GUI gui, ArrayList<GuiLine> staringLines, int selectionZoneWidth, int selectionZoneHeight){
-        super(gui, staringLines, selectionZoneWidth, selectionZoneHeight);
+    /**
+     * Ctor for menu class.
+     *
+     * @param gui - The GUI that will be used to render the menu.
+     * @param startingLines - The list of lines that will be displayed when the menu is first rendered.
+     * @param selectionZoneWidth - The maximum x value that the cursor will be able to travel to inside the selection zone.
+     *                             Note: This is not the actual width of the zone itself, but a boundary for the index.
+     * @param selectionZoneHeight - The maximum y value that the cursor will be able to travel to inside the selection zone.
+     *                              Note: This is not the actual height of the zone itself, but a boundary for the index.
+     */
+    public ScrollingListMenu(GUI gui, ArrayList<GuiLine> startingLines, int selectionZoneWidth, int selectionZoneHeight){
+        super(gui, startingLines, selectionZoneWidth, selectionZoneHeight);
         menuNumber = 0;
     }
 
+    /**
+     * Ctor for menu class.
+     *
+     * @param gui - The GUI that will be used to render the menu.
+     * @param startingLines - The list of lines that will be displayed when the menu is first rendered.
+     * @param selectionZoneWidth - The maximum x value that the cursor will be able to travel to inside the selection zone.
+     *                             Note: This is not the actual width of the zone itself, but a boundary for the index.
+     * @param selectionZoneHeight - The maximum y value that the cursor will be able to travel to inside the selection zone.
+     *                              Note: This is not the actual height of the zone itself, but a boundary for the index.
+     */
     public ScrollingListMenu(GUI gui, GuiLine[] startingLines, int selectionZoneWidth, int selectionZoneHeight){
         super(gui, startingLines, selectionZoneWidth, selectionZoneHeight);
         menuNumber = 0;
@@ -46,8 +69,12 @@ public abstract class ScrollingListMenu extends Menu {
 
     }
 
+    @Override
     public abstract void onSelect();
 
+    /**
+     * Cycles to next part of menu if it goes off the top of the screen.
+     */
     public void menuUp(){
         if(menuNumber == 0) {
             menuNumber = (int) Math.floor((lines.size() * 1.0) / Menu.MAXLINESPERSCREEN);
@@ -58,6 +85,9 @@ public abstract class ScrollingListMenu extends Menu {
         }
     }
 
+    /**
+     * Cycles to next part of menu if it goes off the bottom of the screen.
+     */
     public void menuDown(){
 
         menuNumber++;
@@ -72,6 +102,9 @@ public abstract class ScrollingListMenu extends Menu {
         }
     }
 
+    /**
+     * Displays the current menu.
+     */
     private void displayCurrentMenu(){
         for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < menuNumber * Menu.MAXLINESPERSCREEN + Menu.MAXLINESPERSCREEN; i++) {
             super.displayLine(lines.get(i), i);

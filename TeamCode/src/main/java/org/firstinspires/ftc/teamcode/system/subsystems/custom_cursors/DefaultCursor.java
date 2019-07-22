@@ -81,19 +81,19 @@ public class DefaultCursor extends Cursor {
             super.currentMenu.onSelect();
             flag = false;
         }
-        else if(inputs.getBooleanInput(UP) && y+1 < currentMenu.getSelectionZoneHeight() &&flag){
+        else if(inputs.getBooleanInput(UP) && y+1 <= currentMenu.getSelectionZoneHeight() && flag){
             y++;
             flag = false;
         }
-        else if(inputs.getBooleanInput(DOWN) && y-1 > 0 && flag){
+        else if(inputs.getBooleanInput(DOWN) && y-1 >= 0 && flag){
             y--;
             flag = false;
         }
-        else if(inputs.getBooleanInput(LEFT) && x-1 > 0 && flag){
+        else if(inputs.getBooleanInput(LEFT) && x-1 >= 0 && flag){
             x--;
             flag = false;
         }
-        else if(inputs.getBooleanInput(RIGHT) && x+1 < currentMenu.getSelectionZoneWidth() && flag){
+        else if(inputs.getBooleanInput(RIGHT) && x+1 <= currentMenu.getSelectionZoneWidth() && flag){
             x++;
             flag = false;
         }

@@ -9,13 +9,35 @@ package org.firstinspires.ftc.teamcode.system.source;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
+/**
+ * An abstract class used to more easily create teleop programs
+ */
 public abstract class BaseOpModeIterative extends OpMode {
     private Robot robot;
 
+    /**
+     * An abstract method that is used to instantiate the robot.
+     *
+     * @return - The robot being used in the opmode.
+     */
     protected abstract Robot buildRobot();
 
-    protected void onStart(){}
+    /**
+     * Method that runs when the robot is started. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
+    protected void onStart() {}
+
+    /**
+     * Method that runs every loop cycle. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
     protected void onUpdate(){}
+
+    /**
+     * Method that runs when the robot is stopped. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
     protected void onStop(){}
 
     @Override
@@ -45,6 +67,11 @@ public abstract class BaseOpModeIterative extends OpMode {
         onStop();
     }
 
+    /**
+     * Gets the robot.
+     *
+     * @return - The robot.
+     */
     protected final Robot getRobot(){
         return robot;
     }

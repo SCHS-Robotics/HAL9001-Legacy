@@ -7,6 +7,9 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+/**
+ * An abstract class meant to represent the user's cursor.
+ */
 public abstract class Cursor {
     public int x, y, blinkSpeedMs;
     private char cursorIcon;
@@ -18,6 +21,12 @@ public abstract class Cursor {
         this.cursorIcon = cursorIcon;
     }
 
+    /**
+     * Ctor for cursor class.
+     *
+     * @param blinkSpeedMs - The cursor blink speed in milliseconds.
+     * @param cursorIcon - The char that will represent the cursor when the menu is drawn.
+     */
     public Cursor(int blinkSpeedMs, char cursorIcon) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = x;
@@ -25,6 +34,11 @@ public abstract class Cursor {
         this.cursorIcon = cursorIcon;
     }
 
+    /**
+     * Ctor for cursor class.
+     *
+     * @param blinkSpeedMs - The cursor blink speed in milliseconds.
+     */
     public Cursor(int blinkSpeedMs) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = 0;
@@ -32,6 +46,13 @@ public abstract class Cursor {
         this.cursorIcon = '_';
     }
 
+    /**
+     * Ctor for cursor class.
+     *
+     * @param x - Cursor starting x position.
+     * @param y - Cursor starting y position.
+     * @param blinkSpeedMs - Cursor blink speed in milliseconds.
+     */
     public Cursor(int x, int y, int blinkSpeedMs) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = x;
@@ -39,37 +60,80 @@ public abstract class Cursor {
         this.cursorIcon = '_';
     }
 
+    /**
+     * Returns the cursor icon.
+     *
+     * @return - The cursor icon.
+     */
     public char getCursorIcon() {
         return cursorIcon;
     }
 
+    /**
+     * Sets which menu the cursor is currently on.
+     *
+     * @param currentMenu - The menu that the cursor will associated with.
+     */
     protected void setCurrentMenu(Menu currentMenu) {
         this.currentMenu = currentMenu;
     }
 
+    /**
+     * Sets the cursor icon.
+     *
+     * @param cursorIcon - The new cursor icon.
+     */
     public void setCursorIcon(char cursorIcon) {
         this.cursorIcon = cursorIcon;
     }
 
+    /**
+     * Gets the cursor x coordinate.
+     *
+     * @return - The cursor x coordinate.
+     */
     public int getX() {
         return x;
     }
 
+    /**
+     * Gets the cursor y coordinate.
+     *
+     * @return - The cursor y coordinate.
+     */
     public int getY() {
         return y;
     }
 
+    /**
+     * Gets the cursor blink speed.
+     *
+     * @return - The cursor blink speed.
+     */
     public int getBlinkSpeedMs() {
         return blinkSpeedMs;
     }
 
+    /**
+     * Sets the cursor's x coordinate.
+     *
+     * @param x - The cursor's desired x coordinate.
+     */
     public void setX(int x) {
         this.x = x;
     }
 
+    /**
+     * Sets the cursor's y coordinate.
+     *
+     * @param y - The cursor's desired y coordinate.
+     */
     public void setY(int y) {
         this.y = y;
     }
 
+    /**
+     * Abstract method that runs when the cursor is updated every frame. Methods for controlling the cursor go here.
+     */
     public abstract void update();
 }
