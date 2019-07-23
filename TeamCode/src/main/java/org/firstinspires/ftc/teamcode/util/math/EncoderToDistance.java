@@ -8,33 +8,72 @@
 package org.firstinspires.ftc.teamcode.util.math;
 
 public class EncoderToDistance {
+    //Conversion of 1 encoder per meter.
     double encoderPerMeter;
 
+    //Supported input units(Megameters is the same as millimeters because memes).
     public enum Units{
-        METERS, CENTIMETERS, MEGAMETERS, MILIMETERS, FOOTS, FEET, INCH, MILES, YARDS
+        METERS, CENTIMETERS, MEGAMETERS, MILLIMETERS, FOOTS, FEET, INCH, MILES, YARDS
     }
-    //use this one to find theoretical encoderPerMeter
-    public EncoderToDistance(double diamater, Units unit){
-        encoderPerMeter = 1440 / ((Math.PI * (diamater/2) * (diamater/2)) * getConversion(unit));
+
+    /**
+     * Constructor that sets theoretical encoderPerMeter using default encoderPerRotation(less accurate).
+     *
+     * @param diameter - Diameter of wheel.
+     * @param unit - Units of the diameter.
+     */
+    public EncoderToDistance(double diameter, Units unit){
+        encoderPerMeter = 1440 / ((Math.PI * (diameter/2) * (diameter/2)) * getConversion(unit));
     }
-    //use this one to set encoderPerMeter with non default encoder per rotation of 1440
-    public EncoderToDistance(double diamater, int encoderPerRotation, Units unit){
-        encoderPerMeter = encoderPerRotation / ((Math.PI * (diamater/2) * (diamater/2)) * getConversion(unit));
+
+    /**
+     * Constructor that sets theoretical encoderPerMeter using given encoderPerRotation(less accurate).
+     *
+     * @param diameter - Diameter of wheel.
+     * @param encoderPerRotation - number of encoders per one rotation of the wheel.
+     * @param unit - Units of the diameter.
+     * */
+    public EncoderToDistance(double diameter, int encoderPerRotation, Units unit){
+        encoderPerMeter = encoderPerRotation / ((Math.PI * (diameter/2) * (diameter/2)) * getConversion(unit));
     }
-    //this input should be the output of DistanceCalib
+
+    /**
+     * Constructor that uses encoderPerMeter given by calibration program.
+     *
+     * @param encoderPerMeter - Experimentally gotten value.
+     * */
     public EncoderToDistance(double encoderPerMeter){
         this.encoderPerMeter = encoderPerMeter;
     }
 
+    /**
+     * Returns encoder amount to go given distance.
+     *
+     * @param distance - Distance wished to travel.
+     * @param unit - Units of distance.
+     * */
     public int getEncoderAmount(double distance, Units unit){
         return (int) Math.round(getConversion(unit) * distance * encoderPerMeter);
     }
+
+    /**
+     * returns distance from encoder amount.
+     *
+     * @param encoderAmount - Amount of encoder.
+     * @param unit - Units of returned distance.
+     * */
     public double getDistanceFromEncoders(int encoderAmount, Units unit){
         return (encoderAmount/encoderPerMeter)* getConversion(unit);
     }
+
+    /**
+     * Returns conversion multiplyer for given unit.
+     *
+     * @param unit - Unit to get conversion for.
+     * */
     private double getConversion(Units unit){
         switch(unit){
-            case MILIMETERS:
+            case MILLIMETERS:
             case MEGAMETERS:
                 return .001;
             case CENTIMETERS:

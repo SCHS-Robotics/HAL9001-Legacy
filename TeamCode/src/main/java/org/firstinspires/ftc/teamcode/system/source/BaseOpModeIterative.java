@@ -65,6 +65,7 @@ public abstract class BaseOpModeIterative extends OpMode {
     @Override
     public void stop() {
         onStop();
+        robot.stopAllComponents();
     }
 
     /**

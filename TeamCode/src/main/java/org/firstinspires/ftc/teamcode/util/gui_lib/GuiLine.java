@@ -11,11 +11,18 @@ import org.firstinspires.ftc.teamcode.system.source.Menu;
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 
 public class GuiLine {
-    public String selectionZoneText;
-    public String postSelectionText;
-    public String divider;
+    //SelectionZoneText is text for the selection zone, PostSelectionText is text to go after selection zone, divider is text between the two of them.
+    public String selectionZoneText, postSelectionText, divider;
+    //True if custom divider is used.
     private boolean hasDivider;
 
+    /**
+     * Constructor that checks line against the given menu and uses the default divider.
+     *
+     * @param menu - menu to check size of selection zone text against.
+     * @param selectionZoneText - Text for the selection zone.
+     * @param postSelectionText - Text for the post selection zone area.
+     */
     public GuiLine(Menu menu, String selectionZoneText, String postSelectionText){
         this.selectionZoneText = selectionZoneText;
         this.postSelectionText= postSelectionText;
@@ -25,12 +32,25 @@ public class GuiLine {
         }
     }
 
+    /**
+     * Constructor that creates a basic GuiLine with a default divider.
+     *
+     * @param selectionZoneText - Text for the selection zone.
+     * @param postSelectionText - Text for the post selection zone area.
+     */
     public GuiLine(String selectionZoneText, String postSelectionText){
         this.selectionZoneText = selectionZoneText;
         this.postSelectionText= postSelectionText;
         hasDivider = false;
     }
 
+    /**
+     * Constructor that sets the divider.
+     *
+     * @param selectionZoneText - Text for the selection zone.
+     * @param postSelectionText - Text for the post selection zone area.
+     * @param divider - Text that will divide the selection and post selection text.
+     */
     public GuiLine(String selectionZoneText, String postSelectionText, String divider){
         this.selectionZoneText = selectionZoneText;
         this.postSelectionText= postSelectionText;
@@ -38,6 +58,14 @@ public class GuiLine {
         hasDivider = true;
     }
 
+    /**
+     * Constructor that checks line against the given menu and sets the divider.
+     *
+     * @param menu - menu to check size of selection zone text against.
+     * @param selectionZoneText - Text for the selection zone.
+     * @param postSelectionText - Text for the post selection zone area.
+     * @param divider - Text that will divide the selection and post selection text.
+     */
     public GuiLine(Menu menu, String selectionZoneText, String postSelectionText, String divider){
         this.selectionZoneText = selectionZoneText;
         this.postSelectionText= postSelectionText;
@@ -48,6 +76,9 @@ public class GuiLine {
         }
     }
 
+    /**
+     * Returns the full line text.
+     */
     public String getLineText() {
 
         if (hasDivider) {
@@ -57,6 +88,11 @@ public class GuiLine {
         }
     }
 
+    /**
+     * Returns the printable line with different selectionZoneText.
+     *
+     * @param selectionZoneText - Text to replace the selectionZoneText with.
+     */
     public String getLineTextReplaceSelectionZoneText(String selectionZoneText){
         if(hasDivider){
             return selectionZoneText + divider + postSelectionText;
@@ -66,15 +102,21 @@ public class GuiLine {
         }
     }
 
+    /**
+     * Checks if selectionZoneText is within the menu's bounds.
+     *
+     * @param menu - Menu to check the selectionZoneText against.
+     */
     public boolean checkSelectionSize(Menu menu){
         return menu.getSelectionZoneHeight() == selectionZoneText.length();
     }
 
+    /**
+     * Checks if selectionZoneText is a certain length.
+     *
+     * @param wantedSize - Wanted length of text.
+     */
     public boolean checkSelectionSize(int wantedSize){
         return wantedSize == selectionZoneText.length();
-    }
-
-    public void testSelectionSize(int selectionWidth){
-
     }
 }

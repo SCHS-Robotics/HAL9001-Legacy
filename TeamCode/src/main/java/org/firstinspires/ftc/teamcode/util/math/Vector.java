@@ -8,6 +8,7 @@
 package org.firstinspires.ftc.teamcode.util.math;
 
 public class Vector {
+
     public enum CoordinateType {
         CARTESIAN, POLAR
     }

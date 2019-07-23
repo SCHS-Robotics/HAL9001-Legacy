@@ -10,10 +10,9 @@ import org.firstinspires.ftc.teamcode.util.misc.Button;
 public class MenuBot extends Robot {
     public MenuBot(OpMode opMode) {
         super(opMode);
-        startGui(new DefaultCursor(0, 0, 625), new Button(gamepad1, Button.BooleanInputs.b));
+        startGui(new DefaultCursor(this, 0, 0, 625), new Button(1, Button.BooleanInputs.b));
         gui.addMenu("Menu 1", new ScrollingListTestMenu(gui));
         gui.addMenu("Menu 2", new ScrollingListTestMenu(gui));
         gui.addMenu("Menu 3", new ScrollingListTestMenu(gui));
-        telemetry.setAutoClear(false);
     }
 }

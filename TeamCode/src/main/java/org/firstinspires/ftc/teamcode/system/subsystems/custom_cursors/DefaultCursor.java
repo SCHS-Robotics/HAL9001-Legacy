@@ -8,6 +8,7 @@
 package org.firstinspires.ftc.teamcode.system.subsystems.custom_cursors;
 
 import org.firstinspires.ftc.teamcode.system.source.Cursor;
+import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
@@ -18,48 +19,48 @@ public class DefaultCursor extends Cursor {
     private final String UP = "up", DOWN = "down", LEFT = "left", RIGHT = "right", SELECT = "select";
     private boolean flag = true;
 
-    public DefaultCursor(int x, int y, int blinkSpeedMs, char cursorIcon) {
+    public DefaultCursor(Robot robot, int x, int y, int blinkSpeedMs, char cursorIcon) {
         super(x, y, blinkSpeedMs, cursorIcon);
-        inputs = new CustomizableGamepad();
+        inputs = new CustomizableGamepad(robot);
 
-        inputs.addButton(UP,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_up));
-        inputs.addButton(DOWN,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_down));
-        inputs.addButton(LEFT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_left));
-        inputs.addButton(RIGHT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_right));
-        inputs.addButton(SELECT, new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.a));
+        inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
+        inputs.addButton(DOWN,new Button(1, Button.BooleanInputs.dpad_down));
+        inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
+        inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
+        inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
     }
 
-    public DefaultCursor(int blinkSpeedMs, char cursorIcon) {
+    public DefaultCursor(Robot robot, int blinkSpeedMs, char cursorIcon) {
         super(blinkSpeedMs, cursorIcon);
-        inputs = new CustomizableGamepad();
+        inputs = new CustomizableGamepad(robot);
 
-        inputs.addButton(UP,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_up));
-        inputs.addButton(DOWN,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_down));
-        inputs.addButton(LEFT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_left));
-        inputs.addButton(RIGHT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_right));
-        inputs.addButton(SELECT, new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.a));
+        inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
+        inputs.addButton(DOWN,new Button(1, Button.BooleanInputs.dpad_down));
+        inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
+        inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
+        inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
     }
 
-    public DefaultCursor(int blinkSpeedMs) {
+    public DefaultCursor(Robot robot, int blinkSpeedMs) {
         super(blinkSpeedMs);
-        inputs = new CustomizableGamepad();
+        inputs = new CustomizableGamepad(robot);
 
-        inputs.addButton(UP,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_up));
-        inputs.addButton(DOWN,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_down));
-        inputs.addButton(LEFT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_left));
-        inputs.addButton(RIGHT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_right));
-        inputs.addButton(SELECT, new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.a));
+        inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
+        inputs.addButton(DOWN,new Button(1, Button.BooleanInputs.dpad_down));
+        inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
+        inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
+        inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
     }
 
-    public DefaultCursor(int x, int y, int blinkSpeedMs) {
+    public DefaultCursor(Robot robot, int x, int y, int blinkSpeedMs) {
         super(x, y, blinkSpeedMs);
-        inputs = new CustomizableGamepad();
+        inputs = new CustomizableGamepad(robot);
 
-        inputs.addButton(UP,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_up));
-        inputs.addButton(DOWN,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_down));
-        inputs.addButton(LEFT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_left));
-        inputs.addButton(RIGHT,new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.dpad_right));
-        inputs.addButton(SELECT, new Button(super.currentMenu.gui.robot.gamepad1, Button.BooleanInputs.a));
+        inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
+        inputs.addButton(DOWN,new Button(1, Button.BooleanInputs.dpad_down));
+        inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
+        inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
+        inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
     }
 
     public void setInputs(Button up, Button down, Button left, Button right, Button select){

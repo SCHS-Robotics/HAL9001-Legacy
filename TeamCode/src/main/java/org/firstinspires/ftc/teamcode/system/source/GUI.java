@@ -33,7 +33,7 @@ public class GUI {
 
     private boolean flag;
 
-    private CustomizableGamepad inputs = new CustomizableGamepad();
+    private CustomizableGamepad inputs = new CustomizableGamepad(robot);
 
     private static final String CYCLE_MENUS = "CycleMenus";
 

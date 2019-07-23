@@ -67,6 +67,7 @@ public abstract class Robot {
      */
     protected void startGui(Cursor cursor, Button cycleButton) {
         gui = new GUI(this, cursor, cycleButton);
+        telemetry.setAutoClear(false);
         useGui = true;
     }
 

@@ -13,7 +13,7 @@ public class Button {
 
     public boolean isBoolean;
     public boolean isDouble;
-    public volatile Gamepad gamepad;
+    public int gamepadNumber;
     public DoubleInputs doubleInput;
     public BooleanInputs booleanInput;
     public double deadzone = .05;
@@ -33,16 +33,16 @@ public class Button {
         a, b, back, dpad_down, dpad_left, dpad_right, dpad_up, guide, left_bumper, left_stick_button, right_bumper, right_stick_button, start, x, y, bool_left_stick_x, bool_right_stick_x,  bool_left_stick_y, bool_right_stick_y, bool_left_trigger, bool_right_trigger, bool_left_stick_x_right, bool_right_stick_x_right,  bool_left_stick_y_up, bool_right_stick_y_up, bool_left_stick_x_left, bool_right_stick_x_left,  bool_left_stick_y_down, bool_right_stick_y_down, noButton
     }
 
-    public Button(Gamepad gamepad, DoubleInputs inputName){
-        this.gamepad = gamepad;
+    public Button(int gamepadNumber, DoubleInputs inputName){
+        this.gamepadNumber = gamepadNumber;
         this.doubleInput = inputName;
         this.isDouble = true;
         this.isBoolean = false;
 
     }
 
-    public Button(Gamepad gamepad, BooleanInputs inputName){
-        this.gamepad = gamepad;
+    public Button(int gamepadNumber, BooleanInputs inputName){
+        this.gamepadNumber = gamepadNumber;
         this.booleanInput = inputName;
         this.isDouble = false;
         this.isBoolean = true;

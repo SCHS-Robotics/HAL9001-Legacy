@@ -6,8 +6,6 @@
  */
 package org.firstinspires.ftc.teamcode.util.calib;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
@@ -25,112 +23,211 @@ import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
 public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.CvCameraViewListener2 {
+
+    //The upper and lower limits for the x, y, z values for the color spaces.
     public int x_lower, y_lower, z_lower, x_upper, y_upper, z_upper;
+    //Controls the change in x, y, z values.
     private int increment;
+    //The collection of user selected inputs.
     private CustomizableGamepad inputs;
+    //Toggle class that toggles slow mode and upper limit on and off.
     private Toggle slowModeToggle, upperLimit;
+    //Key names used with the CustomizableGamepad.
     private final String SLOWMODE = "slowMode", X_INCREMENT = "XUp", X_DECREMENT = "XDown", Y_INCREMENT = "YUp", Y_DECREMENT = "YDown", Z_INCREMENT = "ZUp", Z_DECREMENT = "ZDown", CHANGELIMIT = "ChangeLimit";
+    //todo Cole plz do this one
     private Function<Mat,Mat> converter;
+    //Selected colorspace that will be used.
     private ColorSpace colorSpace;
+    //Used to only allow the increment to change the x,y,z values every deleyMs milliseconds.
     private long lastActivatedTimestamp;
+    //DelayMs time between changes to x, y, z values in Milliseconds. todo chanelIdx cole do this one too
     private int channelIdx, delayMs;
+    //todo cole do this one as well
     private ImageType imageType;
 
+    //List of already supported 3 chanel color spaces.
     public enum ColorSpace {
         HSV, RGB, Lab, YUV, BGR, HLS, HSV_FULL, HLS_FULL, LUV, XYZ, YCrCb, CUSTOM
     }
 
+    //todo cole do this
     public enum ImageType {
         SINGLE_CHANNEL, COLOR;
     }
 
+    /**
+     * Constructor that uses default keys.
+     *
+     * @param robot - The robot running the program.
+     * @param colorSpace - Enum that determine what 3 chanel color space to use.
+     */
     public ColorspaceCalib(Robot robot, ColorSpace colorSpace){
         super(robot);
 
-        Gamepad gamepad = robot.gamepad1;
-        setInputs(new Button(gamepad, Button.BooleanInputs.dpad_up), new Button(gamepad, Button.BooleanInputs.dpad_down), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_down), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_down), new Button(gamepad, Button.BooleanInputs.a), new Button(gamepad, Button.BooleanInputs.x));
+        initVars();
+
+        //default keys are all on gamepad1 and are dpad_up for x_increment, dpad_down for x decrement, left_stick_up for y_increment, left_stick_down for y decrement, right_stick_up for z_increment, right_stick_down for z decrement, a for slowMode, and b for changeLimit.
+        setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
         this.colorSpace = colorSpace;
         this.imageType = ImageType.COLOR;
-
-        initVars();
     }
 
+    /**
+     * Constructor that uses default keys and todo cole hey.
+     *
+     * @param robot - The robot running the program.
+     * @param colorSpace - Enum that determine what 3 chanel color space to use.
+     * @param imageType - todo cole do this one too
+     * @param channelIdx - todo cole here too
+     */
     public ColorspaceCalib(Robot robot, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
 
-        Gamepad gamepad = robot.gamepad1;
-        setInputs(new Button(gamepad, Button.BooleanInputs.dpad_up), new Button(gamepad, Button.BooleanInputs.dpad_down), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_down), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_down), new Button(gamepad, Button.BooleanInputs.a), new Button(gamepad, Button.BooleanInputs.x));
+        initVars();
+
+        //default keys are all on gamepad1 and are dpad_up for x_increment, dpad_down for x decrement, left_stick_up for y_increment, left_stick_down for y decrement, right_stick_up for z_increment, right_stick_down for z decrement, a for slowMode, and b for changeLimit.
+        setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
         this.colorSpace = colorSpace;
         this.imageType = imageType;
         this.channelIdx = channelIdx;
-
-        initVars();
     }
 
+    /**
+     * Constructor that uses default keys and todo cole hey buddy.
+     *
+     * @param robot - The robot running the program.
+     * @param converter - todo cole here
+     */
     public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter){
         super(robot);
 
-        Gamepad gamepad = robot.gamepad1;
-        setInputs(new Button(gamepad, Button.BooleanInputs.dpad_up), new Button(gamepad, Button.BooleanInputs.dpad_down), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_down), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_down), new Button(gamepad, Button.BooleanInputs.a), new Button(gamepad, Button.BooleanInputs.x));
+        initVars();
+
+        setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
         this.colorSpace = ColorSpace.CUSTOM;
         this.imageType = ImageType.COLOR;
         this.converter = converter;
-
-        initVars();
     }
 
+    /**
+     * Constructor that uses default keys and todo hey cole hows it going.
+     *
+     * @param robot - The robot running the program.
+     * @param converter - todo cole here
+     * @param imageType - todo cole do this one too
+     * @param channelIdx - todo cole here too
+     */
     public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
 
-        Gamepad gamepad = robot.gamepad1;
-        setInputs(new Button(gamepad, Button.BooleanInputs.dpad_up), new Button(gamepad, Button.BooleanInputs.dpad_down), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_left_stick_y_down), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_up), new Button(gamepad, Button.BooleanInputs.bool_right_stick_y_down), new Button(gamepad, Button.BooleanInputs.a), new Button(gamepad, Button.BooleanInputs.x));
+        initVars();
+
+        setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
         this.colorSpace = ColorSpace.CUSTOM;
         this.imageType = imageType;
         this.converter = converter;
         this.channelIdx = channelIdx;
-
-        initVars();
     }
 
+    /**
+     * Constructor that lets you set the keys.
+     *
+     * @param robot - The robot running the program.
+     * @param XUp - Button to increment X values.
+     * @param XDown - Button to decrement X values.
+     * @param YUp - Button to increment Y values.
+     * @param YDown - Button to decrement Y values.
+     * @param ZUp - Button to increment Z values.
+     * @param ZDown - Button to decrement Z values.
+     * @param slowMode - Toggle button for slow mode.
+     * @param changeLimit - Toggle button for changing between changing upper values and lower values.
+     * @param colorSpace - Enum that determine what 3 chanel color space to use.
+     */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace){
         super(robot);
 
+        initVars();
+
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
         this.colorSpace = colorSpace;
         this.imageType = ImageType.COLOR;
-
-        initVars();
     }
 
+    /**
+     * Constructor that lets you set the keys and todo you know.
+     *
+     * @param robot - The robot running the program.
+     * @param XUp - Button to increment X values.
+     * @param XDown - Button to decrement X values.
+     * @param YUp - Button to increment Y values.
+     * @param YDown - Button to decrement Y values.
+     * @param ZUp - Button to increment Z values.
+     * @param ZDown - Button to decrement Z values.
+     * @param slowMode - Toggle button for slow mode.
+     * @param changeLimit - Toggle button for changing between changing upper values and lower values.
+     * @param colorSpace - Enum that determine what 3 chanel color space to use.
+     * @param imageType - todo cole here as well
+     * @param channelIdx - todo cole hows it going
+     */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
+
+        initVars();
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
         this.colorSpace = colorSpace;
         this.imageType = imageType;
         this.channelIdx = channelIdx;
-
-        initVars();
     }
 
+    /**
+     * Constructor that lets you set the keys and todo hey cole.
+     *
+     * @param robot - The robot running the program.
+     * @param XUp - Button to increment X values.
+     * @param XDown - Button to decrement X values.
+     * @param YUp - Button to increment Y values.
+     * @param YDown - Button to decrement Y values.
+     * @param ZUp - Button to increment Z values.
+     * @param ZDown - Button to decrement Z values.
+     * @param slowMode - Toggle button for slow mode.
+     * @param changeLimit - Toggle button for changing between changing upper values and lower values.
+     * @param converter - todo cole you know what to do
+     */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter){
         super(robot);
+
+        initVars();
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
         this.colorSpace = ColorSpace.CUSTOM;
         this.imageType = ImageType.COLOR;
         this.converter = converter;
-
-        initVars();
     }
 
+    /**
+     * Constructor that lets you set the keys and todo just do it.
+     *
+     * @param robot - The robot running the program.
+     * @param XUp - Button to increment X values.
+     * @param XDown - Button to decrement X values.
+     * @param YUp - Button to increment Y values.
+     * @param YDown - Button to decrement Y values.
+     * @param ZUp - Button to increment Z values.
+     * @param ZDown - Button to decrement Z values.
+     * @param slowMode - Toggle button for slow mode.
+     * @param changeLimit - Toggle button for changing between changing upper values and lower values.
+     * @param converter - todo cole
+     * @param imageType - todo yea
+     * @param channelIdx- todo umm
+     */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
 
@@ -151,6 +248,12 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
     @Override
     public void handle() {
+        robot.telemetry.addData("x_upper: ", x_upper);
+        robot.telemetry.addData("x_lower: ", x_lower);
+        robot.telemetry.addData("y_upper: ", y_upper);
+        robot.telemetry.addData("y_lower: ", y_lower);
+        robot.telemetry.addData("z_upper: ", z_upper);
+        robot.telemetry.addData("z_lower: ", z_lower);
 
         slowModeToggle.updateToggle(inputs.getBooleanInput(SLOWMODE));
 
@@ -198,6 +301,8 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
             }
             lastActivatedTimestamp = System.currentTimeMillis();
         }
+
+        robot.telemetry.update();
     }
 
     @Override
@@ -215,6 +320,9 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
     }
 
+    /**
+     * Blacks out pixels outside of the color space range and displays image on phones.
+     */
     @Override
     public Mat onCameraFrame(CameraBridgeViewBase.CvCameraViewFrame inputFrame) {
 
@@ -278,17 +386,26 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         }
     }
 
+    /**
+     * Returns lower bounds for x, y, and z in an array.
+     */
     public int[] getLowerBound() {
         return new int[] {x_lower,y_lower,z_lower};
     }
 
+    /**
+     * Returns upper bounds for x, y, and z in an array.
+     */
     public int[] getUpperBound() {
         return new int[] {x_upper,y_upper,z_upper};
     }
 
-
-
-
+    /**
+     * Returns lower bounds for x, y, and z in an array.
+     *
+     * @param src - Source image that needs converting.
+     * @param dst - Output of the image conversion
+     */
     private void convertImage(Mat src, Mat dst, ColorSpace colorSpace){
         switch (colorSpace){
             case HSV: Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2HSV); break;
@@ -307,6 +424,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         }
     }
 
+    /**
+     * Delay between each x, y, or z change.
+     *
+     * @param delayMs - delay in Ms between x, y, or z changes.
+     */
     public void setDelay(int delayMs) {
         this.delayMs = delayMs;
     }
@@ -323,25 +445,49 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         upperLimit = new Toggle(false);
         lastActivatedTimestamp = 0;
         delayMs = 200;
-        inputs = new CustomizableGamepad();
+        inputs = new CustomizableGamepad(robot);
     }
 
+    /**
+     * Starts openCV(call startVision to use this).
+     */
     private void startOpenCV(CameraBridgeViewBase.CvCameraViewListener2 cameraViewListener) {
         FtcRobotControllerActivity.turnOnCameraView.obtainMessage(1, cameraViewListener).sendToTarget();
     }
 
+    /**
+     * Stops openCV(call stopVision to use this).
+     */
     private void stopOpenCV() {
         FtcRobotControllerActivity.turnOffCameraView.obtainMessage().sendToTarget();
     }
 
+    /**
+     * Call this function to start openCV.
+     */
     public void startVision() {
         startOpenCV(this);
     }
 
+    /**
+     * Call this function to stop openCV.
+     */
     public void stopVision() {
         stopOpenCV();
     }
 
+    /**
+     * Sets inputs to be used.
+     *
+     * @param XUp - Button to increment X values.
+     * @param XDown - Button to decrement X values.
+     * @param YUp - Button to increment Y values.
+     * @param YDown - Button to decrement Y values.
+     * @param ZUp - Button to increment Z values.
+     * @param ZDown - Button to decrement Z values.
+     * @param slowMode - Toggle button for slow mode.
+     * @param changeLimit - Toggle button for changing between changing upper values and lower values.
+     */
     private void setInputs(Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit){
         if(XUp.isBoolean && XDown.isBoolean && YUp.isBoolean && YDown.isBoolean && ZUp.isBoolean && ZDown.isBoolean && slowMode.isBoolean && changeLimit.isBoolean) {
             inputs.addButton(X_INCREMENT, XUp);
