@@ -15,6 +15,8 @@ import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
  * An abstract class used to more easily create opmodes.
  */
 public abstract class BaseOpMode extends LinearOpMode {
+
+    //The robot running the opmode.
     private Robot robot;
 
     /**

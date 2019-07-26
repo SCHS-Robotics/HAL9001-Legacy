@@ -18,6 +18,7 @@ import java.util.ArrayList;
  */
 public class ScrollingListTestMenu extends ScrollingListMenu {
 
+    //The initial lines to be displayed on the menu.
     private static final GuiLine[] STARTING_LINES = new GuiLine[] {
         new GuiLine("X", "Lines: "),
                 new GuiLine("X", "Lines: "),

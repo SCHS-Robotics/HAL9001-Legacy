@@ -13,6 +13,8 @@ import java.lang.InterruptedException;
  * An abstract class representing a subsystem on the robot.
  */
 public abstract class SubSystem {
+
+    //The robot the subsystem belongs to.
     protected Robot robot;
 
     /**

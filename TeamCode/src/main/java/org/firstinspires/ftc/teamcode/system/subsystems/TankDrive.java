@@ -8,7 +8,6 @@
 package org.firstinspires.ftc.teamcode.system.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.system.source.SubSystem;
@@ -19,7 +18,9 @@ import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 import org.firstinspires.ftc.teamcode.util.misc.Toggle;
 
-@SuppressWarnings({"unused","WeakerAccess"})
+/**
+ * A customizable tankdrive subsystem.
+ */
 public class TankDrive extends SubSystem{
 
     //The drivetrain's two motors
@@ -389,6 +390,8 @@ public class TankDrive extends SubSystem{
      * Sets the double input responsible for moving forward and backwards.
      *
      * @param button - Double input responsible for moving forward and backwards.
+     *
+     * @throws NotDoubleInputException - Throws an exception if button does not return double values.
      */
     public void setDriveStick(Button button){
         if(button.isDouble) {
@@ -403,6 +406,8 @@ public class TankDrive extends SubSystem{
      * Sets the double input responsible for turning right and left.
      *
      * @param button - Double input responsible for turning right and left.
+     *
+     * @throws NotDoubleInputException - Throws an exception if button does not return double values.
      */
     public void setTurnStick(Button button){
         if(button.isDouble) {
@@ -417,6 +422,8 @@ public class TankDrive extends SubSystem{
      * Sets the boolean input responsible for toggling speedMode.
      *
      * @param button - The boolean input responsible for toggling speedMode.
+     *
+     * @throws NotBooleanInputException - Throws an exception if button does not return boolean values.
      */
     public void setSpeedMode(Button button){
         if(button.isBoolean) {

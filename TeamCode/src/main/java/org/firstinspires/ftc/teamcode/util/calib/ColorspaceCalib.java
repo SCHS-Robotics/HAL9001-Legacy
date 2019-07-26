@@ -22,6 +22,9 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+/**
+ * A calibration subsystem used to find good colorspace ranges for color detection algorithms.
+ */
 public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.CvCameraViewListener2 {
 
     //The upper and lower limits for the x, y, z values for the color spaces.
@@ -34,25 +37,29 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     private Toggle slowModeToggle, upperLimit;
     //Key names used with the CustomizableGamepad.
     private final String SLOWMODE = "slowMode", X_INCREMENT = "XUp", X_DECREMENT = "XDown", Y_INCREMENT = "YUp", Y_DECREMENT = "YDown", Z_INCREMENT = "ZUp", Z_DECREMENT = "ZDown", CHANGELIMIT = "ChangeLimit";
-    //todo Cole plz do this one
+    //A user-specified function that converts an RGB image to a cusstom colorspace.
     private Function<Mat,Mat> converter;
     //Selected colorspace that will be used.
     private ColorSpace colorSpace;
     //Used to only allow the increment to change the x,y,z values every deleyMs milliseconds.
     private long lastActivatedTimestamp;
-    //DelayMs time between changes to x, y, z values in Milliseconds. todo chanelIdx cole do this one too
+    //ChannelIdx is the index of the channel in the colorspace that will be filtered in single channel mode. DelayMs is time between changes to x, y, z values in milliseconds.
     private int channelIdx, delayMs;
-    //todo cole do this one as well
+    //The mode of image filtering. Either single chanel images or 3 channel color images.
     private ImageType imageType;
 
-    //List of already supported 3 chanel color spaces.
+    /**
+     * List of already supported 3 chanel color spaces.
+     */
     public enum ColorSpace {
         HSV, RGB, Lab, YUV, BGR, HLS, HSV_FULL, HLS_FULL, LUV, XYZ, YCrCb, CUSTOM
     }
 
-    //todo cole do this
+    /**
+     * The type of image filtering mechanism to use for the color space (single channel or 3 channel color).
+     */
     public enum ImageType {
-        SINGLE_CHANNEL, COLOR;
+        SINGLE_CHANNEL, COLOR
     }
 
     /**
@@ -74,12 +81,12 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Constructor that uses default keys and todo cole hey.
+     * Constructor that uses default keys and allows the user to specify the type of image being filtered.
      *
      * @param robot - The robot running the program.
      * @param colorSpace - Enum that determine what 3 chanel color space to use.
-     * @param imageType - todo cole do this one too
-     * @param channelIdx - todo cole here too
+     * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
+     * @param channelIdx - The index of the filtered channel within the colorspace.
      */
     public ColorspaceCalib(Robot robot, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
@@ -95,10 +102,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Constructor that uses default keys and todo cole hey buddy.
+     * Constructor that uses default keys and lets the user specify a custom function to convert from the RGB color space to an arbitrary custom colorspace.
      *
      * @param robot - The robot running the program.
-     * @param converter - todo cole here
+     * @param converter - The custom conversion function.
      */
     public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter){
         super(robot);
@@ -113,12 +120,12 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Constructor that uses default keys and todo hey cole hows it going.
+     * Constructor that uses default keys, lets the user input a custom color conversion function (RGB to custom), and allows the user to specify if a single channel or multi-channel image is being filtered.
      *
      * @param robot - The robot running the program.
-     * @param converter - todo cole here
-     * @param imageType - todo cole do this one too
-     * @param channelIdx - todo cole here too
+     * @param converter - The custom conversion function.
+     * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
+     * @param channelIdx - The index of the filtered channel within the colorspace.
      */
     public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
@@ -145,7 +152,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param ZDown - Button to decrement Z values.
      * @param slowMode - Toggle button for slow mode.
      * @param changeLimit - Toggle button for changing between changing upper values and lower values.
-     * @param colorSpace - Enum that determine what 3 chanel color space to use.
+     * @param colorSpace - Enum that determines what 3 chanel color space to use.
      */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace){
         super(robot);
@@ -159,7 +166,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Constructor that lets you set the keys and todo you know.
+     * Constructor that lets you set the keys and allows the user to specify if a single channel or multi-channel image is being filtered.
      *
      * @param robot - The robot running the program.
      * @param XUp - Button to increment X values.
@@ -171,8 +178,8 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param slowMode - Toggle button for slow mode.
      * @param changeLimit - Toggle button for changing between changing upper values and lower values.
      * @param colorSpace - Enum that determine what 3 chanel color space to use.
-     * @param imageType - todo cole here as well
-     * @param channelIdx - todo cole hows it going
+     * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
+     * @param channelIdx - The index of the filtered channel within the colorspace.
      */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
@@ -187,7 +194,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Constructor that lets you set the keys and todo hey cole.
+     * Constructor that lets the user set the keys and lets the user input a custom color conversion function (RGB to custom).
      *
      * @param robot - The robot running the program.
      * @param XUp - Button to increment X values.
@@ -198,7 +205,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param ZDown - Button to decrement Z values.
      * @param slowMode - Toggle button for slow mode.
      * @param changeLimit - Toggle button for changing between changing upper values and lower values.
-     * @param converter - todo cole you know what to do
+     * @param converter - The custom conversion function.
      */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter){
         super(robot);
@@ -213,7 +220,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Constructor that lets you set the keys and todo just do it.
+     * Constructor that lets the user set the keys, lets the user input a custom color conversion function (RGB to custom), and allows the user to specify if a single channel or multi-channel image is being filtered.
      *
      * @param robot - The robot running the program.
      * @param XUp - Button to increment X values.
@@ -224,9 +231,9 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param ZDown - Button to decrement Z values.
      * @param slowMode - Toggle button for slow mode.
      * @param changeLimit - Toggle button for changing between changing upper values and lower values.
-     * @param converter - todo cole
-     * @param imageType - todo yea
-     * @param channelIdx- todo umm
+     * @param converter - The custom conversion function.
+     * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
+     * @param channelIdx- The index of the filtered channel within the colorspace.
      */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
@@ -401,10 +408,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Returns lower bounds for x, y, and z in an array.
+     * Converts an image from the RGB color space to a specified color space.
      *
      * @param src - Source image that needs converting.
-     * @param dst - Output of the image conversion
+     * @param dst - Output of the image conversion.
      */
     private void convertImage(Mat src, Mat dst, ColorSpace colorSpace){
         switch (colorSpace){
@@ -425,14 +432,17 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Delay between each x, y, or z change.
+     * Set delay between each x, y, or z change.
      *
-     * @param delayMs - delay in Ms between x, y, or z changes.
+     * @param delayMs - delay in milliseconds between x, y, or z changes.
      */
     public void setDelay(int delayMs) {
         this.delayMs = delayMs;
     }
-    
+
+    /**
+     * Initializes values used in the rest of the program. Only used in the constructor.
+     */
     private void initVars() {
         x_lower = 0;
         y_lower = 0;
@@ -449,28 +459,28 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     /**
-     * Starts openCV(call startVision to use this).
+     * Starts OpenCV internally (call startVision to start OpenCV from outside this program).
      */
     private void startOpenCV(CameraBridgeViewBase.CvCameraViewListener2 cameraViewListener) {
         FtcRobotControllerActivity.turnOnCameraView.obtainMessage(1, cameraViewListener).sendToTarget();
     }
 
     /**
-     * Stops openCV(call stopVision to use this).
+     * Stops OpenCV internally (call stopVision to stop OpenCV from outside this program).
      */
     private void stopOpenCV() {
         FtcRobotControllerActivity.turnOffCameraView.obtainMessage().sendToTarget();
     }
 
     /**
-     * Call this function to start openCV.
+     * Call this function to start OpenCV outside this program.
      */
     public void startVision() {
         startOpenCV(this);
     }
 
     /**
-     * Call this function to stop openCV.
+     * Call this function to stop OpenCV outside this program.
      */
     public void stopVision() {
         stopOpenCV();
@@ -487,6 +497,8 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param ZDown - Button to decrement Z values.
      * @param slowMode - Toggle button for slow mode.
      * @param changeLimit - Toggle button for changing between changing upper values and lower values.
+     *                    
+     * @throws NotBooleanInputException - Throws an exception if button does not return boolean values.
      */
     private void setInputs(Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit){
         if(XUp.isBoolean && XDown.isBoolean && YUp.isBoolean && YDown.isBoolean && ZUp.isBoolean && ZDown.isBoolean && slowMode.isBoolean && changeLimit.isBoolean) {

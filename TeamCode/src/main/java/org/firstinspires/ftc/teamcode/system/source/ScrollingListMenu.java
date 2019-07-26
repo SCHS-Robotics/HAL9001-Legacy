@@ -16,6 +16,7 @@ import java.util.ArrayList;
  */
 public abstract class ScrollingListMenu extends Menu {
 
+    //The current "level" of screen in the menu. If the number of lines in the menu exceeds the maximum number, menunumber will increase by one for every screen the menu takes up.
     private int menuNumber;
 
     /**

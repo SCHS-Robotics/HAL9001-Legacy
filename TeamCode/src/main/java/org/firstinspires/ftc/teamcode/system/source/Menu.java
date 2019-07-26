@@ -16,10 +16,16 @@ import java.util.ArrayList;
  * An abstract class representing a menu that can be displayed on the driver station.
  */
 public abstract class Menu {
+
+    //The GUI being used to render the menu.
     public GUI gui;
+    //The selection zone width and height.
     private int selectionZoneWidth, selectionZoneHeight;
+    //The cursor being used in the menu.
     public Cursor cursor;
+    //The list of all lines in the menu.
     protected ArrayList<GuiLine> lines;
+    //The maximum number of lines that can fit on the FTC driver station. This is a global constant.
     protected static final int MAXLINESPERSCREEN = 8;
 
     /**

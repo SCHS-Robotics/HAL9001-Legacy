@@ -13,6 +13,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
  * An abstract class used to more easily create teleop programs
  */
 public abstract class BaseOpModeIterative extends OpMode {
+
+    //The robot running the opmode.
     private Robot robot;
 
     /**

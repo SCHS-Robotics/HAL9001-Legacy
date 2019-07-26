@@ -21,20 +21,30 @@ import java.util.Map;
  */
 public class GUI {
 
+    //The current active menu.
     private Menu activeMenu;
+    //The hashmap mapping the name of a menu to the actual menu object.
     private Map<String,Menu> menus;
+    //The robot using th GUI.
     public Robot robot;
+    //The cursor the GUI will use in the menus.
     private Cursor cursor;
 
+    //The current state of the cursor's blinking and the index of the active menu in a list of the hashmap's values.
     private int cursorBlinkState, activeMenuIdx;
+    //The timestamp of the last blink.
     private double lastBlinkTimeMs;
 
+    //A list of all menu names currently in the GUI.
     private ArrayList<String> menuKeys;
 
+    //Used in a three way toggle to make the cursor blink, I apologize in advance.
     private boolean flag;
 
+    //The customizable gamepad used to customize inputs to the GUI.
     private CustomizableGamepad inputs = new CustomizableGamepad(robot);
 
+    //The name of the cycle menus button.
     private static final String CYCLE_MENUS = "CycleMenus";
 
     /**

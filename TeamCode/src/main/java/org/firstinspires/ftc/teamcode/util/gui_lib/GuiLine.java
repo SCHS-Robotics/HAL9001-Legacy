@@ -10,6 +10,9 @@ package org.firstinspires.ftc.teamcode.util.gui_lib;
 import org.firstinspires.ftc.teamcode.system.source.Menu;
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 
+/**
+ * A class representing a line printed on a menu.
+ */
 public class GuiLine {
     //SelectionZoneText is text for the selection zone, PostSelectionText is text to go after selection zone, divider is text between the two of them.
     public String selectionZoneText, postSelectionText, divider;
@@ -22,6 +25,8 @@ public class GuiLine {
      * @param menu - menu to check size of selection zone text against.
      * @param selectionZoneText - Text for the selection zone.
      * @param postSelectionText - Text for the post selection zone area.
+     *                          
+     * @throws InvalidSelectionZoneException - Throws this exception when the text within the selection zone exceeds the length of the selection zone.
      */
     public GuiLine(Menu menu, String selectionZoneText, String postSelectionText){
         this.selectionZoneText = selectionZoneText;
@@ -65,6 +70,8 @@ public class GuiLine {
      * @param selectionZoneText - Text for the selection zone.
      * @param postSelectionText - Text for the post selection zone area.
      * @param divider - Text that will divide the selection and post selection text.
+     *                
+     * @throws InvalidSelectionZoneException - Throws this exception when the text within the selection zone exceeds the length of the selection zone.
      */
     public GuiLine(Menu menu, String selectionZoneText, String postSelectionText, String divider){
         this.selectionZoneText = selectionZoneText;

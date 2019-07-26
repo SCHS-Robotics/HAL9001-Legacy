@@ -11,9 +11,22 @@ package org.firstinspires.ftc.teamcode.system.source;
  * An abstract class meant to represent the user's cursor.
  */
 public abstract class Cursor {
+
+    //The cursor's x and y coordinate and blink speed.
     public int x, y, blinkSpeedMs;
+    //The cursor's display icon;
     private char cursorIcon;
+    //The menu currently using the cursor.
     public Menu currentMenu;
+
+    /**
+     * Ctor for cursor class.
+     *
+     * @param x - The cursor's initial x coordinate.
+     * @param y - The cursor's initial y coordinate.
+     * @param blinkSpeedMs - The cursor blink speed in milliseconds.
+     * @param cursorIcon - The char that will represent the cursor when the menu is drawn.
+     */
     public Cursor(int x, int y, int blinkSpeedMs, char cursorIcon) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = x;
@@ -29,8 +42,8 @@ public abstract class Cursor {
      */
     public Cursor(int blinkSpeedMs, char cursorIcon) {
         this.blinkSpeedMs = blinkSpeedMs;
-        this.x = x;
-        this.y = y;
+        this.x = 0;
+        this.y = 0;
         this.cursorIcon = cursorIcon;
     }
 

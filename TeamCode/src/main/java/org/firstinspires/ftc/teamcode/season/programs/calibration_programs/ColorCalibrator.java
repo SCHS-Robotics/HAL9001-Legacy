@@ -14,9 +14,16 @@ import org.firstinspires.ftc.teamcode.system.source.BaseOpModeIterative;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.util.calib.ColorspaceCalib;
 
+
+/**
+ * A simple teleop program for calibrating colorspaces for computer vision algorithms.
+ */
 @TeleOp(name = "Color Calibrator", group = "KILL ME IF THIS DOES NOT WORK")
 public class ColorCalibrator extends BaseOpModeIterative {
+
+    //The robot being used.
     private ColorCalibBot robot;
+    //The color calibration subsystem.
     private ColorspaceCalib calibSystem;
 
     @Override

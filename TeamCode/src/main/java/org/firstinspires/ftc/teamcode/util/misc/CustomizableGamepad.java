@@ -7,53 +7,100 @@
 
 package org.firstinspires.ftc.teamcode.util.misc;
 
-import com.qualcomm.robotcore.hardware.Gamepad;
-
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 
 import java.util.HashMap;
 import java.util.Map;
 
-
-//TODO Do the javadocs
+/**
+ * A intermediary class between the robot and the gamepad controls that allows all control systems to be customized.
+ */
 public class CustomizableGamepad {
-
+    //The robot running this.
     private Robot robot;
-
-
+    //HashMap of Buttons that are related to inputs from the controller.
     private Map<String, Button> inputs;
 
+    /**
+     * Constructor for CustomizableGamepad.
+     *
+     * @param robot - The robot this program is running on.
+     */
     public CustomizableGamepad(Robot robot) {
         this.robot = robot;
         this.inputs = new HashMap<>();
     }
 
+    /**
+     * Adds a double input/Button.
+     *
+     * @param buttonName - Key that will be used to get the input of the button.
+     * @param button - Enum for double input wanted.
+     * @param gamepadNumber - Number of gamepad this button will use.
+     */
     public void addButton(String buttonName, Button.DoubleInputs button, int gamepadNumber) {
         inputs.put(buttonName, new Button(gamepadNumber, button));
     }
 
+    /**
+     * Adds a boolean input/Button.
+     *
+     * @param buttonName - Key that will be used to get the input of the button.
+     * @param button - Enum for boolean input wanted.
+     * @param gamepadNumber - Number of gamepad this button will use.
+     */
     public void addButton(String buttonName, Button.BooleanInputs button, int gamepadNumber) {
         inputs.put(buttonName, new Button(gamepadNumber, button));
     }
 
+    /**
+     * Adds a input/Button.
+     *
+     * @param buttonName - Key that will be used to get the input of the button.
+     * @param button - Button object that relates to an input.
+     */
     public void addButton(String buttonName, Button button) {
         inputs.put(buttonName, button);
     }
 
+    /**
+     * Adds a boolean input/Button with deadzone.
+     *
+     * @param buttonName - Key that will be used to get the input of the button.
+     * @param button - Enum for boolean input wanted.
+     * @param gamepadNumber - Number of gamepad this button will use.
+     * @param deadzone - deadzone for boolean version of double inputs.
+     */
     public void addButton(String buttonName, Button.BooleanInputs button, int gamepadNumber, double deadzone) {
         inputs.put(buttonName, new Button(gamepadNumber, button));
         inputs.get(buttonName).setDeadzone(deadzone);
     }
 
+    /**
+     * Adds a input/Button with deadzone(deadzone does nothing for double inputs).
+     *
+     * @param buttonName - Key that will be used to get the input of the button.
+     * @param button - Button object that relates to an input.
+     */
     public void addButton(String buttonName, Button button, double deadzone) {
         inputs.put(buttonName, button);
         inputs.get(buttonName).setDeadzone(deadzone);
     }
 
+    /**
+     * Removes a input/Button.
+     *
+     * @param buttonName - Key of button to be removed.
+     */
     public void removeButton(String buttonName) {
         inputs.remove(buttonName);
     }
 
+    /**
+     * Returns if a button is set to noButton.
+     *
+     * @param buttonName - Key of button to be checked.
+     */
     public boolean checkNoButton(String buttonName) {
         if (inputs.get(buttonName).getInputEnum() == Button.DoubleInputs.noButton || inputs.get(buttonName).getInputEnum() == Button.BooleanInputs.noButton) {
             return true;
@@ -61,6 +108,11 @@ public class CustomizableGamepad {
         return false;
     }
 
+    /**
+     * Returns boolean input of button.
+     *
+     * @param buttonName - Key of boolean button to get input from.
+     */
     public boolean getBooleanInput(String buttonName) {
         if (inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.BooleanInputs) inputs.get(buttonName).getInputEnum()) {
@@ -133,12 +185,16 @@ public class CustomizableGamepad {
 
                 default:
                     return false;
-
-
             }
         }
     }
 
+    /**
+     * Returns boolean input of button with a set defaultReturn.
+     *
+     * @param buttonName - Key of button to get input from.
+     * @param defaultReturn - Default return.
+     */
     public boolean getBooleanInput(String buttonName, boolean defaultReturn) {
         if (inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.BooleanInputs) inputs.get(buttonName).getInputEnum()) {
@@ -215,6 +271,11 @@ public class CustomizableGamepad {
         }
     }
 
+    /**
+     * Returns double input of button.
+     *
+     * @param buttonName - Key of button to get input from.
+     */
     public double getDoubleInput(String buttonName) {
         if (inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.DoubleInputs) inputs.get(buttonName).getInputEnum()) {
@@ -243,7 +304,12 @@ public class CustomizableGamepad {
         }
     }
 
-
+    /**
+     * Returns double input of button with a set defaultReturn.
+     *
+     * @param buttonName - Key of button to get input from.
+     * @param defaultReturn - Default return.
+     */
     public double getDoubleInput(String buttonName, double defaultReturn) {
         if (inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.DoubleInputs) inputs.get(buttonName).getInputEnum()) {

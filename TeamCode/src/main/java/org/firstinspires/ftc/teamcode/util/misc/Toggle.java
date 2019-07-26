@@ -9,6 +9,9 @@ package org.firstinspires.ftc.teamcode.util.misc;
 
 import org.firstinspires.ftc.robotcore.external.Function;
 
+/**
+ * A toggle class used to add toggle switches.
+ */
 public class Toggle {
 
     //Boolean values representing the current state of the toggle and whether the toggling button has been released.
