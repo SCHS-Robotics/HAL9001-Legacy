@@ -8,13 +8,15 @@
 package org.firstinspires.ftc.teamcode.util.math;
 
 /**
- * A calculator that calculates encoder ticks per meter.
+ * A calculator that calculates encoder ticks per meter and uses that to find.
  */
 public class EncoderToDistance {
     //Conversion of 1 encoder per meter.
-    double encoderPerMeter;
+    private double encoderPerMeter;
 
-    //Supported input units(Megameters is the same as millimeters because memes).
+    /**
+     * Supported input units(Megameters is the same as millimeters because memes).
+     */
     public enum Units{
         METERS, CENTIMETERS, MEGAMETERS, MILLIMETERS, FOOTS, FEET, INCH, MILES, YARDS
     }
@@ -66,7 +68,7 @@ public class EncoderToDistance {
      * @param unit - Units of returned distance.
      * */
     public double getDistanceFromEncoders(int encoderAmount, Units unit){
-        return (encoderAmount/encoderPerMeter)* getConversion(unit);
+        return (encoderAmount/encoderPerMeter)*getConversion(unit);
     }
 
     /**

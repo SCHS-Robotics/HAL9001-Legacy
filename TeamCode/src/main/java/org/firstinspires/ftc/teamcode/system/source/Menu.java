@@ -231,7 +231,7 @@ public abstract class Menu {
      *
      * @throws InvalidSelectionZoneException - Throws this exception if the selection zone width is not equal to the length of the
      *                                         text to display in the selection zone.
-     * @throws WrongSkyscraperBlueprintException - Throws this exception if there are not enough lines in newLines to fill the selection zone.
+     * @throws WrongSkyscraperBlueprintException - Throws this exception if there are not enough or too many lines in newLines to fill the selection zone.
      */
     public void setLines(ArrayList<GuiLine> lines){
         if(lines.size() == selectionZoneHeight) {

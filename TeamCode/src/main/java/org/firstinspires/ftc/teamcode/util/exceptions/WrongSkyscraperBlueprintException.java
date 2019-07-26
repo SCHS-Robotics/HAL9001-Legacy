@@ -7,6 +7,15 @@
 
 package org.firstinspires.ftc.teamcode.util.exceptions;
 
+/**
+ * An exception thrown when a selection zone is filled with too many or too few lines.
+ */
 public class WrongSkyscraperBlueprintException extends RuntimeException{
+
+    /**
+     * Ctor for WrongSkyscraperBlueprintException.
+     *
+     * @param message - The message to print to the screen.
+     */
     public WrongSkyscraperBlueprintException(String message) {super(message);}
 }
