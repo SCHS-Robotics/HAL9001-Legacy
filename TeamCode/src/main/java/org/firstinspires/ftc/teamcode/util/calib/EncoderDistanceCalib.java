@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.util.calib;
 
+import com.qualcomm.robotcore.hardware.DcMotor;
+
 import org.firstinspires.ftc.teamcode.system.source.Menu;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.system.source.SubSystem;
@@ -15,6 +17,8 @@ public class EncoderDistanceCalib extends SubSystem {
 
     private Menu calibMenu;
     private DriveTrain driveTrain;
+
+    private DcMotor leftBack, leftFront, rightBack, rightFront;
 
     public enum DriveTrain {
         TANK_DRIVE, QUAD_WHEEL_DRIVE, MECHANUM_DRIVE, OMNIWHEEL_DRIVE

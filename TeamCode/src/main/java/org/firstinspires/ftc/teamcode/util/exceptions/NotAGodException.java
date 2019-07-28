@@ -8,7 +8,7 @@
 package org.firstinspires.ftc.teamcode.util.exceptions;
 
 public class NotAGodException extends RuntimeException {
-    public NotAGodException(String message, Throwable cause) {
-        super(message,cause);
+    public NotAGodException(String message) {
+        super(message);
     }
 }
