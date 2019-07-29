@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 
 import java.util.ArrayList;
@@ -107,7 +109,7 @@ public abstract class ScrollingListMenu extends Menu {
      * Displays the current menu.
      */
     private void displayCurrentMenu(){
-        for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < menuNumber * Menu.MAXLINESPERSCREEN + Menu.MAXLINESPERSCREEN; i++) {
+        for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < menuNumber * Menu.MAXLINESPERSCREEN + Math.min(Menu.MAXLINESPERSCREEN,lines.size()); i++) {
             super.displayLine(lines.get(i), i);
         }
     }

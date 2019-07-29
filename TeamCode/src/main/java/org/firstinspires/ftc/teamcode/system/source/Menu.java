@@ -6,6 +6,8 @@
  */
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 import org.firstinspires.ftc.teamcode.util.exceptions.WrongSkyscraperBlueprintException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
@@ -26,7 +28,7 @@ public abstract class Menu {
     //The list of all lines in the menu.
     protected ArrayList<GuiLine> lines;
     //The maximum number of lines that can fit on the FTC driver station. This is a global constant.
-    protected static final int MAXLINESPERSCREEN = 8;
+    protected static final int MAXLINESPERSCREEN = 7;
 
     /**
      * Ctor for menu class.
@@ -141,7 +143,7 @@ public abstract class Menu {
     public void setSelectionZoneWidth(int selectionZoneWidth, ArrayList<GuiLine> newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         for(GuiLine line: newLines) {
-            if (!line.checkSelectionSize(this.getSelectionZoneWidth())) {
+            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
                 throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
             }
         }
@@ -160,7 +162,7 @@ public abstract class Menu {
     public void setSelectionZoneWidth(int selectionZoneWidth, GuiLine[] newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         for(GuiLine line: newLines) {
-            if (!line.checkSelectionSize(this.getSelectionZoneWidth())) {
+            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
                 throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
             }
         }
@@ -213,7 +215,7 @@ public abstract class Menu {
         if(lines.length == selectionZoneHeight) {
             this.lines = new ArrayList<>();
             for (GuiLine line : lines) {
-                if (!line.checkSelectionSize(this.getSelectionZoneHeight())) {
+                if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
                     throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
                 }
                 this.lines.add(line);
@@ -236,7 +238,7 @@ public abstract class Menu {
     public void setLines(ArrayList<GuiLine> lines){
         if(lines.size() == selectionZoneHeight) {
             for(GuiLine line: lines) {
-                if (!line.checkSelectionSize(this.getSelectionZoneWidth())) {
+                if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
                     throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
                 }
             }

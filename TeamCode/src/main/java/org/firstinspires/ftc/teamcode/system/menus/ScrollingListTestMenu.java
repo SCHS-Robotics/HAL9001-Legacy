@@ -52,7 +52,7 @@ public class ScrollingListTestMenu extends ScrollingListMenu {
      */
     private void addLine(){
         ArrayList<GuiLine> newLines = lines;
-        lines.add(new GuiLine("X", "Lines: "));
+        lines.add(new GuiLine("Y", "Lines: "));
         super.setSelectionZoneHeight(super.getSelectionZoneHeight() + 1, newLines);
     }
 

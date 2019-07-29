@@ -6,6 +6,8 @@
  */
 package org.firstinspires.ftc.teamcode.util.calib;
 
+import com.qualcomm.robotcore.util.Range;
+
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
@@ -308,6 +310,15 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
             }
             lastActivatedTimestamp = System.currentTimeMillis();
         }
+
+        x_lower = Range.clip(x_lower,0,x_upper);
+        x_upper = Range.clip(x_upper,x_lower,255);
+
+        y_lower = Range.clip(y_lower,0,y_upper);
+        y_upper = Range.clip(y_upper,y_lower,255);
+
+        z_lower = Range.clip(z_lower,0,z_upper);
+        z_upper = Range.clip(z_upper,z_lower,255);
 
         robot.telemetry.update();
     }

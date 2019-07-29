@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.util.misc;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 
 import java.util.HashMap;
@@ -138,10 +140,10 @@ public class CustomizableGamepad {
                 case bool_left_stick_x_left: return robot.gamepad1.left_stick_x < inputs.get(buttonName).deadzone;
                 case bool_left_stick_x_right: return robot.gamepad1.left_stick_x > inputs.get(buttonName).deadzone;
                 case bool_right_stick_y_up: return -robot.gamepad1.right_stick_y > inputs.get(buttonName).deadzone;
-                case bool_left_stick_y_down: return -robot.gamepad1.left_stick_y < inputs.get(buttonName).deadzone;
+                case bool_left_stick_y_down: return -robot.gamepad1.left_stick_y < -inputs.get(buttonName).deadzone;
                 case bool_right_stick_x_left: return robot.gamepad1.right_stick_x < inputs.get(buttonName).deadzone;
                 case bool_right_stick_x_right: return robot.gamepad1.right_stick_x > inputs.get(buttonName).deadzone;
-                case bool_right_stick_y_down: return -robot.gamepad1.right_stick_y < inputs.get(buttonName).deadzone;
+                case bool_right_stick_y_down: return -robot.gamepad1.right_stick_y < -inputs.get(buttonName).deadzone;
                 case bool_left_stick_x: return Math.abs(robot.gamepad1.left_stick_x) > inputs.get(buttonName).deadzone;
                 case bool_left_stick_y: return Math.abs(robot.gamepad1.left_stick_y) > inputs.get(buttonName).deadzone;
                 case bool_right_stick_x: return Math.abs(robot.gamepad1.right_stick_x) > inputs.get(buttonName).deadzone;
@@ -174,10 +176,10 @@ public class CustomizableGamepad {
                 case bool_left_stick_x_left: return robot.gamepad2.left_stick_x < inputs.get(buttonName).deadzone;
                 case bool_left_stick_x_right: return robot.gamepad2.left_stick_x > inputs.get(buttonName).deadzone;
                 case bool_right_stick_y_up: return -robot.gamepad2.right_stick_y > inputs.get(buttonName).deadzone;
-                case bool_left_stick_y_down: return -robot.gamepad2.left_stick_y < inputs.get(buttonName).deadzone;
+                case bool_left_stick_y_down: return -robot.gamepad2.left_stick_y < -inputs.get(buttonName).deadzone;
                 case bool_right_stick_x_left: return robot.gamepad2.right_stick_x < inputs.get(buttonName).deadzone;
                 case bool_right_stick_x_right: return robot.gamepad2.right_stick_x > inputs.get(buttonName).deadzone;
-                case bool_right_stick_y_down: return -robot.gamepad2.right_stick_y < inputs.get(buttonName).deadzone;
+                case bool_right_stick_y_down: return -robot.gamepad2.right_stick_y < -inputs.get(buttonName).deadzone;
                 case bool_left_stick_x: return Math.abs(robot.gamepad2.left_stick_x) > inputs.get(buttonName).deadzone;
                 case bool_left_stick_y: return Math.abs(robot.gamepad2.left_stick_y) > inputs.get(buttonName).deadzone;
                 case bool_right_stick_x: return Math.abs(robot.gamepad2.right_stick_x) > inputs.get(buttonName).deadzone;
@@ -256,10 +258,10 @@ public class CustomizableGamepad {
                 case bool_left_stick_x_left: return robot.gamepad2.left_stick_x < inputs.get(buttonName).deadzone;
                 case bool_left_stick_x_right: return robot.gamepad2.left_stick_x > inputs.get(buttonName).deadzone;
                 case bool_right_stick_y_up: return -robot.gamepad2.right_stick_y > inputs.get(buttonName).deadzone;
-                case bool_left_stick_y_down: return -robot.gamepad2.left_stick_y < inputs.get(buttonName).deadzone;
+                case bool_left_stick_y_down: return -robot.gamepad2.left_stick_y < -inputs.get(buttonName).deadzone;
                 case bool_right_stick_x_left: return robot.gamepad2.right_stick_x < inputs.get(buttonName).deadzone;
                 case bool_right_stick_x_right: return robot.gamepad2.right_stick_x > inputs.get(buttonName).deadzone;
-                case bool_right_stick_y_down: return -robot.gamepad2.right_stick_y < inputs.get(buttonName).deadzone;
+                case bool_right_stick_y_down: return -robot.gamepad2.right_stick_y < -inputs.get(buttonName).deadzone;
                 case bool_left_stick_x: return Math.abs(robot.gamepad2.left_stick_x) > inputs.get(buttonName).deadzone;
                 case bool_left_stick_y: return Math.abs(robot.gamepad2.left_stick_y) > inputs.get(buttonName).deadzone;
                 case bool_right_stick_x: return Math.abs(robot.gamepad2.right_stick_x) > inputs.get(buttonName).deadzone;

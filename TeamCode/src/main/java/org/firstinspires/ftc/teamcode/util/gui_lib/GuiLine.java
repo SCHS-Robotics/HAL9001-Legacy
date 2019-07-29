@@ -100,7 +100,7 @@ public class GuiLine {
      *
      * @param selectionZoneText - Text to replace the selectionZoneText with.
      */
-    public String getLineTextReplaceSelectionZoneText(String selectionZoneText){
+    public String FormatSelectionZoneText(String selectionZoneText){
         if(hasDivider){
             return selectionZoneText + divider + postSelectionText;
         }
@@ -114,8 +114,8 @@ public class GuiLine {
      *
      * @param menu - Menu to check the selectionZoneText against.
      */
-    public boolean checkSelectionSize(Menu menu){
-        return menu.getSelectionZoneHeight() == selectionZoneText.length();
+    public boolean checkSelectionWidthSize(Menu menu){
+        return menu.getSelectionZoneWidth() == selectionZoneText.length();
     }
 
     /**
@@ -123,7 +123,7 @@ public class GuiLine {
      *
      * @param wantedSize - Wanted length of text.
      */
-    public boolean checkSelectionSize(int wantedSize){
+    public boolean checkSelectionWidthSize(int wantedSize){
         return wantedSize == selectionZoneText.length();
     }
 }

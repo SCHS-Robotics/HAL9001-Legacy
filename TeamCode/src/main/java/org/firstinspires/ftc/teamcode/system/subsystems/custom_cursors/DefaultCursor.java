@@ -36,7 +36,7 @@ public class DefaultCursor extends Cursor {
      * @param cursorIcon - The icon used to represent the cursor.
      */
     public DefaultCursor(Robot robot, int x, int y, int blinkSpeedMs, char cursorIcon) {
-        super(x, y, blinkSpeedMs, cursorIcon);
+        super(robot, x, y, blinkSpeedMs, cursorIcon);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -54,7 +54,7 @@ public class DefaultCursor extends Cursor {
      * @param cursorIcon - The icon used to represent the cursor.
      */
     public DefaultCursor(Robot robot, int blinkSpeedMs, char cursorIcon) {
-        super(blinkSpeedMs, cursorIcon);
+        super(robot, blinkSpeedMs, cursorIcon);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -71,7 +71,7 @@ public class DefaultCursor extends Cursor {
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
      */
     public DefaultCursor(Robot robot, int blinkSpeedMs) {
-        super(blinkSpeedMs);
+        super(robot, blinkSpeedMs);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -90,7 +90,7 @@ public class DefaultCursor extends Cursor {
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
      */
     public DefaultCursor(Robot robot, int x, int y, int blinkSpeedMs) {
-        super(x, y, blinkSpeedMs);
+        super(robot, x, y, blinkSpeedMs);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -130,12 +130,12 @@ public class DefaultCursor extends Cursor {
             super.currentMenu.onSelect();
             flag = false;
         }
-        else if(inputs.getBooleanInput(UP) && y+1 <= currentMenu.getSelectionZoneHeight() && flag){
-            y++;
+        else if(inputs.getBooleanInput(UP) && y-1 >= 0 && flag){
+            y--;
             flag = false;
         }
-        else if(inputs.getBooleanInput(DOWN) && y-1 >= 0 && flag){
-            y--;
+        else if(inputs.getBooleanInput(DOWN) && y+1 <= currentMenu.getSelectionZoneHeight() && flag){
+            y++;
             flag = false;
         }
         else if(inputs.getBooleanInput(LEFT) && x-1 >= 0 && flag){

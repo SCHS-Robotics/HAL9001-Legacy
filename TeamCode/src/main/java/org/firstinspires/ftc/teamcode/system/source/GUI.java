@@ -7,6 +7,9 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.util.Log;
+
+import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -30,6 +33,8 @@ public class GUI {
     //The cursor the GUI will use in the menus.
     private Cursor cursor;
 
+    private char drawChar;
+
     //The current state of the cursor's blinking and the index of the active menu in a list of the hashmap's values.
     private int cursorBlinkState, activeMenuIdx;
     //The timestamp of the last blink.
@@ -42,7 +47,7 @@ public class GUI {
     private boolean flag;
 
     //The customizable gamepad used to customize inputs to the GUI.
-    private CustomizableGamepad inputs = new CustomizableGamepad(robot);
+    private CustomizableGamepad inputs;
 
     //The name of the cycle menus button.
     private static final String CYCLE_MENUS = "CycleMenus";
@@ -61,6 +66,8 @@ public class GUI {
         this.robot = robot;
         this.menus = new HashMap<>();
 
+        this.inputs = new CustomizableGamepad(robot);
+
         menuKeys = new ArrayList<>();
         
         if(flipMenu.isBoolean) {
@@ -72,8 +79,10 @@ public class GUI {
 
         cursorBlinkState = 0;
         lastBlinkTimeMs = System.currentTimeMillis();
-        flag = true;
+        flag = false;
         activeMenuIdx = 0;
+
+        robot.telemetry.setMsTransmissionInterval(50);
     }
 
     /**
@@ -89,6 +98,7 @@ public class GUI {
      * Draws the current active menu to the screen.
      */
     protected void drawCurrentMenu(){
+
         cursor.update();
         if(inputs.getBooleanInput(CYCLE_MENUS) && flag){
             activeMenuIdx++;
@@ -97,7 +107,10 @@ public class GUI {
         }
         else if(!inputs.getBooleanInput(CYCLE_MENUS) && !flag) {
             flag = true;
+            setActiveMenu(menuKeys.get(activeMenuIdx));
         }
+
+        clearScreen();
         activeMenu.render();
         robot.telemetry.update();
     }
@@ -149,14 +162,26 @@ public class GUI {
         cursor.setCurrentMenu(menus.get(menuName));
     }
 
-    //TODO, make this not burn our eyes
-
     /**
      * Causes the cursor to blink on a specified line.
      *
      * @param line - The line object where the cursor is currently located.
      */
     private void blinkCursor(GuiLine line) {
+        char[] chars = line.selectionZoneText.toCharArray();
+
+        if(System.currentTimeMillis() - lastBlinkTimeMs >= cursor.getBlinkSpeedMs()) {
+            cursorBlinkState++;
+            Log.i("test",""+robot.telemetry.getMsTransmissionInterval());
+            cursorBlinkState = cursorBlinkState % 2;
+            lastBlinkTimeMs = System.currentTimeMillis();
+        }
+
+        drawChar = cursorBlinkState == 0 ? cursor.getCursorIcon() : chars[cursor.getX()];
+        chars[cursor.getX()] = drawChar;
+        robot.telemetry.addLine(line.FormatSelectionZoneText(new String(chars)));
+
+        /*
         ArrayList<Character> cursorLineChars = new ArrayList<>();
         char[] chars = line.selectionZoneText.toCharArray();
         for(int i = 0; i < chars.length; i++) {
@@ -178,18 +203,20 @@ public class GUI {
                 cursorLineChars.add(chars[i]);
             }
         }
+
         StringBuilder sb = new StringBuilder();
         for(Character ch: cursorLineChars){
             sb.append(ch);
         }
         String selectionZoneText = sb.toString();
-        robot.telemetry.addLine(line.getLineTextReplaceSelectionZoneText(selectionZoneText));
+        robot.telemetry.addLine(line.FormatSelectionZoneText(selectionZoneText));
 
         if(System.currentTimeMillis() - lastBlinkTimeMs >= cursor.getBlinkSpeedMs()){
             cursorBlinkState++;
             cursorBlinkState = cursorBlinkState % 4;
             lastBlinkTimeMs = System.currentTimeMillis();
         }
+        */
     }
 
     /**
