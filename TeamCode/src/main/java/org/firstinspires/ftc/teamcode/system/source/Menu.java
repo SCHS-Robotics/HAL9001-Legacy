@@ -28,7 +28,7 @@ public abstract class Menu {
     //The list of all lines in the menu.
     protected ArrayList<GuiLine> lines;
     //The maximum number of lines that can fit on the FTC driver station. This is a global constant.
-    protected static final int MAXLINESPERSCREEN = 7;
+    public static final int MAXLINESPERSCREEN = 8;
 
     /**
      * Ctor for menu class.
@@ -248,4 +248,8 @@ public abstract class Menu {
             throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
         }
     }
+
+    public void menuUp() {}
+
+    public void menuDown() {}
 }

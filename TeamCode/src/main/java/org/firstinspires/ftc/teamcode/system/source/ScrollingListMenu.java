@@ -78,30 +78,28 @@ public abstract class ScrollingListMenu extends Menu {
     /**
      * Cycles to next part of menu if it goes off the top of the screen.
      */
+    @Override
     public void menuUp(){
-        if(menuNumber == 0) {
+
+        menuNumber--;
+
+        if(menuNumber == -1) {
             menuNumber = (int) Math.floor((lines.size() * 1.0) / Menu.MAXLINESPERSCREEN);
-            cursor.y = lines.size() - 1;
-        }
-        else {
-            menuNumber--;
+            cursor.y = Math.min(lines.size() - 1,(menuNumber*Menu.MAXLINESPERSCREEN)-1);
         }
     }
 
     /**
      * Cycles to next part of menu if it goes off the bottom of the screen.
      */
+    @Override
     public void menuDown(){
 
         menuNumber++;
-        menuNumber = menuNumber % Menu.MAXLINESPERSCREEN;
 
-        if(menuNumber == (int) Math.floor((lines.size() * 1.0) / Menu.MAXLINESPERSCREEN)) {
+        if(menuNumber == (int) Math.ceil((lines.size() * 1.0) / Menu.MAXLINESPERSCREEN)) {
             menuNumber = 0;
             cursor.y = 0;
-        }
-        else {
-            menuNumber++;
         }
     }
 
@@ -109,7 +107,8 @@ public abstract class ScrollingListMenu extends Menu {
      * Displays the current menu.
      */
     private void displayCurrentMenu(){
-        for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < menuNumber * Menu.MAXLINESPERSCREEN + Math.min(Menu.MAXLINESPERSCREEN,lines.size()); i++) {
+
+        for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < Math.min(lines.size(),(menuNumber+1)*Menu.MAXLINESPERSCREEN); i++) {
             super.displayLine(lines.get(i), i);
         }
     }

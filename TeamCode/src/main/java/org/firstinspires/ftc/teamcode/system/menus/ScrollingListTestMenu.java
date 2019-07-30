@@ -7,10 +7,16 @@
 
 package org.firstinspires.ftc.teamcode.system.menus;
 
+import android.os.Environment;
+
 import org.firstinspires.ftc.teamcode.system.source.GUI;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.system.source.ScrollingListMenu;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -45,6 +51,26 @@ public class ScrollingListTestMenu extends ScrollingListMenu {
         else if(cursor.y == 1 && super.getSelectionZoneHeight() > 2){
             removeLine();
         }
+
+        if(lines.size() == 2) {
+            try
+            {
+                File file = new File(Environment.getExternalStorageDirectory().getPath()+"/test.txt");
+                FileOutputStream fileoutput = new FileOutputStream(file);
+                PrintStream ps = new PrintStream(fileoutput);
+                ps.println("a");
+                ps.println("b");
+                ps.println("c");
+                ps.println("d");
+
+                ps.close();
+                fileoutput.close();
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
     }
 
     /**
@@ -61,7 +87,7 @@ public class ScrollingListTestMenu extends ScrollingListMenu {
      */
     private void removeLine(){
         ArrayList<GuiLine> newLines = lines;
-        lines.add(new GuiLine("X", "Lines: "));
+        lines.remove(cursor.getY());
         super.setSelectionZoneHeight(super.getSelectionZoneHeight() - 1, newLines);
     }
 }

@@ -19,7 +19,7 @@ public abstract class Cursor {
     //The menu currently using the cursor.
     public Menu currentMenu;
 
-    private Robot robot;
+    protected boolean cursorUpdated;
 
     /**
      * Ctor for cursor class.
@@ -29,12 +29,11 @@ public abstract class Cursor {
      * @param blinkSpeedMs - The cursor blink speed in milliseconds.
      * @param cursorIcon - The char that will represent the cursor when the menu is drawn.
      */
-    public Cursor(Robot robot, int x, int y, int blinkSpeedMs, char cursorIcon) {
+    public Cursor(int x, int y, int blinkSpeedMs, char cursorIcon) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = x;
         this.y = y;
         this.cursorIcon = cursorIcon;
-        this.robot = robot;
     }
 
     /**
@@ -43,12 +42,11 @@ public abstract class Cursor {
      * @param blinkSpeedMs - The cursor blink speed in milliseconds.
      * @param cursorIcon - The char that will represent the cursor when the menu is drawn.
      */
-    public Cursor(Robot robot, int blinkSpeedMs, char cursorIcon) {
+    public Cursor(int blinkSpeedMs, char cursorIcon) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = 0;
         this.y = 0;
         this.cursorIcon = cursorIcon;
-        this.robot = robot;
     }
 
     /**
@@ -56,12 +54,11 @@ public abstract class Cursor {
      *
      * @param blinkSpeedMs - The cursor blink speed in milliseconds.
      */
-    public Cursor(Robot robot, int blinkSpeedMs) {
+    public Cursor(int blinkSpeedMs) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = 0;
         this.y = 0;
         this.cursorIcon = '█';
-        this.robot = robot;
     }
 
     /**
@@ -71,12 +68,11 @@ public abstract class Cursor {
      * @param y - Cursor starting y position.
      * @param blinkSpeedMs - Cursor blink speed in milliseconds.
      */
-    public Cursor(Robot robot, int x, int y, int blinkSpeedMs) {
+    public Cursor(int x, int y, int blinkSpeedMs) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = x;
         this.y = y;
         this.cursorIcon = '█';
-        this.robot = robot;
     }
 
     /**

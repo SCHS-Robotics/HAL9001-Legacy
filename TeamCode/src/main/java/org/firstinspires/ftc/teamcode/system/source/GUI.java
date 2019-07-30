@@ -33,7 +33,11 @@ public class GUI {
     //The cursor the GUI will use in the menus.
     private Cursor cursor;
 
+    private boolean cycle;
+
     private char drawChar;
+
+    private long lastRenderTime;
 
     //The current state of the cursor's blinking and the index of the active menu in a list of the hashmap's values.
     private int cursorBlinkState, activeMenuIdx;
@@ -79,7 +83,9 @@ public class GUI {
 
         cursorBlinkState = 0;
         lastBlinkTimeMs = System.currentTimeMillis();
+        lastRenderTime = 0;
         flag = false;
+        cycle = false;
         activeMenuIdx = 0;
 
         robot.telemetry.setMsTransmissionInterval(50);
@@ -104,15 +110,25 @@ public class GUI {
             activeMenuIdx++;
             activeMenuIdx = activeMenuIdx % menuKeys.size();
             setActiveMenu(menuKeys.get(activeMenuIdx));
+            flag = false;
         }
         else if(!inputs.getBooleanInput(CYCLE_MENUS) && !flag) {
             flag = true;
             setActiveMenu(menuKeys.get(activeMenuIdx));
         }
+        cycle = !flag;
 
-        clearScreen();
-        activeMenu.render();
-        robot.telemetry.update();
+        if(System.currentTimeMillis()-lastRenderTime >= cursor.blinkSpeedMs || cursor.cursorUpdated || cycle) {
+
+            if(cursor.cursorUpdated) {
+                cursorBlinkState = 0;
+            }
+
+            clearScreen();
+            activeMenu.render();
+            robot.telemetry.update();
+            lastRenderTime = System.currentTimeMillis();
+        }
     }
 
     /**
@@ -172,7 +188,6 @@ public class GUI {
 
         if(System.currentTimeMillis() - lastBlinkTimeMs >= cursor.getBlinkSpeedMs()) {
             cursorBlinkState++;
-            Log.i("test",""+robot.telemetry.getMsTransmissionInterval());
             cursorBlinkState = cursorBlinkState % 2;
             lastBlinkTimeMs = System.currentTimeMillis();
         }

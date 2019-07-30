@@ -7,7 +7,10 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems.custom_cursors;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.system.source.Cursor;
+import org.firstinspires.ftc.teamcode.system.source.Menu;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -36,7 +39,7 @@ public class DefaultCursor extends Cursor {
      * @param cursorIcon - The icon used to represent the cursor.
      */
     public DefaultCursor(Robot robot, int x, int y, int blinkSpeedMs, char cursorIcon) {
-        super(robot, x, y, blinkSpeedMs, cursorIcon);
+        super(x, y, blinkSpeedMs, cursorIcon);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -54,7 +57,7 @@ public class DefaultCursor extends Cursor {
      * @param cursorIcon - The icon used to represent the cursor.
      */
     public DefaultCursor(Robot robot, int blinkSpeedMs, char cursorIcon) {
-        super(robot, blinkSpeedMs, cursorIcon);
+        super(blinkSpeedMs, cursorIcon);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -71,7 +74,7 @@ public class DefaultCursor extends Cursor {
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
      */
     public DefaultCursor(Robot robot, int blinkSpeedMs) {
-        super(robot, blinkSpeedMs);
+        super(blinkSpeedMs);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -90,7 +93,7 @@ public class DefaultCursor extends Cursor {
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
      */
     public DefaultCursor(Robot robot, int x, int y, int blinkSpeedMs) {
-        super(robot, x, y, blinkSpeedMs);
+        super(x, y, blinkSpeedMs);
         inputs = new CustomizableGamepad(robot);
 
         inputs.addButton(UP,new Button(1, Button.BooleanInputs.dpad_up));
@@ -126,28 +129,37 @@ public class DefaultCursor extends Cursor {
 
     @Override
     public void update() {
+
         if(inputs.getBooleanInput(SELECT) && flag){
             super.currentMenu.onSelect();
             flag = false;
         }
         else if(inputs.getBooleanInput(UP) && y-1 >= 0 && flag){
+
             y--;
+            if((y+1) % Menu.MAXLINESPERSCREEN == 0) {
+                currentMenu.menuUp();
+            }
             flag = false;
         }
-        else if(inputs.getBooleanInput(DOWN) && y+1 <= currentMenu.getSelectionZoneHeight() && flag){
+        else if(inputs.getBooleanInput(DOWN) && y+1 <= currentMenu.getSelectionZoneHeight()-1 && flag){
             y++;
+            if(y % Menu.MAXLINESPERSCREEN == 0) {
+                currentMenu.menuDown();
+            }
             flag = false;
         }
         else if(inputs.getBooleanInput(LEFT) && x-1 >= 0 && flag){
             x--;
             flag = false;
         }
-        else if(inputs.getBooleanInput(RIGHT) && x+1 <= currentMenu.getSelectionZoneWidth() && flag){
+        else if(inputs.getBooleanInput(RIGHT) && x+1 <= currentMenu.getSelectionZoneWidth()-1 && flag){
             x++;
             flag = false;
         }
         else if(!inputs.getBooleanInput(SELECT) && !inputs.getBooleanInput(UP) && !inputs.getBooleanInput(DOWN) && !inputs.getBooleanInput(LEFT) && !inputs.getBooleanInput(RIGHT) && !flag){
             flag = true;
         }
+        cursorUpdated = !flag;
     }
 }
