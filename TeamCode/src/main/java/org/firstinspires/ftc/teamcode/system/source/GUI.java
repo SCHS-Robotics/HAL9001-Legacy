@@ -7,9 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
-import android.util.Log;
-
-import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -195,43 +192,6 @@ public class GUI {
         drawChar = cursorBlinkState == 0 ? cursor.getCursorIcon() : chars[cursor.getX()];
         chars[cursor.getX()] = drawChar;
         robot.telemetry.addLine(line.FormatSelectionZoneText(new String(chars)));
-
-        /*
-        ArrayList<Character> cursorLineChars = new ArrayList<>();
-        char[] chars = line.selectionZoneText.toCharArray();
-        for(int i = 0; i < chars.length; i++) {
-            if(i == cursor.getX()) {
-                switch (cursorBlinkState) {
-                    case 0:
-                        cursorLineChars.add(cursor.getCursorIcon());
-                        break;
-                    case 1:
-                    case 3:
-                        cursorLineChars.add(' ');
-                        break;
-                    default:
-                        cursorLineChars.add(chars[i]);
-                        break;
-                }
-            }
-            else {
-                cursorLineChars.add(chars[i]);
-            }
-        }
-
-        StringBuilder sb = new StringBuilder();
-        for(Character ch: cursorLineChars){
-            sb.append(ch);
-        }
-        String selectionZoneText = sb.toString();
-        robot.telemetry.addLine(line.FormatSelectionZoneText(selectionZoneText));
-
-        if(System.currentTimeMillis() - lastBlinkTimeMs >= cursor.getBlinkSpeedMs()){
-            cursorBlinkState++;
-            cursorBlinkState = cursorBlinkState % 4;
-            lastBlinkTimeMs = System.currentTimeMillis();
-        }
-        */
     }
 
     /**

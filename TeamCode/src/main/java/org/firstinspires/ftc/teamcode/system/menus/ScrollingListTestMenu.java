@@ -51,26 +51,6 @@ public class ScrollingListTestMenu extends ScrollingListMenu {
         else if(cursor.y == 1 && super.getSelectionZoneHeight() > 2){
             removeLine();
         }
-
-        if(lines.size() == 2) {
-            try
-            {
-                File file = new File(Environment.getExternalStorageDirectory().getPath()+"/test.txt");
-                FileOutputStream fileoutput = new FileOutputStream(file);
-                PrintStream ps = new PrintStream(fileoutput);
-                ps.println("a");
-                ps.println("b");
-                ps.println("c");
-                ps.println("d");
-
-                ps.close();
-                fileoutput.close();
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
     }
 
     /**
