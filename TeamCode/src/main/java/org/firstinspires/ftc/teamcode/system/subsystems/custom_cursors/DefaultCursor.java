@@ -7,8 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems.custom_cursors;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.system.source.Cursor;
 import org.firstinspires.ftc.teamcode.system.source.Menu;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
@@ -25,7 +23,6 @@ public class DefaultCursor extends Cursor {
     private CustomizableGamepad inputs;
     //The names of the controls that are used to interact with the cursor.
     private final String UP = "up", DOWN = "down", LEFT = "left", RIGHT = "right", SELECT = "select";
-
     //A boolean value used to toggle the controls on and off.
     private boolean flag = true;
 
@@ -47,6 +44,8 @@ public class DefaultCursor extends Cursor {
         inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
         inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
+
+        doBlink = true;
     }
 
     /**
@@ -65,6 +64,8 @@ public class DefaultCursor extends Cursor {
         inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
         inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
+
+        doBlink = true;
     }
 
     /**
@@ -82,6 +83,8 @@ public class DefaultCursor extends Cursor {
         inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
         inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
+
+        doBlink = true;
     }
 
     /**
@@ -101,6 +104,8 @@ public class DefaultCursor extends Cursor {
         inputs.addButton(LEFT,new Button(1, Button.BooleanInputs.dpad_left));
         inputs.addButton(RIGHT,new Button(1, Button.BooleanInputs.dpad_right));
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
+
+        doBlink = true;
     }
 
     /**

@@ -6,8 +6,6 @@
  */
 package org.firstinspires.ftc.teamcode.system.source;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 import org.firstinspires.ftc.teamcode.util.exceptions.WrongSkyscraperBlueprintException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
@@ -249,7 +247,13 @@ public abstract class Menu {
         }
     }
 
+    /**
+     * Cycles to the next upward part of the menu.
+     */
     public void menuUp() {}
 
+    /**
+     * Cycles to the next downward part of the menu.
+     */
     public void menuDown() {}
 }

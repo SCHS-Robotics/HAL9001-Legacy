@@ -18,8 +18,10 @@ public abstract class Cursor {
     private char cursorIcon;
     //The menu currently using the cursor.
     public Menu currentMenu;
-
+    //A boolean specifying if the cursor has been updated.
     protected boolean cursorUpdated;
+    //A boolean specifying whether the cursor should allow blinking.
+    protected boolean doBlink;
 
     /**
      * Ctor for cursor class.

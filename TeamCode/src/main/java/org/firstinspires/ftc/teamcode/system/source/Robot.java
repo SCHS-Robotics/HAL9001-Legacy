@@ -26,13 +26,10 @@ public abstract class Robot {
     public final Map<String, SubSystem> subSystems;
     //The opmode the robot is running.
     private OpMode opMode;
-
     //A boolean value specifying whether or not to use a GUI.
     private boolean useGui;
-
     //The GUI the robot uses to render the menus.
     public GUI gui;
-
     //The gamepads used to control the robot.
     public volatile Gamepad gamepad1, gamepad2;
     //The telemetry used to print lines to the driver station.

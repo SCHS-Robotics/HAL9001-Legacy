@@ -266,9 +266,9 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
         slowModeToggle.updateToggle(inputs.getBooleanInput(SLOWMODE));
 
-        if (slowModeToggle.getCurrentState()) {
-            increment = 1;
-        } else {
+            if (slowModeToggle.getCurrentState()) {
+                increment = 1;
+            } else {
             increment = 5;
         }
         

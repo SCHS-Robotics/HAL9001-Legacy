@@ -29,27 +29,22 @@ public class GUI {
     public Robot robot;
     //The cursor the GUI will use in the menus.
     private Cursor cursor;
-
+    //A boolean value that becomes true when the user attempts to cycle menus.
     private boolean cycle;
-
+    //The character to be drawn to the screen at the coordinates of the cursor.
     private char drawChar;
-
+    //The time at which the last render action occurred in milliseconds.
     private long lastRenderTime;
-
     //The current state of the cursor's blinking and the index of the active menu in a list of the hashmap's values.
     private int cursorBlinkState, activeMenuIdx;
     //The timestamp of the last blink.
     private double lastBlinkTimeMs;
-
     //A list of all menu names currently in the GUI.
     private ArrayList<String> menuKeys;
-
     //Used in a three way toggle to make the cursor blink, I apologize in advance.
     private boolean flag;
-
     //The customizable gamepad used to customize inputs to the GUI.
     private CustomizableGamepad inputs;
-
     //The name of the cycle menus button.
     private static final String CYCLE_MENUS = "CycleMenus";
 
@@ -189,8 +184,15 @@ public class GUI {
             lastBlinkTimeMs = System.currentTimeMillis();
         }
 
-        drawChar = cursorBlinkState == 0 ? cursor.getCursorIcon() : chars[cursor.getX()];
-        chars[cursor.getX()] = drawChar;
+        if(!cursor.doBlink) {
+            cursorBlinkState = 1;
+        }
+
+        if(chars.length != 0) {
+            drawChar = cursorBlinkState == 0 ? cursor.getCursorIcon() : chars[cursor.getX()];
+            chars[cursor.getX()] = drawChar;
+        }
+
         robot.telemetry.addLine(line.FormatSelectionZoneText(new String(chars)));
     }
 
@@ -215,5 +217,9 @@ public class GUI {
         else {
             robot.telemetry.addLine(line.getLineText());
         }
+    }
+
+    public Menu getMenu(String menuName) {
+        return menus.get(menuName);
     }
 }

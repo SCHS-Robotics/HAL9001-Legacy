@@ -7,8 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 
 import java.util.ArrayList;
@@ -54,10 +52,12 @@ public abstract class ScrollingListMenu extends Menu {
     @Override
     protected void init(Cursor cursor) {
         super.cursor = cursor;
+        super.cursor.doBlink = true;
     }
 
     @Override
     protected void open() {
+        super.cursor.doBlink = true;
         menuNumber = 0;
         cursor.y = 0;
     }
@@ -73,12 +73,6 @@ public abstract class ScrollingListMenu extends Menu {
     }
 
     @Override
-    public abstract void onSelect();
-
-    /**
-     * Cycles to next part of menu if it goes off the top of the screen.
-     */
-    @Override
     public void menuUp(){
 
         menuNumber--;
@@ -89,9 +83,6 @@ public abstract class ScrollingListMenu extends Menu {
         }
     }
 
-    /**
-     * Cycles to next part of menu if it goes off the bottom of the screen.
-     */
     @Override
     public void menuDown(){
 
@@ -107,7 +98,6 @@ public abstract class ScrollingListMenu extends Menu {
      * Displays the current menu.
      */
     private void displayCurrentMenu(){
-
         for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < Math.min(lines.size(),(menuNumber+1)*Menu.MAXLINESPERSCREEN); i++) {
             super.displayLine(lines.get(i), i);
         }

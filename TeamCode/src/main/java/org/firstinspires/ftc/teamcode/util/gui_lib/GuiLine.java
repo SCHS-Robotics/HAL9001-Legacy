@@ -126,4 +126,9 @@ public class GuiLine {
     public boolean checkSelectionWidthSize(int wantedSize){
         return wantedSize == selectionZoneText.length();
     }
+
+    @Override
+    public String toString() {
+        return getLineText();
+    }
 }

@@ -7,16 +7,10 @@
 
 package org.firstinspires.ftc.teamcode.system.menus;
 
-import android.os.Environment;
-
 import org.firstinspires.ftc.teamcode.system.source.GUI;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.system.source.ScrollingListMenu;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.util.ArrayList;
 
 /**
@@ -26,7 +20,7 @@ public class ScrollingListTestMenu extends ScrollingListMenu {
 
     //The initial lines to be displayed on the menu.
     private static final GuiLine[] STARTING_LINES = new GuiLine[] {
-        new GuiLine("X", "Lines: "),
+                new GuiLine("X", "Lines: "),
                 new GuiLine("X", "Lines: "),
                 new GuiLine("X", "Lines: "),
                 new GuiLine("X", "Lines: "),

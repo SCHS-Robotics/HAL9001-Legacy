@@ -56,6 +56,9 @@ public class TankDrive extends SubSystem{
      */
     public TankDrive(Robot robot, String[] motorConfig, double[] robotConfig, Button driveStick, Button turnStick, Button speedModeButton, boolean turnAndMove){
         super(robot);
+
+        inputs = new CustomizableGamepad(robot);
+
         setMotorConfiguration(motorConfig[0], motorConfig[1]);
         setDeadzone(robotConfig[0]);
         setSpeedModeModifier(robotConfig[1]);
@@ -77,6 +80,9 @@ public class TankDrive extends SubSystem{
      */
     public TankDrive(Robot robot, String[] motorConfig, double[] robotConfig){
         super(robot);
+
+        inputs = new CustomizableGamepad(robot);
+
         setMotorConfiguration(motorConfig[0], motorConfig[1]);
         setDeadzone(robotConfig[0]);
         setSpeedModeModifier(robotConfig[1]);
@@ -223,6 +229,7 @@ public class TankDrive extends SubSystem{
             @Override
             public void run() {
                 driveForward(power);
+
                 while(System.currentTimeMillis() - startTime <= timeMs);
                 stopMovement();
             }

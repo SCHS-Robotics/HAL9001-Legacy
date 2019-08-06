@@ -18,6 +18,7 @@ import java.util.Map;
  * A intermediary class between the robot and the gamepad controls that allows all control systems to be customized.
  */
 public class CustomizableGamepad {
+
     //The robot running this.
     private Robot robot;
     //HashMap of Buttons that are related to inputs from the controller.
