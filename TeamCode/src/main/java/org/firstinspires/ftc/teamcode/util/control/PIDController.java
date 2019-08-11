@@ -2,7 +2,7 @@
  * Filename: PIDController.java
  * Author: Cole Savage
  * Team Name: Level Up
- * Date: 7/17/19
+ * Date: 7/17/19 - 8/9/19
  */
 
 package org.firstinspires.ftc.teamcode.util.control;
@@ -18,8 +18,8 @@ public class PIDController {
     //Function used to calculate error value
     private BiFunction<Double,Double,Double> errorFunction;
 
-    //PID coefficients and component values
-    private double kp,ki,kd,P,I,D;
+    //PID(f) coefficients and component values
+    private double kp,ki,kd,kf,P,I,D,F;
     
     //PID target value
     private double setpoint;
@@ -36,8 +36,6 @@ public class PIDController {
     //A boolean specifying if the controller is currently active
     private boolean active;
 
-    //TODO
-    //Implement feedforward
     /**
      * Specifies the type of control system we want active.
      */
@@ -57,6 +55,7 @@ public class PIDController {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
+        this.kf = 0;
         this.errorFunction = (Double target, Double current) -> (target - current);
         this.type = Type.STANDARD;
     }
@@ -73,6 +72,7 @@ public class PIDController {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
+        this.kf = 0;
         this.errorFunction = errorFunction;
         this.type = Type.STANDARD;
     }
@@ -90,6 +90,7 @@ public class PIDController {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
+        this.kf = 0;
         this.errorFunction = errorFunction;
         this.type = type;
     }
@@ -97,15 +98,88 @@ public class PIDController {
     /**
      * Ctor for specified type of control in addition to specified coefficients.
      *
-     * @param kp - Proportional control coefficient
-     * @param ki - Integral control coefficient
-     * @param kd - Derivative control coefficient
-     * @param type - Type of control system to use
+     * @param kp - Proportional control coefficient.
+     * @param ki - Integral control coefficient.
+     * @param kd - Derivative control coefficient.
+     * @param type - Type of control system to use.
      */
     public PIDController(double kp, double ki, double kd, Type type) {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
+        this.kf = 0;
+        this.errorFunction = (Double target, Double current) -> (target - current);;
+        this.type = type;
+    }
+
+    /**
+     * Ctor for PIDF controller with custom error function.
+     *
+     * @param kp - Proportional control coefficient.
+     * @param ki - Integral control coefficient.
+     * @param kd - Derivative control coefficient.
+     * @param kf - Feedforward control coefficient.
+     * @param errorFunction - Specified error function to use for control.
+     */
+    public PIDController(double kp, double ki, double kd, double kf, BiFunction<Double,Double,Double> errorFunction) {
+        this.kp = kp;
+        this.ki = ki;
+        this.kd = kd;
+        this.kf = kf;
+        this.errorFunction = errorFunction;
+        this.type = Type.FEED_FORWARD;
+    }
+
+    /**
+     * Ctor for PID(F) controller with adjustable/overrideable type and custom error function.
+     *
+     * @param kp - Proportional control coefficient.
+     * @param ki - Integral control coefficient.
+     * @param kd - Derivative control coefficient.
+     * @param kf - Feedforward control coefficient.
+     * @param errorFunction - Specified error function to use for control.
+     * @param type - The type of the PID(F) controller.
+     */
+    public PIDController(double kp, double ki, double kd, double kf, BiFunction<Double,Double,Double> errorFunction, Type type) {
+        this.kp = kp;
+        this.ki = ki;
+        this.kd = kd;
+        this.kf = kf;
+        this.errorFunction = errorFunction;
+        this.type = type;
+    }
+
+    /**
+     * Ctor for PIDF controller with default error function.
+     *
+     * @param kp - Proportional control coefficient.
+     * @param ki - Integral control coefficient.
+     * @param kd - Derivative control coefficient.
+     * @param kf - Feedforward control coefficient.
+     */
+    public PIDController(double kp, double ki, double kd, double kf) {
+        this.kp = kp;
+        this.ki = ki;
+        this.kd = kd;
+        this.kf = kf;
+        this.errorFunction = (Double target, Double current) -> (target - current);;
+        this.type = Type.FEED_FORWARD;
+    }
+
+    /**
+     * Ctor for PID(F) controller with adjustable/overrideable type and default error function.
+     *
+     * @param kp - Proportional control coefficient.
+     * @param ki - Integral control coefficient.
+     * @param kd - Derivative control coefficient.
+     * @param kf - Feedforward control coefficient.
+     * @param type - The type of the PID(F) controller.
+     */
+    public PIDController(double kp, double ki, double kd, double kf, Type type) {
+        this.kp = kp;
+        this.ki = ki;
+        this.kd = kd;
+        this.kf = kf;
         this.errorFunction = (Double target, Double current) -> (target - current);;
         this.type = type;
     }
@@ -129,6 +203,7 @@ public class PIDController {
         this.P = 0;
         this.I = 0;
         this.D = 0;
+        this.F = 0;
         active = true;
     }
 
@@ -224,7 +299,14 @@ public class PIDController {
 
         switch(this.type) {
             case FEED_FORWARD:
-                return 0;
+                this.P = kp * error;
+                this.I = Range.clip(this.I + ki * error * dT, this.iClampLower, this.iClampUpper);
+                this.D = dT <= 0.0001 ? 0 : -kd * (current - lastState) / dT;
+                this.F = kf*setpoint;
+                this.lastState = current;
+                this.lastUpdate = System.currentTimeMillis();
+
+                return Range.clip(this.P + this.I + this.D + this.F,this.clampLower,this.clampUpper);
             case P_ON_M:
                 this.P = Range.clip(this.P-kp*(current - lastState),this.pClampLower,this.pClampUpper);
                 this.I = Range.clip(this.I + ki * error * dT, this.iClampLower, this.iClampUpper);

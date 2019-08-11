@@ -44,15 +44,15 @@ public class QuadWheelDrive extends SubSystem {
     /**
      * This constructor should be used when using this program for TeleOp.
      *
-             * @param robot - The robot we will be using.
-            * @param motorConfig - A string array of size 2 holding the names of the motor configurations. The first element is the left motor and the second element is the right motor.
+     * @param robot - The robot we will be using.
+     * @param motorConfig - A string array of size 2 holding the names of the motor configurations. The first element is the left motor and the second element is the right motor.
      * @param robotConfig - A double array of size 3 used to set configuration values. The first element is the deadzone or the value at which must the input must surpass to be used.
      *                    The second element is the speedModeModifier which multiplies the power by itself when speed mode is activated. The third element is the constantSpeedModifier
      *                    which does the same thing as speedModeModifier but is instead always active (set to 1 to do nothing).
-            * @param driveStick - The button for forward and backwards movement that is a double (noButton to disable).
-            * @param turnStick - The button for turning right and left that is a double (noButton to disable).
-            * @param speedModeButton - The button for toggling speedMode that is a boolean (noButton to disable).
-            * @param turnAndMove - A boolean that if true allows the robot to move and turn at the same time.
+     * @param driveStick - The button for forward and backwards movement that is a double (noButton to disable).
+     * @param turnStick - The button for turning right and left that is a double (noButton to disable).
+     * @param speedModeButton - The button for toggling speedMode that is a boolean (noButton to disable).
+     * @param turnAndMove - A boolean that if true allows the robot to move and turn at the same time.
      */
     public QuadWheelDrive(Robot robot, String[] motorConfig, double[] robotConfig, Button driveStick, Button turnStick, Button speedModeButton, boolean turnAndMove){
         super(robot);
