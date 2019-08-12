@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.system.menus.ScrollingListTestMenu;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.subsystems.custom_cursors.DefaultCursor;
+import org.firstinspires.ftc.teamcode.system.subsystems.cursors.DefaultCursor;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 public class MenuBot extends Robot {

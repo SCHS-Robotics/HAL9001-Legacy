@@ -200,6 +200,34 @@ public abstract class Menu {
         setLines(newLines);
     }
 
+    public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, GuiLine[] newLines){
+        this.selectionZoneWidth = selectionZoneWidth;
+        this.selectionZoneHeight = selectionZoneHeight;
+        for(GuiLine line: newLines) {
+            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
+                throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
+            }
+        }
+        if(newLines.length != selectionZoneHeight){
+            throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
+        }
+        setLines(newLines);
+    }
+
+    public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, ArrayList<GuiLine> newLines){
+        this.selectionZoneWidth = selectionZoneWidth;
+        this.selectionZoneHeight = selectionZoneHeight;
+        for(GuiLine line: newLines) {
+            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
+                throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
+            }
+        }
+        if(newLines.size() != selectionZoneHeight){
+            throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
+        }
+        setLines(newLines);
+    }
+
     /**
      * Updates the menu's lines with new values.
      *

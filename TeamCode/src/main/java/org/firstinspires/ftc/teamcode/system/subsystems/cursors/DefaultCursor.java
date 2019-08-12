@@ -5,7 +5,7 @@
  * Date: 7/20/19
  */
 
-package org.firstinspires.ftc.teamcode.system.subsystems.custom_cursors;
+package org.firstinspires.ftc.teamcode.system.subsystems.cursors;
 
 import org.firstinspires.ftc.teamcode.system.source.Cursor;
 import org.firstinspires.ftc.teamcode.system.source.Menu;

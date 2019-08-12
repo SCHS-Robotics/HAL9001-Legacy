@@ -17,6 +17,8 @@ public abstract class SubSystem {
     //The robot the subsystem belongs to.
     protected Robot robot;
 
+    private String[] ButtonNames;
+
     /**
      * An abstract method containing the code that the subsystem runs when being initialized.
      *
@@ -41,5 +43,9 @@ public abstract class SubSystem {
      */
     public SubSystem(Robot robot){
         this.robot = robot;
+    }
+
+    public String[] getButtonNames() {
+        return ButtonNames;
     }
 }

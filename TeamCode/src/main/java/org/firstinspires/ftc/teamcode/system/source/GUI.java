@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
