@@ -29,8 +29,8 @@ public abstract class ScrollingListMenu extends Menu {
      * @param selectionZoneHeight - The maximum y value that the cursor will be able to travel to inside the selection zone.
      *                              Note: This is not the actual height of the zone itself, but a boundary for the index.
      */
-    public ScrollingListMenu(GUI gui, ArrayList<GuiLine> startingLines, int selectionZoneWidth, int selectionZoneHeight){
-        super(gui, startingLines, selectionZoneWidth, selectionZoneHeight);
+    public ScrollingListMenu(GUI gui, Cursor cursor, ArrayList<GuiLine> startingLines, int selectionZoneWidth, int selectionZoneHeight){
+        super(gui, cursor,  startingLines, selectionZoneWidth, selectionZoneHeight);
         menuNumber = 0;
     }
 
@@ -44,14 +44,13 @@ public abstract class ScrollingListMenu extends Menu {
      * @param selectionZoneHeight - The maximum y value that the cursor will be able to travel to inside the selection zone.
      *                              Note: This is not the actual height of the zone itself, but a boundary for the index.
      */
-    public ScrollingListMenu(GUI gui, GuiLine[] startingLines, int selectionZoneWidth, int selectionZoneHeight){
-        super(gui, startingLines, selectionZoneWidth, selectionZoneHeight);
+    public ScrollingListMenu(GUI gui, Cursor cursor, GuiLine[] startingLines, int selectionZoneWidth, int selectionZoneHeight){
+        super(gui, cursor, startingLines, selectionZoneWidth, selectionZoneHeight);
         menuNumber = 0;
     }
 
     @Override
-    protected void init(Cursor cursor) {
-        super.cursor = cursor;
+    protected void init() {
         super.cursor.doBlink = true;
     }
 

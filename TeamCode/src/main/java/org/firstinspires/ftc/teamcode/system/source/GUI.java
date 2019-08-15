@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -52,13 +54,11 @@ public class GUI {
      * Ctor for GUI.
      *
      * @param robot - The robot using the instance of GUI.
-     * @param cursor - The cursor object all menus handled by the GUI will use.
      * @param flipMenu - The button used to cycle between multiple stored menus.
      *
      * @throws NotBooleanInputException - Throws an exception if button does not return boolean values.
      */
-    protected GUI(Robot robot, Cursor cursor, Button flipMenu) {
-        this.cursor = cursor;
+    protected GUI(Robot robot, Button flipMenu) {
         this.robot = robot;
         this.menus = new HashMap<>();
 
@@ -87,8 +87,11 @@ public class GUI {
      * Runs the init() function for every menu contained in the GUI.
      */
     protected void start(){
+        if(menus.size() > 0){
+            cursor = menus.get(menuKeys.get(activeMenuIdx)).cursor;
+        }
         for(Menu m : menus.values()) {
-            m.init(cursor);
+            m.init();
         }
     }
 
@@ -96,30 +99,30 @@ public class GUI {
      * Draws the current active menu to the screen.
      */
     protected void drawCurrentMenu(){
-
-        cursor.update();
-        if(inputs.getBooleanInput(CYCLE_MENUS) && flag){
-            activeMenuIdx++;
-            activeMenuIdx = activeMenuIdx % menuKeys.size();
-            setActiveMenu(menuKeys.get(activeMenuIdx));
-            flag = false;
-        }
-        else if(!inputs.getBooleanInput(CYCLE_MENUS) && !flag) {
-            flag = true;
-            setActiveMenu(menuKeys.get(activeMenuIdx));
-        }
-        cycle = !flag;
-
-        if(System.currentTimeMillis()-lastRenderTime >= cursor.blinkSpeedMs || cursor.cursorUpdated || cycle) {
-
-            if(cursor.cursorUpdated) {
-                cursorBlinkState = 0;
+        if(menus.size() != 0) {
+            cursor.update();
+            if (inputs.getBooleanInput(CYCLE_MENUS) && flag) {
+                activeMenuIdx++;
+                activeMenuIdx = activeMenuIdx % menuKeys.size();
+                setActiveMenu(menuKeys.get(activeMenuIdx));
+                flag = false;
+            } else if (!inputs.getBooleanInput(CYCLE_MENUS) && !flag) {
+                flag = true;
+                setActiveMenu(menuKeys.get(activeMenuIdx));
             }
+            cycle = !flag;
 
-            clearScreen();
-            activeMenu.render();
-            robot.telemetry.update();
-            lastRenderTime = System.currentTimeMillis();
+            if (System.currentTimeMillis() - lastRenderTime >= cursor.blinkSpeedMs || cursor.cursorUpdated || cycle) {
+
+                if (cursor.cursorUpdated) {
+                    cursorBlinkState = 0;
+                }
+
+                clearScreen();
+                activeMenu.render();
+                robot.telemetry.update();
+                lastRenderTime = System.currentTimeMillis();
+            }
         }
     }
 
@@ -142,6 +145,9 @@ public class GUI {
     public void addMenu(String name, Menu menu){
         menus.put(name, menu);
         menuKeys.add(name);
+        if(menus.size() == 0){
+            setActiveMenu(name);
+        }
     }
 
     /**
@@ -162,12 +168,12 @@ public class GUI {
     /**
      * Sets the active menu.
      *
-     * @param menuName - The name of the menu to be set as the active menu.
+     * @param menuName - The name of the menuGto be set as the active menu.
      */
     protected void setActiveMenu(String menuName){
         this.activeMenu = menus.get(menuName);
         menus.get(menuName).open();
-        cursor.setCurrentMenu(menus.get(menuName));
+        cursor = menus.get(menuName).cursor;
     }
 
     /**

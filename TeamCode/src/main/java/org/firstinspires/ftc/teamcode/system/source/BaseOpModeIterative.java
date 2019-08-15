@@ -50,7 +50,13 @@ public abstract class BaseOpModeIterative extends OpMode {
             robot.init();
         }catch (Exception ex){
             telemetry.addData("ERROR!!!", ex.getMessage());
+            ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void init_loop() {
+        robot.init_loop();
     }
 
     @Override

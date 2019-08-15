@@ -7,9 +7,11 @@
 
 package org.firstinspires.ftc.teamcode.system.menus;
 
+import org.firstinspires.ftc.teamcode.system.source.Cursor;
 import org.firstinspires.ftc.teamcode.system.source.GUI;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.system.source.ScrollingListMenu;
+import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 import java.util.ArrayList;
 
@@ -33,8 +35,8 @@ public class ScrollingListTestMenu extends ScrollingListMenu {
      *
      * @param gui - The gui used to render the menu.
      */
-    public ScrollingListTestMenu(GUI gui) {
-        super(gui, STARTING_LINES, 1, 6);
+    public ScrollingListTestMenu(GUI gui, Cursor cursor) {
+        super(gui, cursor, STARTING_LINES, 1, 6);
     }
     
     @Override
@@ -46,6 +48,9 @@ public class ScrollingListTestMenu extends ScrollingListMenu {
             removeLine();
         }
     }
+
+    @Override
+    public void onButton(String name, Button button) {}
 
     /**
      * Adds a single line to the end of the list of lines in the menu.

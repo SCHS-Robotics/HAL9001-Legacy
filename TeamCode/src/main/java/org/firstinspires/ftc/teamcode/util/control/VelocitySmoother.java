@@ -55,7 +55,7 @@ public class VelocitySmoother {
         double jerk2 = jerkProfile.apply(shift2,tk);
 
         if ((jerk1 < 0  && jerk2 < 0) || jerk1 > 0 && jerk2 > 0) {
-            throw new NotAGodException("If you see this message, something has gone horribly wrong. Good luck fixing it :)");
+            throw new NotAGodException("Something has gone very wrong :)");
         }
         if(dP < 0) {
             xShift = jerk1 < 0 ? shift1 : shift2;

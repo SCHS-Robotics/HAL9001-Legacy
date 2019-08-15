@@ -340,5 +340,10 @@ public class CustomizableGamepad {
             }
         }
     }
+
+    public Button getButton(String name) {
+        return inputs.get(name);
+    }
+
 }
 

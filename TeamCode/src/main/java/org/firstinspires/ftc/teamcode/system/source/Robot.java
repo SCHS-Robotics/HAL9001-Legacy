@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.os.Environment;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,6 +16,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,12 +28,14 @@ import java.util.Map;
  */
 public abstract class Robot {
 
+    public String rId;
+
     //A hashmap mapping the name of a subsystem to the actual subsystem object.
     public final Map<String, SubSystem> subSystems;
     //The opmode the robot is running.
     private OpMode opMode;
     //A boolean value specifying whether or not to use a GUI.
-    private boolean useGui;
+    private boolean useGui, useConfig = false;
     //The GUI the robot uses to render the menus.
     public GUI gui;
     //The gamepads used to control the robot.
@@ -67,22 +75,61 @@ public abstract class Robot {
     /**
      * Instantiates the GUI and allows the robot to use a GUI.
      *
-     * @param cursor - The cursor used for all menus in the GUI.
      * @param cycleButton - The button used to cycle through multiple menus in GUI.
      */
-    protected void startGui(Cursor cursor, Button cycleButton) {
-        gui = new GUI(this, cursor, cycleButton);
+    protected void startGui(Button cycleButton) {
+        gui = new GUI(this, cycleButton);
         telemetry.setAutoClear(false);
         useGui = true;
+    }
+
+    public void useConfig(String rId){
+        useConfig = true;
+        this.rId = rId;
+
+        File robotConfigDirectory = new File(Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+rId);
+
+        if(!robotConfigDirectory.exists()) {
+            robotConfigDirectory.mkdirs();
+        }
+
+        try {
+            File file = new File(robotConfigDirectory.getPath()+"/robot_info.txt");
+            FileOutputStream fileoutput = new FileOutputStream(file);
+            PrintStream ps = new PrintStream(fileoutput);
+
+            for (SubSystem system: subSystems.values()) {
+                //TODO if subsystem uses config
+                ps.println(system.getClass().getName()+"\r\n");
+            }
+
+            ps.close();
+            fileoutput.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //File[] posDirectories = new File(DATABASEPos).listFiles();
+        //check if there is a folder called System64
+        //is there a folder called robot_rId
+        //if yes check header file
+        //if no make folder/header file
     }
 
     /**
      * Runs all the initialization methods of every subsystem and the GUI.
      */
-    public final void init()
+    public final void init() throws InterruptedException
     {
         if(useGui) {
             gui.start();
+        }
+
+        if(useConfig){
+            //check is there a folder with spec
+            //create config menu
+            //while(!connfigMenu.isSelected){}
         }
 
         for (SubSystem subSystem : subSystems.values()){
@@ -96,6 +143,10 @@ public abstract class Robot {
                 ex.printStackTrace();
             }
         }
+    }
+
+    public final void init_loop() {
+
     }
 
     /**

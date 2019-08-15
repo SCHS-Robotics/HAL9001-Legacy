@@ -15,9 +15,9 @@ public abstract class Cursor {
     //The cursor's x and y coordinate and blink speed.
     public int x, y, blinkSpeedMs;
     //The cursor's display icon;
+    protected Menu menu;
+
     private char cursorIcon;
-    //The menu currently using the cursor.
-    public Menu currentMenu;
     //A boolean specifying if the cursor has been updated.
     protected boolean cursorUpdated;
     //A boolean specifying whether the cursor should allow blinking.
@@ -87,15 +87,6 @@ public abstract class Cursor {
     }
 
     /**
-     * Sets which menu the cursor is currently on.
-     *
-     * @param currentMenu - The menu that the cursor will associated with.
-     */
-    protected void setCurrentMenu(Menu currentMenu) {
-        this.currentMenu = currentMenu;
-    }
-
-    /**
      * Sets the cursor icon.
      *
      * @param cursorIcon - The new cursor icon.
@@ -111,6 +102,10 @@ public abstract class Cursor {
      */
     public int getX() {
         return x;
+    }
+
+    public void setMenu(Menu menu){
+        this.menu = menu;
     }
 
     /**

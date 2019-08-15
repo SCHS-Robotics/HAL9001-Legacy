@@ -128,6 +128,8 @@ import org.opencv.android.JavaCameraView;
 import org.opencv.android.LoaderCallbackInterface;
 import org.opencv.android.OpenCVLoader;
 
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -202,6 +204,7 @@ public class FtcRobotControllerActivity extends Activity
       }
     }
   };
+
 
     public final static Handler turnOnCameraView = new Handler() {
       @Override
