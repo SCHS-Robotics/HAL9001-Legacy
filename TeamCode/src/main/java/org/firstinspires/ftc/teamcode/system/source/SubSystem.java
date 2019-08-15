@@ -28,6 +28,8 @@ public abstract class SubSystem {
 
     public static Map<String, List<ConfigParam>> configs = new HashMap<>();
 
+    private String[] ButtonNames;
+
     /**
      * An abstract method containing the code that the subsystem runs when being initialized.
      *
@@ -66,5 +68,9 @@ public abstract class SubSystem {
     protected void initConfigSettings(ArrayList<ConfigParam> configParams) {
         configs.put(this.getClass().getSimpleName(),configParams);
         usesConfig = true;
+    }
+
+    public String[] getButtonNames() {
+        return ButtonNames;
     }
 }
