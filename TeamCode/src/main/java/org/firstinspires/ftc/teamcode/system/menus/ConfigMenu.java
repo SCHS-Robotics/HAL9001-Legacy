@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.util.debug;
+package org.firstinspires.ftc.teamcode.system.menus;
 
 import android.os.Environment;
 import android.util.Log;
@@ -23,10 +23,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ConfigDebugMenu extends ScrollingListMenu {
+public class ConfigMenu extends ScrollingListMenu {
 
     private enum MenuState {
-        START, ROBOTDIRSELECTED, DELETECONFIG, EDITNEWCONFIG, SELECTSUBSYSTEMCONFIG, NEWCONFIG, CONFIGOPTIONS, CREATENEWCONFIG, DELETEROBOT, TELEOP_AUTO_SELECT
+        ROBOTDIRSELECTED, DELETECONFIG, EDITNEWCONFIG, SELECTSUBSYSTEMCONFIG, NEWCONFIG, CONFIGOPTIONS, CREATENEWCONFIG, DELETEROBOT, TELEOP_AUTO_SELECT
     }
 
     private static final String SUPPORTED_CHARS = "#abcdefghijklmnopqrstuvwxyz0123456789";
@@ -40,11 +40,18 @@ public class ConfigDebugMenu extends ScrollingListMenu {
     private GuiLine nameLine;
     private BiFunction<Integer,Integer,Integer> customMod = (Integer x, Integer m) -> (x % m + m) % m;
     private String robotFilepath;
+    private boolean singleFolder;
 
-    public ConfigDebugMenu(GUI gui) {
+    public ConfigMenu(GUI gui, String filePath, boolean singleFolder) {
         super(gui, new ConfigCursor(gui.robot,500), genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/"),1,genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/").size());
-        menuState = MenuState.START;
-        currentFilepath = Environment.getExternalStorageDirectory().getPath()+"/System64/";
+
+        if(singleFolder) {
+            menuState = MenuState.ROBOTDIRSELECTED;
+        }
+        else {
+            menuState = MenuState.TELEOP_AUTO_SELECT;
+        }
+        currentFilepath = filePath;
         config = new HashMap<>();
     }
 
@@ -58,44 +65,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
         switch (menuState) {
 
-            //startup, shows all robot directories.
-            case START:
-                if(name.equals(ConfigCursor.SELECT)) {
-                    if(!lines.get(cursor.y).postSelectionText.equals("Delete")) {
-                        menuState = MenuState.TELEOP_AUTO_SELECT;
-                        currentFilepath += lines.get(cursor.y).postSelectionText;
-
-                        robotFilepath = currentFilepath;
-
-                        resetCursorPos();
-                        setFolderSelectLines();
-                    }
-                    else if(new File(currentFilepath).listFiles().length > 0){
-                        menuState = MenuState.DELETEROBOT;
-
-                        resetCursorPos();
-                        setRootDeleteLines();
-                    }
-                }
-                break;
-
-            case DELETEROBOT:
-                if(name.equals(ConfigCursor.SELECT)) {
-                    menuState = MenuState.START;
-
-                    deleteDirectory(currentFilepath+lines.get(cursor.y).postSelectionText);
-
-                    resetCursorPos();
-                    setRootDirLines();
-                }
-                else if(name.equals(ConfigCursor.BACK_BUTTON)) {
-                    menuState = MenuState.START;
-
-                    resetCursorPos();
-                    setRootDirLines();
-                }
-                break;
-
             case TELEOP_AUTO_SELECT:
                 if(name.equals(ConfigCursor.SELECT)) {
                     menuState = MenuState.ROBOTDIRSELECTED;
@@ -104,14 +73,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
                     resetCursorPos();
                     setRobotDirLines();
-                }
-                else if(name.equals(ConfigCursor.BACK_BUTTON)) {
-                    menuState = MenuState.START;
-
-                    currentFilepath = Environment.getExternalStorageDirectory().getPath()+"/System64/";
-
-                    resetCursorPos();
-                    setRootDirLines();
                 }
                 break;
 
@@ -133,7 +94,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                     }
                 }
 
-                else if(name.equals(ConfigCursor.BACK_BUTTON)) {
+                else if(name.equals(ConfigCursor.BACK_BUTTON) && !singleFolder) {
                     menuState = MenuState.TELEOP_AUTO_SELECT;
 
                     currentFilepath = robotFilepath;

@@ -11,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.subsystems.cursors.DefaultCursor;
 import org.firstinspires.ftc.teamcode.util.calib.ColorspaceCalib;
 import org.firstinspires.ftc.teamcode.util.debug.ConfigDebugMenu;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -28,10 +27,9 @@ public class ColorCalibBot extends Robot {
      */
     public ColorCalibBot(OpMode opmode) {
         super(opmode);
-        startGui(new DefaultCursor(this,0, 0, 500), new Button(1, Button.BooleanInputs.b));
+        startGui(new Button(1, Button.BooleanInputs.start));
         gui.addMenu("temp2",new DisplayMenu(gui));
         gui.addMenu("Testing",new ConfigDebugMenu(gui));
         putSubSystem("Calib", new ColorspaceCalib(this, ColorspaceCalib.ColorSpace.HSV,"temp2"));
-        useConfig("ColorCalib");
     }
 }

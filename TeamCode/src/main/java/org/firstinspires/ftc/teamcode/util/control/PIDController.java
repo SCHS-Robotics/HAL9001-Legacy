@@ -8,6 +8,8 @@
 package org.firstinspires.ftc.teamcode.util.control;
 
 import com.qualcomm.robotcore.util.Range;
+
+import org.firstinspires.ftc.teamcode.system.source.SubSystem;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 
 /**
@@ -39,7 +41,7 @@ public class PIDController {
     /**
      * Specifies the type of control system we want active.
      */
-    public Type type;
+    private Type type;
     public enum Type {
         STANDARD, FEED_FORWARD, P_ON_M
     }

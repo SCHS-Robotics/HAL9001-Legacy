@@ -1,5 +1,5 @@
 /*
- * Filename: BaseOpModeIterative.java
+ * Filename: BaseTeleop.java
  * Author: Andrew Liang
  * Team Name: Level Up
  * Date: 2017
@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 /**
  * An abstract class used to more easily create teleop programs
  */
-public abstract class BaseOpModeIterative extends OpMode {
+public abstract class BaseTeleop extends OpMode {
 
     //The robot running the opmode.
     private Robot robot;
@@ -50,7 +50,13 @@ public abstract class BaseOpModeIterative extends OpMode {
             robot.init();
         }catch (Exception ex){
             telemetry.addData("ERROR!!!", ex.getMessage());
+            ex.printStackTrace();
         }
+    }
+
+    @Override
+    public void init_loop() {
+        robot.init_loop();
     }
 
     @Override

@@ -97,6 +97,11 @@ public class QuadWheelDrive extends SubSystem {
     }
 
     @Override
+    public void init_loop() {
+
+    }
+
+    @Override
     public void handle() {
         if(!inputs.checkNoButton(SPEEDMODEBUTTON)){
             speedToggle.updateToggle(inputs.getBooleanInput(SPEEDMODEBUTTON));

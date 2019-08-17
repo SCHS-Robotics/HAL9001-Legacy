@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.system.source.SubSystem;
 import org.firstinspires.ftc.teamcode.util.exceptions.ChannelDoesNotExistException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
+import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 import org.firstinspires.ftc.teamcode.util.misc.Toggle;
 import org.opencv.android.CameraBridgeViewBase;
@@ -77,13 +78,16 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         super(robot);
 
         displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
 
         //default keys are all on gamepad1 and are dpad_up for x_increment, dpad_down for x decrement, left_stick_up for y_increment, left_stick_down for y decrement, right_stick_up for z_increment, right_stick_down for z decrement, a for slowMode, and b for changeLimit.
         setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
+        initConfigSettings(new ConfigParam[] {new ConfigParam(X_INCREMENT, Button.BooleanInputs.dpad_up), new ConfigParam(X_DECREMENT, Button.BooleanInputs.dpad_down), new ConfigParam(Y_INCREMENT, Button.BooleanInputs.bool_left_stick_y_up), new ConfigParam(Y_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down), new ConfigParam(Z_INCREMENT, Button.BooleanInputs.bool_right_stick_y_up), new ConfigParam(Z_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down), new ConfigParam(SLOWMODE,Button.BooleanInputs.x)});
+
         this.colorSpace = colorSpace;
         this.imageType = ImageType.COLOR;
+
+        usesConfig = true;
     }
 
     /**
@@ -98,7 +102,6 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         super(robot);
 
         displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
 
         //default keys are all on gamepad1 and are dpad_up for x_increment, dpad_down for x decrement, left_stick_up for y_increment, left_stick_down for y decrement, right_stick_up for z_increment, right_stick_down for z decrement, a for slowMode, and b for changeLimit.
         setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
@@ -118,7 +121,6 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         super(robot);
 
         displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
 
         setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
@@ -139,7 +141,6 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         super(robot);
 
         displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
 
         setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
@@ -167,7 +168,6 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         super(robot);
 
         displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
@@ -195,7 +195,6 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         super(robot);
 
         displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
@@ -263,6 +262,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
     @Override
     public void init() {
+
+    }
+
+    @Override
+    public void init_loop() {
 
     }
 
@@ -467,7 +471,9 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     /**
      * Initializes values used in the rest of the program. Only used in the constructor.
      */
-    private void initVars() {
+    @Override
+    protected void initVars() {
+
         x_lower = 0;
         y_lower = 0;
         z_lower = 0;

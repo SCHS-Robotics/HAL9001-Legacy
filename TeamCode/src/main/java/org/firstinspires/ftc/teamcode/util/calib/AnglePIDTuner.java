@@ -58,8 +58,6 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         inputs.addButton(D_DECREMENT,new Button(1, Button.BooleanInputs.bool_right_stick_y_down));
         inputs.addButton(SLOWMODE,new Button(1, Button.BooleanInputs.x));
 
-        initVars(setPoint);
-
         pidTuner = new PIDController(kp,ki,kd);
         pidTuner.setSetpoint(setPoint);
 
@@ -80,7 +78,7 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         inputs.addButton(D_DECREMENT,new Button(1, Button.BooleanInputs.bool_right_stick_y_down));
         inputs.addButton(SLOWMODE,new Button(1, Button.BooleanInputs.x));
 
-        initVars(setPoint);
+        this.setPoint = setPoint;
 
         pidTuner = new PIDController(kp,ki,kd,type);
         pidTuner.setSetpoint(setPoint);
@@ -102,7 +100,7 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         inputs.addButton(D_DECREMENT,new Button(1, Button.BooleanInputs.bool_right_stick_y_down));
         inputs.addButton(SLOWMODE,new Button(1, Button.BooleanInputs.x));
 
-        initVars(setPoint);
+        this.setPoint = setPoint;
 
         pidTuner = new PIDController(kp,ki,kd,type);
         pidTuner.setSetpoint(setPoint);
@@ -125,7 +123,7 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         inputs.addButton(D_DECREMENT,new Button(1, Button.BooleanInputs.bool_right_stick_y_down));
         inputs.addButton(SLOWMODE,new Button(1, Button.BooleanInputs.x));
 
-        initVars(setPoint);
+        this.setPoint = setPoint;
 
         pidTuner = new PIDController(kp,ki,kd,type);
         pidTuner.setSetpoint(setPoint);
@@ -149,7 +147,7 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         inputs.addButton(D_DECREMENT,new Button(1, Button.BooleanInputs.bool_right_stick_y_down));
         inputs.addButton(SLOWMODE,new Button(1, Button.BooleanInputs.x));
 
-        initVars(setPoint);
+        this.setPoint = setPoint;
 
         pidTuner = new PIDController(kp,ki,kd,type);
         pidTuner.setSetpoint(setPoint);
@@ -171,6 +169,11 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         imu.initialize(parameters);
 
         startOpenCV(this);
+    }
+
+    @Override
+    public void init_loop() {
+
     }
 
     @Override
@@ -234,7 +237,8 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         return grapher.getNextFrame(setPoint-imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
     }
 
-    private void initVars(double setPoint) {
+    @Override
+    protected void initVars() {
         slowModeToggle = new Toggle(false);
 
         increment = 0.1;
@@ -246,8 +250,6 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         kd = 0;
 
         grapher = new Grapher(10,2*Math.PI);
-
-        this.setPoint = setPoint;
     }
 
     /**

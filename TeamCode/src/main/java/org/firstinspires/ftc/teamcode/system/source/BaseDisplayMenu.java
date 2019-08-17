@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.system.source;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
@@ -16,16 +14,16 @@ public abstract class BaseDisplayMenu extends Menu {
 
     private final String SELECT = "select";
 
-    public BaseDisplayMenu(GUI gui, GuiLine[] startingLines) {
-        super(gui,startingLines,0,0);
+    public BaseDisplayMenu(GUI gui, Cursor cursor, GuiLine[] startingLines) {
+        super(gui, cursor, startingLines,0,0);
         menuNumber = 0;
 
         inputs = new CustomizableGamepad(gui.robot);
         inputs.addButton(SELECT,new Button(1, Button.BooleanInputs.a));
     }
 
-    public BaseDisplayMenu(GUI gui, ArrayList<GuiLine> startingLines) {
-        super(gui,startingLines,0,0);
+    public BaseDisplayMenu(GUI gui, Cursor cursor, ArrayList<GuiLine> startingLines) {
+        super(gui,cursor, startingLines,0,0);
         menuNumber = 0;
 
         inputs = new CustomizableGamepad(gui.robot);
@@ -33,8 +31,7 @@ public abstract class BaseDisplayMenu extends Menu {
     }
 
     @Override
-    protected void init(Cursor cursor) {
-        super.cursor = cursor;
+    protected void init() {
         super.cursor.doBlink = false;
     }
 

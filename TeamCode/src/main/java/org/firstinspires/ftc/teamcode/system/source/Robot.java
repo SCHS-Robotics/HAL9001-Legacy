@@ -8,24 +8,22 @@
 package org.firstinspires.ftc.teamcode.system.source;
 
 import android.os.Environment;
+import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.util.debug.ConfigManager;
+import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,6 +41,11 @@ public abstract class Robot {
     private boolean useGui, useConfig = false;
     //The GUI the robot uses to render the menus.
     public GUI gui;
+
+    private GUI configGui;
+
+    private String currentFilename = Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+this.getClass().getSimpleName();
+
     //The gamepads used to control the robot.
     public volatile Gamepad gamepad1, gamepad2;
     //The telemetry used to print lines to the driver station.
@@ -75,53 +78,22 @@ public abstract class Robot {
     protected void putSubSystem(String name, SubSystem subSystem)
     {
         subSystems.put(name, subSystem);
+        if(subSystem.usesConfig) {
+            configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
+            useConfig = true;
+        }
     }
 
     /**
      * Instantiates the GUI and allows the robot to use a GUI.
      *
-     * @param cursor - The cursor used for all menus in the GUI.
      * @param cycleButton - The button used to cycle through multiple menus in GUI.
      */
-    protected void startGui(Cursor cursor, Button cycleButton) {
-        gui = new GUI(this, cursor, cycleButton);
-        telemetry.setAutoClear(false);
+    protected void startGui(Button cycleButton) {
+        gui = new GUI(this, cycleButton);
         useGui = true;
     }
 
-    public void useConfig(String rId){
-        useConfig = true;
-        this.rId = rId;
-
-        File robotConfigDirectory = new File(Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+rId);
-
-        if(!robotConfigDirectory.exists()) {
-            robotConfigDirectory.mkdirs();
-        }
-
-        try {
-            File file = new File(robotConfigDirectory.getPath()+"/robot_info.txt");
-            FileOutputStream fileoutput = new FileOutputStream(file);
-            PrintStream ps = new PrintStream(fileoutput);
-
-            for (SubSystem system: subSystems.values()) {
-                //TODO if subsystem uses config
-                ps.println(system.getClass().getName()+"\r\n");
-            }
-
-            ps.close();
-            fileoutput.close();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        //File[] posDirectories = new File(DATABASEPos).listFiles();
-        //check if there is a folder called System64
-        //is there a folder called robot_rId
-        //if yes check header file
-        //if no make folder/header file
-    }
 
     /**
      * Runs all the initialization methods of every subsystem and the GUI.
@@ -132,7 +104,98 @@ public abstract class Robot {
             gui.start();
         }
 
-        if(useConfig){
+        if(useConfig) {
+            rId = this.getClass().getSimpleName();
+
+            //create overall robot folder
+            File robotConfigDirectory = new File(Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+rId);
+            if(!robotConfigDirectory.exists()) {
+                robotConfigDirectory.mkdirs();
+            }
+
+            //create teleop directory in robot folder
+            File teleopDir = new File(robotConfigDirectory.getPath()+"/teleop");
+            if(!teleopDir.exists()) {
+                teleopDir.mkdir();
+            }
+
+            //create robot_info.txt file in teleop folder
+            File robotInfoTeleop = new File(teleopDir.getPath()+"/robot_info.txt");
+            if(!robotInfoTeleop.exists()) {
+                try {
+                    robotInfoTeleop.createNewFile();
+                }
+                catch(IOException e) {
+                    Log.e("IO Error","Problem creating robot_info.txt file for "+rId+" teleop!");
+                    e.printStackTrace();
+                }
+            }
+
+            //create autonomous directory in robot folder
+            File autoDir = new File(robotConfigDirectory.getPath()+"/autonomous");
+            if(!autoDir.exists()) {
+                autoDir.mkdir();
+            }
+
+            //create robot_info.txt file in autonomous folder
+            File robotInfoAuto = new File(autoDir.getPath()+"/robot_info.txt");
+            if(!robotInfoTeleop.exists()) {
+                try {
+                    robotInfoAuto.createNewFile();
+                }
+                catch(IOException e) {
+                    Log.e("IO Error","Problem creating robot_info.txt file for "+rId+" teleop!");
+                    e.printStackTrace();
+                }
+            }
+
+            //create robot_info.txt file in autonomous folder
+            File robotInfo = new File(robotConfigDirectory.getPath()+"/robot_info.txt");
+            if(!robotInfo.exists()) {
+                try {
+                    robotInfo.createNewFile();
+                }
+                catch(IOException e) {
+                    Log.e("IO Error","Problem creating robot_info.txt file for "+rId+'!');
+                    e.printStackTrace();
+                }
+            }
+
+            if(opMode.getClass().isAnnotationPresent(StandAlone.class)) {
+
+                if (opMode instanceof BaseAutonomous) {
+
+                }
+                if (opMode instanceof BaseTeleop) {
+                    Log.e("test", "it worked!");
+                }
+            }
+        }
+
+        /*
+        autonomous
+            standalone:
+                go into autonomous configs and select one (do usual new delete edit stuff ect.)
+
+            not:
+                go into autonomous, choose autonomous config
+                go into teleop, chose teleop config (filename gets writen to robot_info)
+
+        teleop
+            standalone:
+                go into teleop configs and select one
+
+            not:
+                check robot info
+                if there is a config in robot info (robot info file not empty) select that one.
+                menu shows "automatically using __", press x or something to change
+                on stop clear robot info
+                if there is no config refer to standalone
+         */
+
+        if(useConfig && opMode instanceof BaseAutonomous){
+            //configGui.addMenu("configurator",new ConfigMenu);
+
             //check is there a folder with spec
             //create config menu
             //while(!connfigMenu.isSelected){}
@@ -146,6 +209,21 @@ public abstract class Robot {
             catch (Exception ex)
             {
                 telemetry.addData("Error!!!", ex.getMessage());
+                ex.printStackTrace();
+            }
+        }
+    }
+
+    public final void init_loop() {
+        for (SubSystem subSystem : subSystems.values()) {
+
+
+
+            try {
+                subSystem.init_loop();
+            }
+            catch (Exception ex) {
+                telemetry.addData("Error!!!",ex.getMessage());
                 ex.printStackTrace();
             }
         }

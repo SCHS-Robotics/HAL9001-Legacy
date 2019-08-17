@@ -9,8 +9,10 @@ package org.firstinspires.ftc.teamcode.system.source;
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 import org.firstinspires.ftc.teamcode.util.exceptions.WrongSkyscraperBlueprintException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
+import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An abstract class representing a menu that can be displayed on the driver station.
@@ -24,7 +26,7 @@ public abstract class Menu {
     //The cursor being used in the menu.
     public Cursor cursor;
     //The list of all lines in the menu.
-    protected ArrayList<GuiLine> lines;
+    protected List<GuiLine> lines;
     //The maximum number of lines that can fit on the FTC driver station. This is a global constant.
     public static final int MAXLINESPERSCREEN = 8;
 
@@ -40,8 +42,10 @@ public abstract class Menu {
      *
      * @throws InvalidSelectionZoneException - Throws this exception if the provided selection zone is impossible.
      */
-    public Menu(GUI gui, GuiLine[] startingLines, int selectionZoneWidth, int selectionZoneHeight) {
+    public Menu(GUI gui, Cursor cursor, GuiLine[] startingLines, int selectionZoneWidth, int selectionZoneHeight) {
         this.gui = gui;
+        this.cursor = cursor;
+        this.cursor.setMenu(this);
         if(selectionZoneWidth < 0 || selectionZoneHeight < 0) {
             throw new InvalidSelectionZoneException("Error: Invalid selection zone");
         }
@@ -63,8 +67,10 @@ public abstract class Menu {
      *
      * @throws InvalidSelectionZoneException - Throws this exception if the provided selection zone is impossible.
      */
-    public Menu(GUI gui, ArrayList<GuiLine> startingLines, int selectionZoneWidth, int selectionZoneHeight) {
+    public Menu(GUI gui, Cursor cursor, ArrayList<GuiLine> startingLines, int selectionZoneWidth, int selectionZoneHeight) {
         this.gui = gui;
+        this.cursor = cursor;
+        this.cursor.setMenu(this);
         if(selectionZoneWidth < 0 || selectionZoneHeight < 0) {
             throw new InvalidSelectionZoneException("Error: Invalid selection zone");
         }
@@ -76,10 +82,8 @@ public abstract class Menu {
 
     /**
      * Abstract method that is called whenever a menu is initialized.
-     *
-     * @param cursor - The cursor object the menu will use.
      */
-    protected abstract void init(Cursor cursor); //runs once when first created
+    protected abstract void init(); //runs once when first created
 
     /**
      * Abstract method that is called whenever the menu is opened.
@@ -90,6 +94,13 @@ public abstract class Menu {
      * Abstract method that is called whenever the cursor select button is pressed.
      */
     public abstract void onSelect();
+
+    /**
+     * Abstract method that is called whenever the a button is pressed.
+     *
+     * @param button - The button currently being pressed;
+     */
+    public abstract void onButton(String name, Button button);
 
     /**
      * Abstract method that is called every frame to render the menu.
@@ -138,7 +149,7 @@ public abstract class Menu {
      * @throws InvalidSelectionZoneException - Throws this exception if the selection zone width is not equal to the length of the
      *                                         text to display in the selection zone.
      */
-    public void setSelectionZoneWidth(int selectionZoneWidth, ArrayList<GuiLine> newLines){
+    public void setSelectionZoneWidth(int selectionZoneWidth, List<GuiLine> newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         for(GuiLine line: newLines) {
             if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
@@ -176,7 +187,7 @@ public abstract class Menu {
      *
      * @throws WrongSkyscraperBlueprintException - Throws this exception if there are not enough lines in newLines to fill the selection zone.
      */
-    public void setSelectionZoneHeight(int selectionZoneHeight, ArrayList<GuiLine> newLines) {
+    public void setSelectionZoneHeight(int selectionZoneHeight, List<GuiLine> newLines) {
         this.selectionZoneHeight = selectionZoneHeight;
         if(newLines.size() != selectionZoneHeight){
             throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
@@ -214,7 +225,7 @@ public abstract class Menu {
         setLines(newLines);
     }
 
-    public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, ArrayList<GuiLine> newLines){
+    public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, List<GuiLine> newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         this.selectionZoneHeight = selectionZoneHeight;
         for(GuiLine line: newLines) {
@@ -261,7 +272,7 @@ public abstract class Menu {
      *                                         text to display in the selection zone.
      * @throws WrongSkyscraperBlueprintException - Throws this exception if there are not enough or too many lines in newLines to fill the selection zone.
      */
-    public void setLines(ArrayList<GuiLine> lines){
+    public void setLines(List<GuiLine> lines){
         if(lines.size() == selectionZoneHeight) {
             for(GuiLine line: lines) {
                 if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {

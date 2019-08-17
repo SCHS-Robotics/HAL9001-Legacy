@@ -54,6 +54,7 @@ public class TankDrive extends SubSystem{
      * @param speedModeButton - The button for toggling speedMode that is a boolean (noButton to disable).
      * @param turnAndMove - A boolean that if true allows the robot to move and turn at the same time.
      */
+
     public TankDrive(Robot robot, String[] motorConfig, double[] robotConfig, Button driveStick, Button turnStick, Button speedModeButton, boolean turnAndMove){
         super(robot);
 
@@ -95,7 +96,12 @@ public class TankDrive extends SubSystem{
         normalDirection();
         resetEncoders();
     }
-    
+
+    @Override
+    public void init_loop() {
+
+    }
+
     @Override
     public void handle() {
         if(!inputs.checkNoButton(SPEEDMODEBUTTON)){

@@ -14,10 +14,12 @@ public abstract class Cursor {
 
     //The cursor's x and y coordinate and blink speed.
     public int x, y, blinkSpeedMs;
+
+    protected boolean forceCursorChar;
     //The cursor's display icon;
+    protected Menu menu;
+
     private char cursorIcon;
-    //The menu currently using the cursor.
-    public Menu currentMenu;
     //A boolean specifying if the cursor has been updated.
     protected boolean cursorUpdated;
     //A boolean specifying whether the cursor should allow blinking.
@@ -26,29 +28,31 @@ public abstract class Cursor {
     /**
      * Ctor for cursor class.
      *
-     * @param x - The cursor's initial x coordinate.
-     * @param y - The cursor's initial y coordinate.
+     * @param x            - The cursor's initial x coordinate.
+     * @param y            - The cursor's initial y coordinate.
      * @param blinkSpeedMs - The cursor blink speed in milliseconds.
-     * @param cursorIcon - The char that will represent the cursor when the menu is drawn.
+     * @param cursorIcon   - The char that will represent the cursor when the menu is drawn.
      */
     public Cursor(int x, int y, int blinkSpeedMs, char cursorIcon) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = x;
         this.y = y;
         this.cursorIcon = cursorIcon;
+        forceCursorChar = true;
     }
 
     /**
      * Ctor for cursor class.
      *
      * @param blinkSpeedMs - The cursor blink speed in milliseconds.
-     * @param cursorIcon - The char that will represent the cursor when the menu is drawn.
+     * @param cursorIcon   - The char that will represent the cursor when the menu is drawn.
      */
     public Cursor(int blinkSpeedMs, char cursorIcon) {
         this.blinkSpeedMs = blinkSpeedMs;
         this.x = 0;
         this.y = 0;
         this.cursorIcon = cursorIcon;
+        forceCursorChar = true;
     }
 
     /**
@@ -61,13 +65,14 @@ public abstract class Cursor {
         this.x = 0;
         this.y = 0;
         this.cursorIcon = '█';
+        forceCursorChar = true;
     }
 
     /**
      * Ctor for cursor class.
      *
-     * @param x - Cursor starting x position.
-     * @param y - Cursor starting y position.
+     * @param x            - Cursor starting x position.
+     * @param y            - Cursor starting y position.
      * @param blinkSpeedMs - Cursor blink speed in milliseconds.
      */
     public Cursor(int x, int y, int blinkSpeedMs) {
@@ -75,6 +80,7 @@ public abstract class Cursor {
         this.x = x;
         this.y = y;
         this.cursorIcon = '█';
+        forceCursorChar = true;
     }
 
     /**
@@ -84,15 +90,6 @@ public abstract class Cursor {
      */
     public char getCursorIcon() {
         return cursorIcon;
-    }
-
-    /**
-     * Sets which menu the cursor is currently on.
-     *
-     * @param currentMenu - The menu that the cursor will associated with.
-     */
-    protected void setCurrentMenu(Menu currentMenu) {
-        this.currentMenu = currentMenu;
     }
 
     /**
@@ -111,6 +108,10 @@ public abstract class Cursor {
      */
     public int getX() {
         return x;
+    }
+
+    public void setMenu(Menu menu) {
+        this.menu = menu;
     }
 
     /**

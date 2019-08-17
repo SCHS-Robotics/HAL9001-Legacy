@@ -1,5 +1,5 @@
 /*
- * Filename: BaseOpMode.java
+ * Filename: BaseAutonomous.java
  * Author: Andrew Liang
  * Team Name: Level Up
  * Date: 2017
@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 /**
  * An abstract class used to more easily create opmodes.
  */
-public abstract class BaseOpMode extends LinearOpMode {
+public abstract class BaseAutonomous extends LinearOpMode {
 
     //The robot running the opmode.
     private Robot robot;
@@ -42,7 +42,6 @@ public abstract class BaseOpMode extends LinearOpMode {
         } catch (Exception ex) {
             telemetry.addData("ERROR!!!", ex.getMessage());
         }
-
 
         try {
             main();
