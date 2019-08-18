@@ -16,13 +16,22 @@ import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.system.menus.ConfigMenu;
+import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
+import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
+import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,8 +88,43 @@ public abstract class Robot {
     {
         subSystems.put(name, subSystem);
         if(subSystem.usesConfig) {
-            configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
-            useConfig = true;
+
+            boolean foundTeleopConfig = false;
+            boolean foundAutonomousConfig = false;
+
+            try {
+
+                Method[] methods = Class.forName(subSystem.getClass().getName()).getDeclaredMethods();
+
+                for(Method m : methods) {
+
+                    //method must be annotated as TeleopConfig, have no parameters, be public and static, and return an array of config params
+                    if(!foundTeleopConfig && m.isAnnotationPresent(TeleopConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
+                        SubSystem.configs.put(subSystem.getClass().getSimpleName(), Arrays.asList((ConfigParam[]) (m.invoke(null))));
+                        SubSystem.teleopConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
+                        configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
+                        useConfig = true;
+                        foundTeleopConfig = true;
+                    }
+
+                    //method must be annotated as AutonomousConfig, have no parameters, be public and static, and return an array of config params
+                    if(!foundAutonomousConfig && m.isAnnotationPresent(AutonomousConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
+                        SubSystem.configs.put(subSystem.getClass().getSimpleName(), Arrays.asList((ConfigParam[]) (m.invoke(null))));
+                        SubSystem.autonomousConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
+                        configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
+                        useConfig = true;
+                        foundAutonomousConfig = true;
+                    }
+
+                    if(foundTeleopConfig && foundAutonomousConfig) {
+                        break;
+                    }
+
+                }
+            }
+            catch (Exception e) {
+                Log.e("Error","Problem loading config for subsystem "+subSystem.getClass().getSimpleName(),e);
+            }
         }
     }
 
@@ -100,74 +144,67 @@ public abstract class Robot {
      */
     public final void init() throws InterruptedException
     {
+
+        this.gamepad1 = opMode.gamepad1;
+        this.gamepad2 = opMode.gamepad2;
+
         if(useGui) {
             gui.start();
         }
 
         if(useConfig) {
+
+            Log.d("teleop",SubSystem.teleopConfig.toString());
+            Log.d("autonomous",SubSystem.autonomousConfig.toString());
+
             rId = this.getClass().getSimpleName();
 
             //create overall robot folder
             File robotConfigDirectory = new File(Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+rId);
             if(!robotConfigDirectory.exists()) {
-                robotConfigDirectory.mkdirs();
-            }
-
-            //create teleop directory in robot folder
-            File teleopDir = new File(robotConfigDirectory.getPath()+"/teleop");
-            if(!teleopDir.exists()) {
-                teleopDir.mkdir();
-            }
-
-            //create robot_info.txt file in teleop folder
-            File robotInfoTeleop = new File(teleopDir.getPath()+"/robot_info.txt");
-            if(!robotInfoTeleop.exists()) {
-                try {
-                    robotInfoTeleop.createNewFile();
-                }
-                catch(IOException e) {
-                    Log.e("IO Error","Problem creating robot_info.txt file for "+rId+" teleop!");
-                    e.printStackTrace();
-                }
+                robotConfigDirectory.mkdir();
+                writeFile(robotConfigDirectory.getPath() + "/robot_info.txt", "");
             }
 
             //create autonomous directory in robot folder
-            File autoDir = new File(robotConfigDirectory.getPath()+"/autonomous");
+            File autoDir = new File(robotConfigDirectory.getPath() + "/autonomous");
             if(!autoDir.exists()) {
                 autoDir.mkdir();
+                writeFile(autoDir.getPath() + "/robot_info.txt", "");
+            }
+            //create teleop directory in robot folder
+            File teleopDir = new File(robotConfigDirectory.getPath() + "/teleop");
+            if(!teleopDir.exists()) {
+                teleopDir.mkdir();
+                writeFile(teleopDir.getPath() + "/robot_info.txt", "");
             }
 
-            //create robot_info.txt file in autonomous folder
-            File robotInfoAuto = new File(autoDir.getPath()+"/robot_info.txt");
-            if(!robotInfoTeleop.exists()) {
-                try {
-                    robotInfoAuto.createNewFile();
-                }
-                catch(IOException e) {
-                    Log.e("IO Error","Problem creating robot_info.txt file for "+rId+" teleop!");
-                    e.printStackTrace();
-                }
+            //Get all names of subsystem objects being used in this robot and write it to the outer robot_info.txt file
+            //These names will be used in the config debugger
+            StringBuilder sb = new StringBuilder();
+            for(SubSystem subSystem : subSystems.values()) {
+                sb.append(subSystem.getClass().getName());
+                sb.append("\r\n");
             }
-
-            //create robot_info.txt file in autonomous folder
-            File robotInfo = new File(robotConfigDirectory.getPath()+"/robot_info.txt");
-            if(!robotInfo.exists()) {
-                try {
-                    robotInfo.createNewFile();
-                }
-                catch(IOException e) {
-                    Log.e("IO Error","Problem creating robot_info.txt file for "+rId+'!');
-                    e.printStackTrace();
-                }
-            }
+            sb.delete(sb.length()-2,sb.length()); //removes trailing \r\n characters so there isn't a blank line at the end of the file
+            writeFile(robotConfigDirectory.getPath() + "/robot_info.txt", sb.toString());
 
             if(opMode.getClass().isAnnotationPresent(StandAlone.class)) {
-
-                if (opMode instanceof BaseAutonomous) {
+                if(opMode instanceof BaseAutonomous) {
+                    configGui.addMenu("config",new ConfigMenu(configGui,autoDir.getPath(),true));
+                    configGui.start();
+                }
+                else if(opMode instanceof BaseTeleop) {
+                    configGui.addMenu("config",new ConfigMenu(configGui,teleopDir.getPath(),true));
+                    configGui.start();
+                }
+            }
+            else {
+                if(opMode instanceof BaseAutonomous) {
 
                 }
-                if (opMode instanceof BaseTeleop) {
-                    Log.e("test", "it worked!");
+                else if(opMode instanceof BaseTeleop) {
+
                 }
             }
         }
@@ -215,9 +252,15 @@ public abstract class Robot {
     }
 
     public final void init_loop() {
+
+        this.gamepad1 = opMode.gamepad1;
+        this.gamepad2 = opMode.gamepad2;
+
         for (SubSystem subSystem : subSystems.values()) {
 
-
+            if(useConfig) {
+                configGui.drawCurrentMenu();
+            }
 
             try {
                 subSystem.init_loop();
@@ -227,6 +270,7 @@ public abstract class Robot {
                 ex.printStackTrace();
             }
         }
+
     }
 
     /**
@@ -261,6 +305,10 @@ public abstract class Robot {
 
         if(useGui) {
             gui.stop();
+        }
+
+        if(useConfig) {
+            configGui.stop();
         }
 
         for (SubSystem subSystem : subSystems.values())
@@ -299,5 +347,34 @@ public abstract class Robot {
     {
         subSystems.put(name, subSystem);
         return subSystem;
+    }
+
+
+    private void writeFile(String filePath, String data) {
+
+        FileOutputStream fos;
+
+        try {
+
+            fos = new FileOutputStream(filePath, true);
+
+            FileWriter fWriter;
+
+            try {
+                fWriter = new FileWriter(fos.getFD());
+
+                fWriter.write(data);
+
+                fWriter.flush();
+                fWriter.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                fos.getFD().sync();
+                fos.close();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

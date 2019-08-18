@@ -154,4 +154,8 @@ public abstract class Cursor {
      * Abstract method that runs when the cursor is updated every frame. Methods for controlling the cursor go here.
      */
     public abstract void update();
+
+    public void setDoBlink(boolean doBlink) {
+        this.doBlink = doBlink;
+    }
 }

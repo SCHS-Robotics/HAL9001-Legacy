@@ -29,7 +29,7 @@ public class ColorCalibBot extends Robot {
         super(opmode);
         startGui(new Button(1, Button.BooleanInputs.start));
         gui.addMenu("temp2",new DisplayMenu(gui));
-        gui.addMenu("Testing",new ConfigDebugMenu(gui));
+        //gui.addMenu("Testing",new ConfigDebugMenu(gui));
         putSubSystem("Calib", new ColorspaceCalib(this, ColorspaceCalib.ColorSpace.HSV,"temp2"));
     }
 }

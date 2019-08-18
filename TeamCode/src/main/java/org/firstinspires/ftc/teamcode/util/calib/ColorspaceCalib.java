@@ -6,6 +6,10 @@
  */
 package org.firstinspires.ftc.teamcode.util.calib;
 
+import android.util.Log;
+
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
@@ -13,6 +17,8 @@ import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.system.source.SubSystem;
+import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
+import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.exceptions.ChannelDoesNotExistException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -40,7 +46,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     //Toggle class that toggles slow mode and upper limit on and off.
     private Toggle slowModeToggle, upperLimit;
     //Key names used with the CustomizableGamepad.
-    private final String SLOWMODE = "slowMode", X_INCREMENT = "XUp", X_DECREMENT = "XDown", Y_INCREMENT = "YUp", Y_DECREMENT = "YDown", Z_INCREMENT = "ZUp", Z_DECREMENT = "ZDown", CHANGELIMIT = "ChangeLimit";
+    private static final String SLOWMODE = "slowMode", X_INCREMENT = "XUp", X_DECREMENT = "XDown", Y_INCREMENT = "YUp", Y_DECREMENT = "YDown", Z_INCREMENT = "ZUp", Z_DECREMENT = "ZDown", CHANGELIMIT = "ChangeLimit";
     //A user-specified function that converts an RGB image to a cusstom colorspace.
     private Function<Mat,Mat> converter;
     //Selected colorspace that will be used.
@@ -80,9 +86,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
 
         //default keys are all on gamepad1 and are dpad_up for x_increment, dpad_down for x decrement, left_stick_up for y_increment, left_stick_down for y decrement, right_stick_up for z_increment, right_stick_down for z decrement, a for slowMode, and b for changeLimit.
-        setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
-
-        initConfigSettings(new ConfigParam[] {new ConfigParam(X_INCREMENT, Button.BooleanInputs.dpad_up), new ConfigParam(X_DECREMENT, Button.BooleanInputs.dpad_down), new ConfigParam(Y_INCREMENT, Button.BooleanInputs.bool_left_stick_y_up), new ConfigParam(Y_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down), new ConfigParam(Z_INCREMENT, Button.BooleanInputs.bool_right_stick_y_up), new ConfigParam(Z_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down), new ConfigParam(SLOWMODE,Button.BooleanInputs.x)});
+        //setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
         this.colorSpace = colorSpace;
         this.imageType = ImageType.COLOR;
@@ -267,7 +271,8 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
     @Override
     public void init_loop() {
-
+        inputs = pullInputs(this.getClass().getSimpleName());
+        inputs.addButton(CHANGELIMIT,new Button(2, Button.BooleanInputs.y));
     }
 
     @Override
@@ -544,5 +549,18 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         else {
             throw new NotBooleanInputException("Error: All inputs must be a boolean input");
         }
+    }
+
+    @TeleopConfig
+    public static ConfigParam[] teleopConfig() {
+        return new ConfigParam[] {
+                new ConfigParam(X_INCREMENT, Button.BooleanInputs.dpad_up),
+                new ConfigParam(X_DECREMENT, Button.BooleanInputs.dpad_down),
+                new ConfigParam(Y_INCREMENT, Button.BooleanInputs.bool_left_stick_y_up),
+                new ConfigParam(Y_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down),
+                new ConfigParam(Z_INCREMENT, Button.BooleanInputs.bool_right_stick_y_up),
+                new ConfigParam(Z_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down),
+                new ConfigParam(SLOWMODE,Button.BooleanInputs.x)
+        };
     }
 }

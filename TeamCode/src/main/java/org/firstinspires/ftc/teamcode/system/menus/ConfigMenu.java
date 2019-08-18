@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.system.menus;
 
-import android.os.Environment;
 import android.util.Log;
 
 import org.firstinspires.ftc.teamcode.system.source.GUI;
@@ -26,7 +25,7 @@ import java.util.Map;
 public class ConfigMenu extends ScrollingListMenu {
 
     private enum MenuState {
-        ROBOTDIRSELECTED, DELETECONFIG, EDITNEWCONFIG, SELECTSUBSYSTEMCONFIG, NEWCONFIG, CONFIGOPTIONS, CREATENEWCONFIG, DELETEROBOT, TELEOP_AUTO_SELECT
+        ROBOTDIRSELECTED, DELETECONFIG, EDITNEWCONFIG, SELECTSUBSYSTEMCONFIG, NEWCONFIG, CONFIGOPTIONS, CREATENEWCONFIG, DELETEROBOT, TELEOP_AUTO_SELECT, DONE
     }
 
     private static final String SUPPORTED_CHARS = "#abcdefghijklmnopqrstuvwxyz0123456789";
@@ -39,20 +38,22 @@ public class ConfigMenu extends ScrollingListMenu {
     private boolean creatingNewConfig = false;
     private GuiLine nameLine;
     private BiFunction<Integer,Integer,Integer> customMod = (Integer x, Integer m) -> (x % m + m) % m;
-    private String robotFilepath;
     private boolean singleFolder;
+    private String robotFolder;
 
     public ConfigMenu(GUI gui, String filePath, boolean singleFolder) {
-        super(gui, new ConfigCursor(gui.robot,500), genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/"),1,genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/").size());
+        super(gui, new ConfigCursor(gui.robot,500), singleFolder ? genInitialLinesSingleFolder(filePath) : genInitialLines(filePath),1,singleFolder ? genInitialLinesSingleFolder(filePath).size() : genInitialLines(filePath).size());
 
         if(singleFolder) {
             menuState = MenuState.ROBOTDIRSELECTED;
         }
         else {
             menuState = MenuState.TELEOP_AUTO_SELECT;
+            robotFolder = filePath;
         }
         currentFilepath = filePath;
         config = new HashMap<>();
+        this.singleFolder = singleFolder;
     }
 
     @Override
@@ -92,12 +93,20 @@ public class ConfigMenu extends ScrollingListMenu {
                         resetCursorPos();
                         setConfigNamingLines();
                     }
+                    else {
+                        menuState = MenuState.DONE;
+
+                        exportConfigFile(currentFilepath + '/' + lines.get(cursor.y).postSelectionText + ".txt");
+
+                        cursor.setDoBlink(false);
+                        super.setSelectionZoneHeight(1,new GuiLine[]{new GuiLine(" ","","")});
+                    }
                 }
 
                 else if(name.equals(ConfigCursor.BACK_BUTTON) && !singleFolder) {
                     menuState = MenuState.TELEOP_AUTO_SELECT;
 
-                    currentFilepath = robotFilepath;
+                    currentFilepath = robotFolder;
 
                     resetCursorPos();
                     setFolderSelectLines();
@@ -328,17 +337,6 @@ public class ConfigMenu extends ScrollingListMenu {
         }
     }
 
-    private void setRootDirLines() {
-        List<GuiLine> newLines = genLines(currentFilepath);
-        newLines.add(new GuiLine("#","Delete"));
-        super.setSelectionZoneHeight(newLines.size(), newLines);
-    }
-
-    private void setRootDeleteLines() {
-        List<GuiLine> newLines = genLines(currentFilepath);
-        super.setSelectionZoneHeight(newLines.size(), newLines);
-    }
-
     private void setFolderSelectLines() {
         List<GuiLine> newLines = genLines(currentFilepath, "robot_info.txt");
         super.setSelectionZoneHeight(newLines.size(),newLines);
@@ -399,16 +397,6 @@ public class ConfigMenu extends ScrollingListMenu {
         cursor.setY(0);
     }
 
-    private void deleteDirectory(String filePath) {
-        File dir = new File(filePath);
-        File[] contents = dir.listFiles();
-        if (contents != null) {
-            for (File f : contents) {
-                deleteDirectory(f.getPath()); //recursion :)
-            }
-        }
-        dir.delete();
-    }
 
     private void readConfigFile(String filename) {
 
@@ -577,23 +565,49 @@ public class ConfigMenu extends ScrollingListMenu {
         return outputList;
     }
 
+    private static ArrayList<GuiLine> genInitialLinesSingleFolder(String filePath) {
+        File rootDirectory = new File(filePath);
+        File[] dirs = rootDirectory.listFiles();
+        ArrayList<GuiLine> startingLines = new ArrayList<>();
+
+        startingLines.add(new GuiLine("#", "New Config"));
+        startingLines.add(new GuiLine("#", "Edit Config"));
+        startingLines.add(new GuiLine("#", "Delete Config"));
+
+        for(File dir : dirs) {
+            if(!dir.getName().equals("robot_info.txt")) {
+                startingLines.add(new GuiLine("#", dir.getName().replace(".txt","")));
+            }
+        }
+        return startingLines;
+    }
+
+    private void exportConfigFile(String filepath) {
+
+        if(config.isEmpty()) {
+            genDefaultConfigMap();
+        }
+
+        readConfigFile(filepath);
+
+        SubSystem.configs = new HashMap<>();
+        for(String subsystem : config.keySet()) {
+            List<ConfigParam> params = new ArrayList<>();
+            for(ConfigParam param : config.get(subsystem)) {
+                params.add(param.clone());
+            }
+            SubSystem.configs.put(subsystem,params);
+        }
+    }
+
     private static ArrayList<GuiLine> genInitialLines(String filePath) {
         File rootDirectory = new File(filePath);
         File[] dirs = rootDirectory.listFiles();
         ArrayList<GuiLine> startingLines = new ArrayList<>();
         for(File dir : dirs) {
-            startingLines.add(new GuiLine("#",dir.getName()));
-        }
-        startingLines.add(new GuiLine("#","Delete"));
-        return startingLines;
-    }
-
-    private static ArrayList<GuiLine> genLines(String filePath) {
-        File rootDirectory = new File(filePath);
-        File[] dirs = rootDirectory.listFiles();
-        ArrayList<GuiLine> startingLines = new ArrayList<>();
-        for(File dir : dirs) {
-            startingLines.add(new GuiLine("#",dir.getName().replace(".txt","")));
+            if(!dir.getName().equals("robot_info.txt")) {
+                startingLines.add(new GuiLine("#", dir.getName()));
+            }
         }
         return startingLines;
     }

@@ -7,12 +7,10 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
-import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
+import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 
 import java.lang.InterruptedException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +25,8 @@ public abstract class SubSystem {
     public boolean usesConfig;
 
     public static Map<String, List<ConfigParam>> configs = new HashMap<>();
+    public static Map<String, List<ConfigParam>> autonomousConfig = new HashMap<>();
+    public static Map<String, List<ConfigParam>> teleopConfig = new HashMap<>();
 
     /**
      * An abstract method containing the code that the subsystem runs when being initialized.
@@ -58,15 +58,16 @@ public abstract class SubSystem {
         initVars();
     }
     
-    protected void initVars() {} 
-    
-    protected void initConfigSettings(ConfigParam[] configParams) {
-        configs.put(this.getClass().getSimpleName(),Arrays.asList(configParams));
-        usesConfig = true;
-    }
+    protected void initVars() {}
 
-    protected void initConfigSettings(ArrayList<ConfigParam> configParams) {
-        configs.put(this.getClass().getSimpleName(),configParams);
-        usesConfig = true;
+    protected CustomizableGamepad pullInputs(String subsystem_name) {
+        List<ConfigParam> configParams = configs.get(subsystem_name);
+        CustomizableGamepad gamepad = new CustomizableGamepad(robot);
+        for(ConfigParam param : configParams) {
+            if(param.usesGamepad) {
+                gamepad.addButton(param.name,param.toButton());
+            }
+        }
+        return gamepad;
     }
 }
