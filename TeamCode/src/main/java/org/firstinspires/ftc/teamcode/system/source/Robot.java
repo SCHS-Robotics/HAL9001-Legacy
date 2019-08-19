@@ -10,7 +10,6 @@ package org.firstinspires.ftc.teamcode.system.source;
 import android.os.Environment;
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -27,8 +26,6 @@ import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -140,11 +137,14 @@ public abstract class Robot {
      *
      * @param cycleButton - The button used to cycle through multiple menus in GUI.
      */
-    protected void startGui(Button cycleButton) {
+    public void startGui(Button cycleButton) {
         gui = new GUI(this, cycleButton);
         useGui = true;
     }
 
+    public boolean isUsingGUI() {
+        return useGui;
+    }
 
     /**
      * Runs all the initialization methods of every subsystem and the GUI.

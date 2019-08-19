@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import java.lang.InterruptedException;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
@@ -34,19 +36,21 @@ public abstract class BaseAutonomous extends LinearOpMode {
     public abstract void main() throws InterruptedException;
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void runOpMode() {
         robot = buildRobot();
 
         try {
             robot.init();
         } catch (Exception ex) {
             telemetry.addData("ERROR!!!", ex.getMessage());
+            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
         }
 
         try {
             main();
         } catch (Exception ex) {
             telemetry.addData("ERROR!", ex.getMessage());
+            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
         }
     }
 

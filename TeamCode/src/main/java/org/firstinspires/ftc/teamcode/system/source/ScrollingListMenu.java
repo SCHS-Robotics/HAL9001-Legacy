@@ -10,7 +10,6 @@ package org.firstinspires.ftc.teamcode.system.source;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An abstract class extending Menu.java that represents a common typ of menu.

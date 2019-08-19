@@ -7,13 +7,7 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
-import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
-import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
-
 import java.lang.InterruptedException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * An abstract class representing a subsystem on the robot.
@@ -23,8 +17,6 @@ public abstract class SubSystem {
     //The robot the subsystem belongs to.
     protected Robot robot;
     public boolean usesConfig;
-
-    public static Map<String, List<ConfigParam>> configs = new HashMap<>();
 
     /**
      * An abstract method containing the code that the subsystem runs when being initialized.

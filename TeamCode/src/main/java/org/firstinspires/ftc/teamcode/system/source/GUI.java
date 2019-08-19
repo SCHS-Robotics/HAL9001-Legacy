@@ -7,8 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -226,6 +224,12 @@ public class GUI {
         }
     }
 
+    /**
+     * Gets a menu in the GUI by its name.
+     *
+     * @param menuName - The name of the menu in the GUI.
+     * @return - The menu object cooresponding to menuName in the GUI.
+     */
     public Menu getMenu(String menuName) {
         return menus.get(menuName);
     }

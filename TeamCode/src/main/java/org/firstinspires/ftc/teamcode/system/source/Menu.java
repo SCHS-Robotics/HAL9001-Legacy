@@ -34,6 +34,7 @@ public abstract class Menu {
      * Ctor for menu class.
      *
      * @param gui - The GUI that will be used to render the menu.
+     * @param cursor - The cursor assigned to the menu.
      * @param startingLines - The list of lines that will be displayed when the menu is first rendered.
      * @param selectionZoneWidth - The maximum x value that the cursor will be able to travel to inside the selection zone.
      *                             Note: This is not the actual width of the zone itself, but a boundary for the index.
@@ -59,6 +60,7 @@ public abstract class Menu {
      * Ctor for menu class.
      *
      * @param gui - The GUI that will be used to render the menu.
+     * @param cursor - The cursor assigned to the menu.
      * @param startingLines - The list of lines that will be displayed when the menu is first rendered.
      * @param selectionZoneWidth - The maximum x value that the cursor will be able to travel to inside the selection zone.
      *                             Note: This is not the actual width of the zone itself, but a boundary for the index.
@@ -83,12 +85,12 @@ public abstract class Menu {
     /**
      * Abstract method that is called whenever a menu is initialized.
      */
-    protected abstract void init(); //runs once when first created
+    protected abstract void init();
 
     /**
      * Abstract method that is called whenever the menu is opened.
      */
-    protected abstract void open(); //runs when menu is opened
+    protected abstract void open();
 
     /**
      * Abstract method that is called whenever the cursor select button is pressed.
@@ -105,12 +107,12 @@ public abstract class Menu {
     /**
      * Abstract method that is called every frame to render the menu.
      */
-    protected abstract void render(); //runs every frame of update
+    protected abstract void render();
 
     /**
      * Abstract method that is called when the gui is stopped.
      */
-    protected abstract void stop(); //runs when gui is stopped.
+    protected abstract void stop();
 
     /**
      * Displays a line to the screen. Calls an identically-named method in GUI.
@@ -211,6 +213,13 @@ public abstract class Menu {
         setLines(newLines);
     }
 
+    /**
+     * Sets the selection zone width and height.
+     *
+     * @param selectionZoneWidth - The desired selection zone width.
+     * @param selectionZoneHeight - The desired selection zone height.
+     * @param newLines - The list of lines to display on the menu with the new format.
+     */
     public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, GuiLine[] newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         this.selectionZoneHeight = selectionZoneHeight;
@@ -225,6 +234,13 @@ public abstract class Menu {
         setLines(newLines);
     }
 
+    /**
+     * Sets the selection zone width and height.
+     *
+     * @param selectionZoneWidth - The desired selection zone width.
+     * @param selectionZoneHeight - The desired selection zone height.
+     * @param newLines - The list of lines to display on the menu with the new format.
+     */
     public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, List<GuiLine> newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         this.selectionZoneHeight = selectionZoneHeight;

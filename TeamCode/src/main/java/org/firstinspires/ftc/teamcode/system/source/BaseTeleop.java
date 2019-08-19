@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 /**
@@ -48,9 +50,10 @@ public abstract class BaseTeleop extends OpMode {
 
         try {
             robot.init();
-        }catch (Exception ex){
+        }
+        catch (Exception ex){
             telemetry.addData("ERROR!!!", ex.getMessage());
-            ex.printStackTrace();
+            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
         }
     }
 

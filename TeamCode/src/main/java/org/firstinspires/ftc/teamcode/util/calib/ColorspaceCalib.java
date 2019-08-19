@@ -76,24 +76,34 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         SINGLE_CHANNEL, COLOR
     }
 
+
+    public ColorspaceCalib(Robot robot) {
+        super(robot);
+
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
+
+        this.imageType = ImageType.COLOR;
+        usesConfig = true;
+    }
+
     /**
      * Constructor that uses default keys.
      *
      * @param robot - The robot running the program.
      * @param colorSpace - Enum that determine what 3 chanel color space to use.
      */
-    public ColorspaceCalib(Robot robot, ColorSpace colorSpace, String menuName){
+    public ColorspaceCalib(Robot robot, ColorSpace colorSpace){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         //default keys are all on gamepad1 and are dpad_up for x_increment, dpad_down for x decrement, left_stick_up for y_increment, left_stick_down for y decrement, right_stick_up for z_increment, right_stick_down for z decrement, a for slowMode, and b for changeLimit.
-        //setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
+        setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
         this.colorSpace = colorSpace;
         this.imageType = ImageType.COLOR;
-
-        usesConfig = true;
     }
 
     /**
@@ -104,10 +114,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
      * @param channelIdx - The index of the filtered channel within the colorspace.
      */
-    public ColorspaceCalib(Robot robot, ColorSpace colorSpace, String menuName, ImageType imageType, int channelIdx){
+    public ColorspaceCalib(Robot robot, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         //default keys are all on gamepad1 and are dpad_up for x_increment, dpad_down for x decrement, left_stick_up for y_increment, left_stick_down for y decrement, right_stick_up for z_increment, right_stick_down for z decrement, a for slowMode, and b for changeLimit.
         setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
@@ -123,10 +134,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param robot - The robot running the program.
      * @param converter - The custom conversion function.
      */
-    public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter, String menuName){
+    public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
@@ -143,10 +155,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
      * @param channelIdx - The index of the filtered channel within the colorspace.
      */
-    public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter, String menuName, ImageType imageType, int channelIdx){
+    public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         setInputs(new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.bool_left_stick_y_up), new Button(1, Button.BooleanInputs.bool_left_stick_y_down), new Button(1, Button.BooleanInputs.bool_right_stick_y_up), new Button(1, Button.BooleanInputs.bool_right_stick_y_down), new Button(1, Button.BooleanInputs.a), new Button(1, Button.BooleanInputs.x));
 
@@ -170,10 +183,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param changeLimit - Toggle button for changing between changing upper values and lower values.
      * @param colorSpace - Enum that determines what 3 chanel color space to use.
      */
-    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace, String menuName){
+    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
@@ -197,10 +211,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
      * @param channelIdx - The index of the filtered channel within the colorspace.
      */
-    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace, String menuName, ImageType imageType, int channelIdx){
+    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
@@ -223,11 +238,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param changeLimit - Toggle button for changing between changing upper values and lower values.
      * @param converter - The custom conversion function.
      */
-    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter, String menuName){
+    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
@@ -252,11 +267,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      * @param imageType - An enum that specifies if a single channel or multi-channel image is being filtered.
      * @param channelIdx- The index of the filtered channel within the colorspace.
      */
-    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter, String menuName, ImageType imageType, int channelIdx){
+    public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
 
-        displayMenu = (DisplayMenu) robot.gui.getMenu(menuName);
-        initVars();
+        displayMenu = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
         setInputs(XUp, XDown, YUp, YDown, ZUp, ZDown, slowMode, changeLimit);
 
@@ -284,12 +299,12 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     public void handle() {
 
         displayMenu.clear();
-        displayMenu.addLine("x_upper",x_upper);
-        displayMenu.addLine("x_lower",x_lower);
-        displayMenu.addLine("y_upper",y_upper);
-        displayMenu.addLine("y_lower",y_lower);
-        displayMenu.addLine("z_upper",z_upper);
-        displayMenu.addLine("z_lower",z_lower);
+        displayMenu.addData("x_upper",x_upper);
+        displayMenu.addData("x_lower",x_lower);
+        displayMenu.addData("y_upper",y_upper);
+        displayMenu.addData("y_lower",y_lower);
+        displayMenu.addData("z_upper",z_upper);
+        displayMenu.addData("z_lower",z_lower);
 
         slowModeToggle.updateToggle(inputs.getBooleanInput(SLOWMODE));
 
@@ -351,9 +366,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
     @Override
-    public void stop() {
-        stopOpenCV();
-    }
+    public void stop() {}
 
     @Override
     public void onCameraViewStarted(int width, int height) {

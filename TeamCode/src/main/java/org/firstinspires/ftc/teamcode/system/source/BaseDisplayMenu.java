@@ -1,3 +1,10 @@
+/*
+ * Filename: BaseDisplayMenu.java
+ * Author: Cole Savage
+ * Team Name: Level Up
+ * Date: 8/5/19
+ */
+
 package org.firstinspires.ftc.teamcode.system.source;
 
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
@@ -6,14 +13,25 @@ import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 
 import java.util.ArrayList;
 
+/**
+ * The base menu class for DisplayMenus to extend.
+ */
 public abstract class BaseDisplayMenu extends Menu {
 
+    //The current "level" of screen in the menu. If the number of lines in the menu exceeds the maximum number, menunumber will increase by one for every screen the menu takes up.
     private int menuNumber;
-
+    //The customizable gamepad storing the menu's scroll button.
     private CustomizableGamepad inputs;
-
+    //The name of the menu's scroll button.
     private final String SELECT = "select";
 
+    /**
+     * Constructor for BaseDisplayMenu.
+     *
+     * @param gui - The GUI being used to render the menu.
+     * @param cursor - The cursor being used in the menu.
+     * @param startingLines - The menu's initial set of GuiLines.
+     */
     public BaseDisplayMenu(GUI gui, Cursor cursor, GuiLine[] startingLines) {
         super(gui, cursor, startingLines,0,0);
         menuNumber = 0;
@@ -22,6 +40,13 @@ public abstract class BaseDisplayMenu extends Menu {
         inputs.addButton(SELECT,new Button(1, Button.BooleanInputs.a));
     }
 
+    /**
+     * Constructor for BaseDisplayMenu.
+     *
+     * @param gui - The GUI being used to render the menu.
+     * @param cursor - The cursor being used in the menu.
+     * @param startingLines - The menu's initial set of GuiLines.
+     */
     public BaseDisplayMenu(GUI gui, Cursor cursor, ArrayList<GuiLine> startingLines) {
         super(gui,cursor, startingLines,0,0);
         menuNumber = 0;

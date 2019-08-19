@@ -3,10 +3,15 @@ package org.firstinspires.ftc.teamcode.util.debug;
 import android.os.Environment;
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.system.source.GUI;
+import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.system.source.ScrollingListMenu;
 import org.firstinspires.ftc.teamcode.system.source.SubSystem;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
+import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
+import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -18,7 +23,10 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +35,10 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
     private enum MenuState {
         START, ROBOTDIRSELECTED, DELETECONFIG, EDITNEWCONFIG, SELECTSUBSYSTEMCONFIG, NEWCONFIG, CONFIGOPTIONS, CREATENEWCONFIG, DELETEROBOT, TELEOP_AUTO_SELECT
+    }
+
+    private enum ConfigurationState {
+        AUTONOMOUS, TELEOP
     }
 
     private static final String SUPPORTED_CHARS = "#abcdefghijklmnopqrstuvwxyz0123456789";
@@ -40,12 +52,14 @@ public class ConfigDebugMenu extends ScrollingListMenu {
     private GuiLine nameLine;
     private BiFunction<Integer,Integer,Integer> customMod = (Integer x, Integer m) -> (x % m + m) % m;
     private String robotFilepath;
+    private ConfigurationState configState;
 
     public ConfigDebugMenu(GUI gui) {
         super(gui, new ConfigCursor(gui.robot,500), genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/"),1,genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/").size());
         menuState = MenuState.START;
         currentFilepath = Environment.getExternalStorageDirectory().getPath()+"/System64/";
         config = new HashMap<>();
+        configState = ConfigurationState.AUTONOMOUS;
     }
 
     @Override
@@ -66,6 +80,8 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                         currentFilepath += lines.get(cursor.y).postSelectionText;
 
                         robotFilepath = currentFilepath;
+
+                        initRobotConfig();
 
                         resetCursorPos();
                         setFolderSelectLines();
@@ -99,6 +115,8 @@ public class ConfigDebugMenu extends ScrollingListMenu {
             case TELEOP_AUTO_SELECT:
                 if(name.equals(ConfigCursor.SELECT)) {
                     menuState = MenuState.ROBOTDIRSELECTED;
+
+                    configState = lines.get(cursor.y).postSelectionText.equals("autonomous") ? ConfigurationState.AUTONOMOUS : ConfigurationState.TELEOP;
 
                     currentFilepath += '/'+lines.get(cursor.y).postSelectionText;
 
@@ -436,6 +454,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
     private void resetCursorPos() {
         cursor.setX(0);
         cursor.setY(0);
+        menuNumber = 0; //temporary until bug is fixed
     }
 
     private void deleteDirectory(String filePath) {
@@ -490,17 +509,113 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
     }
 
-    private void genDefaultConfigMap() {
-        config = new HashMap<>();
-        for(String subsystem : SubSystem.configs.keySet()) {
-            List<ConfigParam> params = new ArrayList<>();
-            for(ConfigParam param : SubSystem.configs.get(subsystem)) {
-                params.add(param.clone());
+    private void initRobotConfig() {
+        FileInputStream fis;
+
+        try {
+
+            fis = new FileInputStream(currentFilepath + "/robot_info.txt");
+
+            FileReader fReader;
+            BufferedReader bufferedReader;
+
+            try {
+                fReader = new FileReader(fis.getFD());
+                bufferedReader = new BufferedReader(fReader);
+
+                String classname;
+                while((classname = bufferedReader.readLine()) != null) {
+                    Class subsystem = Class.forName(classname);
+                    Method[] methods = subsystem.getDeclaredMethods();
+
+                    boolean foundTeleopConfig = false;
+                    boolean foundAutonomousConfig = false;
+
+                    for(Method m : methods) {
+                        //method must be annotated as TeleopConfig, have no parameters, be public and static, and return an array of config params
+                        if(!foundTeleopConfig && m.isAnnotationPresent(TeleopConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
+                            Robot.teleopConfig.put(subsystem.getSimpleName(), Arrays.asList((ConfigParam[]) m.invoke(null)));
+                            foundTeleopConfig = true;
+                        }
+
+                        //method must be annotated as AutonomousConfig, have no parameters, be public and static, and return an array of config params
+                        if(!foundAutonomousConfig && m.isAnnotationPresent(AutonomousConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
+                            Robot.autonomousConfig.put(subsystem.getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
+                            foundAutonomousConfig = true;
+                        }
+
+                        if(foundTeleopConfig && foundAutonomousConfig) {
+                            break;
+                        }
+                    }
+                }
+
+                bufferedReader.close();
+                fReader.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                fis.getFD().sync();
+                fis.close();
             }
-            config.put(subsystem,params);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+    private void genDefaultConfigMap() {
+        config = new HashMap<>();
+
+        if(configState == ConfigurationState.AUTONOMOUS) {
+            for (String subsystem : Robot.autonomousConfig.keySet()) {
+                List<ConfigParam> params = new ArrayList<>();
+                for (ConfigParam param : Robot.autonomousConfig.get(subsystem)) {
+                    params.add(param.clone());
+                }
+                config.put(subsystem, params);
+            }
+        }
+        else  {
+            for (String subsystem : Robot.teleopConfig.keySet()) {
+                List<ConfigParam> params = new ArrayList<>();
+                for (ConfigParam param : Robot.teleopConfig.get(subsystem)) {
+                    params.add(param.clone());
+                }
+                config.put(subsystem, params);
+            }
+        }
+    }
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
     private void updateConfigMapSubsystem(List<GuiLine> newConfig) {
         removeDone(newConfig); //gets rid of the Done line
 
@@ -521,6 +636,16 @@ public class ConfigDebugMenu extends ScrollingListMenu {
             }
         }
     }
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
 
     private void removeDone(List<GuiLine> lines) {
         for(GuiLine line : lines) {
@@ -531,6 +656,16 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
     private void writeConfigFile() {
 
         File configFile = new File(selectedConfigPath);
@@ -579,6 +714,16 @@ public class ConfigDebugMenu extends ScrollingListMenu {
             e.printStackTrace();
         }
     }
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
 
     private String parseName(String input) {
 
@@ -616,6 +761,16 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         return outputList;
     }
 
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     *
+     */
     private static ArrayList<GuiLine> genInitialLines(String filePath) {
         File rootDirectory = new File(filePath);
         File[] dirs = rootDirectory.listFiles();

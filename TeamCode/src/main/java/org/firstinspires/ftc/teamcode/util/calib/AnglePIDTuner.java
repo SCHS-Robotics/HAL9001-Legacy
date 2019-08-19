@@ -207,9 +207,9 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
             pidTuner.setTunings(kp,ki,kd);
 
             display.clear();
-            display.addLine("kp",kp);
-            display.addLine("ki",ki);
-            display.addLine("kd",kd);
+            display.addData("kp",kp);
+            display.addData("ki",ki);
+            display.addData("kd",kd);
         }
     }
 

@@ -14,16 +14,16 @@ public abstract class Cursor {
 
     //The cursor's x and y coordinate and blink speed.
     public int x, y, blinkSpeedMs;
-
-    protected boolean forceCursorChar;
-    //The cursor's display icon;
+    //The menu the cursor belongs to.
     protected Menu menu;
-
+    //The cursor's display icon.
     private char cursorIcon;
     //A boolean specifying if the cursor has been updated.
     protected boolean cursorUpdated;
     //A boolean specifying whether the cursor should allow blinking.
     protected boolean doBlink;
+    //A boolean specifying if the cursor should force its display icon to appear when updated. This is usually set internally by menus.
+    protected boolean forceCursorChar;
 
     /**
      * Ctor for cursor class.
@@ -102,16 +102,21 @@ public abstract class Cursor {
     }
 
     /**
+     * Sets the menu that the cursor belongs to.
+     *
+     * @param menu - The menu to be assigned to the cursor.
+     */
+    public void setMenu(Menu menu) {
+        this.menu = menu;
+    }
+
+    /**
      * Gets the cursor x coordinate.
      *
      * @return - The cursor x coordinate.
      */
     public int getX() {
         return x;
-    }
-
-    public void setMenu(Menu menu) {
-        this.menu = menu;
     }
 
     /**
@@ -155,6 +160,11 @@ public abstract class Cursor {
      */
     public abstract void update();
 
+    /**
+     * Sets if the cursor should blink or not.
+     *
+     * @param doBlink - A boolean specifying whether the cursor should be set to blink (true) or not (false).
+     */
     public void setDoBlink(boolean doBlink) {
         this.doBlink = doBlink;
     }
