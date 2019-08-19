@@ -10,6 +10,7 @@ package org.firstinspires.ftc.teamcode.system.source;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An abstract class extending Menu.java that represents a common typ of menu.
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public abstract class ScrollingListMenu extends Menu {
 
     //The current "level" of screen in the menu. If the number of lines in the menu exceeds the maximum number, menunumber will increase by one for every screen the menu takes up.
-    private int menuNumber;
+    protected int menuNumber;
 
     /**
      * Ctor for menu class.
@@ -31,6 +32,7 @@ public abstract class ScrollingListMenu extends Menu {
      */
     public ScrollingListMenu(GUI gui, Cursor cursor, ArrayList<GuiLine> startingLines, int selectionZoneWidth, int selectionZoneHeight){
         super(gui, cursor,  startingLines, selectionZoneWidth, selectionZoneHeight);
+        cursor.setDoBlink(true);
         menuNumber = 0;
     }
 
@@ -46,17 +48,15 @@ public abstract class ScrollingListMenu extends Menu {
      */
     public ScrollingListMenu(GUI gui, Cursor cursor, GuiLine[] startingLines, int selectionZoneWidth, int selectionZoneHeight){
         super(gui, cursor, startingLines, selectionZoneWidth, selectionZoneHeight);
+        cursor.setDoBlink(true);
         menuNumber = 0;
     }
 
     @Override
-    protected void init() {
-        super.cursor.doBlink = true;
-    }
+    protected void init() { }
 
     @Override
     protected void open() {
-        super.cursor.doBlink = true;
         menuNumber = 0;
         cursor.y = 0;
     }
@@ -67,9 +67,7 @@ public abstract class ScrollingListMenu extends Menu {
     }
 
     @Override
-    protected void stop() {
-
-    }
+    protected void stop() {}
 
     @Override
     public void menuUp(){

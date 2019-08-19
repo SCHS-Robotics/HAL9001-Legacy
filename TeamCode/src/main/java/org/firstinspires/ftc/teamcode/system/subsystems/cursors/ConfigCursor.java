@@ -26,7 +26,7 @@ public class ConfigCursor extends Cursor {
 
     private long timeFromLastPressSelectMill, timeFromLastPressRSelectMill;
     //The names of the controls that are used to interact with the cursor.
-    public static final String UP = "up", DOWN = "down", LEFT = "left", RIGHT = "right", SELECT = "select", SWITCH_GAMEPAD = "switchgamepad", REVERSE_SELECT = "it's rewind time", BACK_BUTTON = "back";
+    public static final String UP = "up", DOWN = "down", LEFT = "left", RIGHT = "right", SELECT = "select", SWITCH_GAMEPAD = "switchgamepad", REVERSE_SELECT = "it's rewind time", BACK_BUTTON = "back", DISABLE_AUTORUN = "disable autorun";
     //A boolean value used to toggle the controls on and off.
     private boolean flag = true;
 
@@ -51,6 +51,7 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
         inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
 
         doBlink = true;
         writeMode = false;
@@ -75,6 +76,7 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
         inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
 
         doBlink = true;
         writeMode = false;
@@ -98,6 +100,7 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
         inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
 
         doBlink = true;
         writeMode = false;
@@ -123,6 +126,7 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
         inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
 
         doBlink = true;
         writeMode = false;
@@ -149,6 +153,7 @@ public class ConfigCursor extends Cursor {
             inputs.addButton(REVERSE_SELECT, reverseSelect);
             inputs.addButton(SWITCH_GAMEPAD, switchGamepad);
             inputs.addButton(BACK_BUTTON, backButton);
+            inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
         }
         else{
             throw new NotBooleanInputException("DefaultCursor requires all boolean inputs");
@@ -205,6 +210,10 @@ public class ConfigCursor extends Cursor {
         }
         else if(inputs.getBooleanInput(BACK_BUTTON) && flag) {
             super.menu.onButton(BACK_BUTTON, inputs.getButton(BACK_BUTTON));
+            flag = false;
+        }
+        else if(inputs.getBooleanInput(DISABLE_AUTORUN) && flag) {
+            super.menu.onButton(DISABLE_AUTORUN,inputs.getButton(DISABLE_AUTORUN));
             flag = false;
         }
         else if (!inputs.getBooleanInput(SELECT) && !inputs.getBooleanInput(UP) && !inputs.getBooleanInput(DOWN) && !inputs.getBooleanInput(LEFT) && !inputs.getBooleanInput(RIGHT) && !inputs.getBooleanInput(REVERSE_SELECT) && !inputs.getBooleanInput(SWITCH_GAMEPAD) && !inputs.getBooleanInput(BACK_BUTTON) && !flag) {

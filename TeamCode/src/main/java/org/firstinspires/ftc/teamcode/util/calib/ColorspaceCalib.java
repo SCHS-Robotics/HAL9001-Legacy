@@ -32,6 +32,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.Map;
+
 /**
  * A calibration subsystem used to find good colorspace ranges for color detection algorithms.
  */
@@ -271,8 +273,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
     @Override
     public void init_loop() {
-        inputs = pullInputs(this.getClass().getSimpleName());
-        inputs.addButton(CHANGELIMIT,new Button(2, Button.BooleanInputs.y));
+        inputs = robot.pullControls(this.getClass().getSimpleName());
+        Map<String,String> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+        if(!settingsData.isEmpty()) {
+            colorSpace = ColorSpace.valueOf(settingsData.get("Colorspace"));
+        }
     }
 
     @Override
@@ -453,7 +458,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
             case HLS: Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2HLS); break;
             case Lab: Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2Lab); break;
             case LUV: Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2Luv); break;
-            case RGB: break; //Bruh
+            case RGB: src.copyTo(dst); break; //Bruh
             case XYZ: Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2XYZ); break;
             case YUV: Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2YUV); break;
             case YCrCb: Imgproc.cvtColor(src, dst, Imgproc.COLOR_RGB2YCrCb); break;
@@ -560,7 +565,20 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
                 new ConfigParam(Y_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down),
                 new ConfigParam(Z_INCREMENT, Button.BooleanInputs.bool_right_stick_y_up),
                 new ConfigParam(Z_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down),
-                new ConfigParam(SLOWMODE,Button.BooleanInputs.x)
+                new ConfigParam(SLOWMODE,Button.BooleanInputs.x),
+                new ConfigParam(CHANGELIMIT, Button.BooleanInputs.a),
+                new ConfigParam("Colorspace",new String[]{
+                        ColorSpace.RGB.name(),
+                        ColorSpace.BGR.name(),
+                        ColorSpace.HLS.name(),
+                        ColorSpace.HLS_FULL.name(),
+                        ColorSpace.HSV.name(),
+                        ColorSpace.HSV_FULL.name(),
+                        ColorSpace.Lab.name(),
+                        ColorSpace.LUV.name(),
+                        ColorSpace.YCrCb.name(),
+                        ColorSpace.XYZ.name()
+                }, ColorSpace.RGB.name())
         };
     }
 }

@@ -22,6 +22,7 @@ import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
+import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -33,12 +34,16 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * An abstract class representing the physical robot.
  */
 public abstract class Robot {
+
+    public static Map<String, List<ConfigParam>> autonomousConfig = new HashMap<>();
+    public static Map<String, List<ConfigParam>> teleopConfig = new HashMap<>();
 
     public String rId;
 
@@ -48,12 +53,13 @@ public abstract class Robot {
     private OpMode opMode;
     //A boolean value specifying whether or not to use a GUI.
     private boolean useGui, useConfig = false;
+
+    private boolean closeConfig = false;
+
     //The GUI the robot uses to render the menus.
     public GUI gui;
 
     private GUI configGui;
-
-    private String currentFilename = Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+this.getClass().getSimpleName();
 
     //The gamepads used to control the robot.
     public volatile Gamepad gamepad1, gamepad2;
@@ -94,25 +100,26 @@ public abstract class Robot {
 
             try {
 
-                Method[] methods = Class.forName(subSystem.getClass().getName()).getDeclaredMethods();
+
+                Method[] methods = subSystem.getClass().getDeclaredMethods();
 
                 for(Method m : methods) {
 
                     //method must be annotated as TeleopConfig, have no parameters, be public and static, and return an array of config params
                     if(!foundTeleopConfig && m.isAnnotationPresent(TeleopConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
-                        SubSystem.configs.put(subSystem.getClass().getSimpleName(), Arrays.asList((ConfigParam[]) (m.invoke(null))));
-                        SubSystem.teleopConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
+                        teleopConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
                         configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
                         useConfig = true;
+                        closeConfig = true;
                         foundTeleopConfig = true;
                     }
 
                     //method must be annotated as AutonomousConfig, have no parameters, be public and static, and return an array of config params
                     if(!foundAutonomousConfig && m.isAnnotationPresent(AutonomousConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
-                        SubSystem.configs.put(subSystem.getClass().getSimpleName(), Arrays.asList((ConfigParam[]) (m.invoke(null))));
-                        SubSystem.autonomousConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
+                        autonomousConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
                         configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
                         useConfig = true;
+                        closeConfig = true;
                         foundAutonomousConfig = true;
                     }
 
@@ -142,7 +149,7 @@ public abstract class Robot {
     /**
      * Runs all the initialization methods of every subsystem and the GUI.
      */
-    public final void init() throws InterruptedException
+    public final void init()
     {
 
         this.gamepad1 = opMode.gamepad1;
@@ -153,9 +160,6 @@ public abstract class Robot {
         }
 
         if(useConfig) {
-
-            Log.d("teleop",SubSystem.teleopConfig.toString());
-            Log.d("autonomous",SubSystem.autonomousConfig.toString());
 
             rId = this.getClass().getSimpleName();
 
@@ -192,50 +196,16 @@ public abstract class Robot {
             if(opMode.getClass().isAnnotationPresent(StandAlone.class)) {
                 if(opMode instanceof BaseAutonomous) {
                     configGui.addMenu("config",new ConfigMenu(configGui,autoDir.getPath(),true));
-                    configGui.start();
                 }
                 else if(opMode instanceof BaseTeleop) {
                     configGui.addMenu("config",new ConfigMenu(configGui,teleopDir.getPath(),true));
-                    configGui.start();
                 }
             }
             else {
-                if(opMode instanceof BaseAutonomous) {
-
-                }
-                else if(opMode instanceof BaseTeleop) {
-
-                }
+                configGui.addMenu("config",new ConfigMenu(configGui,robotConfigDirectory.getPath(),false));
             }
-        }
 
-        /*
-        autonomous
-            standalone:
-                go into autonomous configs and select one (do usual new delete edit stuff ect.)
-
-            not:
-                go into autonomous, choose autonomous config
-                go into teleop, chose teleop config (filename gets writen to robot_info)
-
-        teleop
-            standalone:
-                go into teleop configs and select one
-
-            not:
-                check robot info
-                if there is a config in robot info (robot info file not empty) select that one.
-                menu shows "automatically using __", press x or something to change
-                on stop clear robot info
-                if there is no config refer to standalone
-         */
-
-        if(useConfig && opMode instanceof BaseAutonomous){
-            //configGui.addMenu("configurator",new ConfigMenu);
-
-            //check is there a folder with spec
-            //create config menu
-            //while(!connfigMenu.isSelected){}
+            configGui.start();
         }
 
         for (SubSystem subSystem : subSystems.values()){
@@ -260,6 +230,7 @@ public abstract class Robot {
 
             if(useConfig) {
                 configGui.drawCurrentMenu();
+                useConfig = !((ConfigMenu) configGui.getMenu("config")).isDone && useConfig;
             }
 
             try {
@@ -270,7 +241,6 @@ public abstract class Robot {
                 ex.printStackTrace();
             }
         }
-
     }
 
     /**
@@ -280,6 +250,11 @@ public abstract class Robot {
     {
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
+
+        if(closeConfig) {
+            closeConfig = false;
+            configGui.stop();
+        }
 
         if(useGui) {
             gui.drawCurrentMenu();
@@ -307,7 +282,7 @@ public abstract class Robot {
             gui.stop();
         }
 
-        if(useConfig) {
+        if(closeConfig) {
             configGui.stop();
         }
 
@@ -349,12 +324,61 @@ public abstract class Robot {
         return subSystem;
     }
 
+    public final OpMode getOpMode() {
+        return opMode;
+    }
+
+    public CustomizableGamepad pullControls(String subsystem) {
+        List<ConfigParam> configParams = teleopConfig.get(subsystem);
+        CustomizableGamepad gamepad = new CustomizableGamepad(this);
+        for(ConfigParam param : configParams) {
+            if(param.usesGamepad) {
+                gamepad.addButton(param.name,param.toButton());
+            }
+        }
+        return gamepad;
+    }
+
+    public Map<String,String> pullNonGamepad(String subsystem) {
+
+        List<ConfigParam> configParamsTeleop = new ArrayList<>();
+        List<ConfigParam> configParamsAuto = new ArrayList<>();
+
+        if(teleopConfig.keySet().contains(subsystem)) {
+            configParamsTeleop = teleopConfig.get(subsystem);
+        }
+        if(autonomousConfig.keySet().contains(subsystem)) {
+            configParamsAuto = autonomousConfig.get(subsystem);
+        }
+
+        Map<String,String> output = new HashMap<>();
+
+        for (ConfigParam param : configParamsAuto) {
+            if (!param.usesGamepad) {
+                output.put(param.name, param.currentOption);
+            }
+        }
+
+        for (ConfigParam param : configParamsTeleop) {
+            if (!param.usesGamepad) {
+                output.put(param.name, param.currentOption);
+            }
+        }
+
+        return output;
+    }
 
     private void writeFile(String filePath, String data) {
 
         FileOutputStream fos;
 
         try {
+
+            File file = new File(filePath);
+            if(file.exists()) {
+                file.delete();
+                file.createNewFile();
+            }
 
             fos = new FileOutputStream(filePath, true);
 
