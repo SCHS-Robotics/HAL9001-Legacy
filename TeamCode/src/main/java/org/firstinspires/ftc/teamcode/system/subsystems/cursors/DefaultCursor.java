@@ -7,9 +7,9 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems.cursors;
 
-import org.firstinspires.ftc.teamcode.system.source.Cursor;
-import org.firstinspires.ftc.teamcode.system.source.Menu;
-import org.firstinspires.ftc.teamcode.system.source.Robot;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.GUI.Cursor;
+import org.firstinspires.ftc.teamcode.system.source.GUI.Menu;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;

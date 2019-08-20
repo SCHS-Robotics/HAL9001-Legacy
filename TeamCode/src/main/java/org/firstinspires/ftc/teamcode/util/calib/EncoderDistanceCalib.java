@@ -9,9 +9,9 @@ package org.firstinspires.ftc.teamcode.util.calib;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.system.source.Menu;
-import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.source.SubSystem;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
+import org.firstinspires.ftc.teamcode.system.source.GUI.Menu;
 
 public class EncoderDistanceCalib extends SubSystem {
 

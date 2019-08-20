@@ -7,7 +7,7 @@
 
 package org.firstinspires.ftc.teamcode.util.misc;
 
-import org.firstinspires.ftc.teamcode.system.source.Robot;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 
 import java.util.HashMap;
 import java.util.Map;

@@ -10,8 +10,8 @@ package org.firstinspires.ftc.teamcode.system.subsystems;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.source.SubSystem;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.control.PIDController;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotDoubleInputException;

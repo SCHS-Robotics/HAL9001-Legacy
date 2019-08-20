@@ -9,10 +9,10 @@ package org.firstinspires.ftc.teamcode.system.menus;
 
 import android.util.Log;
 
-import org.firstinspires.ftc.teamcode.system.source.BaseAutonomous;
-import org.firstinspires.ftc.teamcode.system.source.GUI;
-import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.source.ScrollingListMenu;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseAutonomous;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
+import org.firstinspires.ftc.teamcode.system.source.GUI.ScrollingListMenu;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
@@ -63,24 +63,20 @@ public class ConfigMenu extends ScrollingListMenu {
     private static final String SUPPORTED_CHARS = "#abcdefghijklmnopqrstuvwxyz0123456789";
     //List representation of SUPPORTED_CHARS
     private static final List<Character> VALID_CHARS = getValidChars();
-
     //Various filepaths that the menu needs to internally keep track of. currentFilepath and selectedConfigPath change throughout the program.
     private String currentFilepath, selectedConfigPath, robotFolder;
     //An internal variable that stores the name of the currently selected subsystem while the user is configuring that subsystem.
     private String selectedSubsystemName;
     //The current configuration. It maps the name of the subsystem to a list of ConfigParams representing the current config settings of that subsystem.
     private Map<String,List<ConfigParam>> config;
-
     //A boolean value tracking whether a new config file was recently created. Used for back button functionality while creating new configs.
     private boolean createdNewConfig = false;
     //The GuiLine containing the name of the config file being created by the menu. Used for back button functionality while creating new configs.
     private GuiLine nameLine;
-
     //A custom implementation of the modulo function where negative numbers wrap around to m-1.
     private BiFunction<Integer,Integer,Integer> customMod = (Integer x, Integer m) -> (x % m + m) % m;
     //A boolean to track if the menu is being run in standalone mode.
     private boolean standAloneMode;
-
     //A boolean value tracking whether the menu is finished configuring.
     public boolean isDone = false;
 
@@ -146,9 +142,13 @@ public class ConfigMenu extends ScrollingListMenu {
     }
 
     @Override
-    public void onSelect() {
+    public void render() {}
 
-    }
+    @Override
+    public void initLoopRender() {displayCurrentMenu();}
+
+    @Override
+    public void onSelect() {}
 
     @Override
     public void onButton(String name, Button button) {
@@ -193,7 +193,8 @@ public class ConfigMenu extends ScrollingListMenu {
                         exportConfigFile(currentFilepath + '/' + lines.get(cursor.y).postSelectionText + ".txt");
 
                         cursor.setDoBlink(false);
-                        super.setSelectionZoneHeight(1,new GuiLine[]{new GuiLine(" ","","")});
+
+                        displayNothing();
 
                         isDone = true;
                     }

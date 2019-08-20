@@ -5,7 +5,9 @@
  * Date: 7/20/19
  */
 
-package org.firstinspires.ftc.teamcode.system.source;
+package org.firstinspires.ftc.teamcode.system.source.GUI;
+
+import android.util.Log;
 
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 
@@ -69,6 +71,12 @@ public abstract class ScrollingListMenu extends Menu {
     }
 
     @Override
+    protected void initLoopRender() {}
+
+    @Override
+    protected void onStart() {}
+
+    @Override
     protected void stop() {}
 
     @Override
@@ -120,9 +128,12 @@ public abstract class ScrollingListMenu extends Menu {
     /**
      * Displays the current menu.
      */
-    private void displayCurrentMenu(){
+    protected void displayCurrentMenu(){
+        List<Integer> lineNums = new ArrayList<>();
         for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < Math.min(lines.size(),(menuNumber+1)*Menu.MAXLINESPERSCREEN); i++) {
-            super.displayLine(lines.get(i), i);
+            lineNums.add(i);
         }
+
+        displayLines(lines,lineNums);
     }
 }

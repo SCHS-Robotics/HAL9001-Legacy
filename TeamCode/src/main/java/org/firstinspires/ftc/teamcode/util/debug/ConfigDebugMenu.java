@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.util.debug;
 import android.os.Environment;
 import android.util.Log;
 
-import org.firstinspires.ftc.teamcode.system.source.GUI;
-import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.source.ScrollingListMenu;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
+import org.firstinspires.ftc.teamcode.system.source.GUI.ScrollingListMenu;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;

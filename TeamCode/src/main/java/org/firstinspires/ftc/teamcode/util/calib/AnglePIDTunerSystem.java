@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
-import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.source.SubSystem;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.control.PIDController;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
@@ -229,7 +229,16 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
 
     //TODO gyro calibration init display
     @Override
-    public void init_loop() {}
+    public void init_loop() {
+
+        display.clear();
+        if(!imu.isGyroCalibrated()) {
+            display.addLine("Calibrating IMU...");
+        }
+        else {
+            display.addLine("IMU Calibrated!");
+        }
+    }
 
     @Override
     public void handle() {
@@ -261,7 +270,6 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
             lastActivatedTimestamp = System.currentTimeMillis();
             pidTuner.setTunings(kp,ki,kd);
 
-            display.clear();
             display.addData("kp",kp);
             display.addData("ki",ki);
             display.addData("kd",kd);

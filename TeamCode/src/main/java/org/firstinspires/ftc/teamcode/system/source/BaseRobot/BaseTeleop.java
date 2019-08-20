@@ -5,7 +5,7 @@
  * Date: 2017
  */
 
-package org.firstinspires.ftc.teamcode.system.source;
+package org.firstinspires.ftc.teamcode.system.source.BaseRobot;
 
 import android.util.Log;
 
@@ -52,7 +52,9 @@ public abstract class BaseTeleop extends OpMode {
             robot.init();
         }
         catch (Exception ex){
+            telemetry.clearAll();
             telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.update();
             Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
         }
     }
@@ -64,6 +66,7 @@ public abstract class BaseTeleop extends OpMode {
 
     @Override
     public final void start() {
+        robot.onStart();
         onStart();
     }
 

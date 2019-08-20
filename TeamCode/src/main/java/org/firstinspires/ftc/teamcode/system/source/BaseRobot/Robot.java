@@ -5,7 +5,7 @@
  * Date: 2017
  */
 
-package org.firstinspires.ftc.teamcode.system.source;
+package org.firstinspires.ftc.teamcode.system.source.BaseRobot;
 
 import android.os.Environment;
 import android.util.Log;
@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.system.menus.ConfigMenu;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
@@ -48,11 +49,12 @@ public abstract class Robot {
     //The opmode the robot is running.
     private OpMode opMode;
     //A boolean value specifying whether or not to use a GUI, whether or not to use a config, and whether or not to close the current config GUI.
-    private boolean useGui, useConfig, closeConfig = false;
+    private boolean useGui;
+    private boolean useConfig;
     //The GUI the robot uses to render the menus.
     public GUI gui;
     //The GUI the robot uses to render the config menus.
-    private GUI configGui;
+    //private GUI configGui;
     //The gamepads used to control the robot.
     public volatile Gamepad gamepad1, gamepad2;
     //The telemetry used to print lines to the driver station.
@@ -74,6 +76,7 @@ public abstract class Robot {
         subSystems = new HashMap<>();
 
         useGui = false;
+        useConfig = false;
     }
 
     /**
@@ -87,6 +90,8 @@ public abstract class Robot {
         subSystems.put(name, subSystem);
         if(subSystem.usesConfig) {
 
+
+
             boolean foundTeleopConfig = false;
             boolean foundAutonomousConfig = false;
 
@@ -98,18 +103,22 @@ public abstract class Robot {
                     //method must be annotated as TeleopConfig, have no parameters, be public and static, and return an array of config params
                     if(!foundTeleopConfig && m.isAnnotationPresent(TeleopConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
                         teleopConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
-                        configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
+                        if(!useGui) {
+                            gui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
+                            useGui = true;
+                        }
                         useConfig = true;
-                        closeConfig = true;
                         foundTeleopConfig = true;
                     }
 
                     //method must be annotated as AutonomousConfig, have no parameters, be public and static, and return an array of config params
                     if(!foundAutonomousConfig && m.isAnnotationPresent(AutonomousConfig.class) && m.getReturnType() == ConfigParam[].class && m.getParameterTypes().length == 0 && Modifier.isStatic(m.getModifiers()) && Modifier.isPublic(m.getModifiers())) {
                         autonomousConfig.put(subSystem.getClass().getSimpleName(),Arrays.asList((ConfigParam[]) m.invoke(null)));
-                        configGui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
+                        if(!useGui) {
+                            gui = new GUI(this, new Button(1, Button.BooleanInputs.noButton));
+                            useGui = true;
+                        }
                         useConfig = true;
-                        closeConfig = true;
                         foundAutonomousConfig = true;
                     }
 
@@ -131,8 +140,13 @@ public abstract class Robot {
      * @param cycleButton - The button used to cycle through multiple menus in GUI.
      */
     public void startGui(Button cycleButton) {
-        gui = new GUI(this, cycleButton);
-        useGui = true;
+        if(!useGui) {
+            gui = new GUI(this, cycleButton);
+            useGui = true;
+        }
+        else {
+            gui.setCycleButton(cycleButton);
+        }
     }
 
     /**
@@ -152,10 +166,6 @@ public abstract class Robot {
 
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
-
-        if(useGui) {
-            gui.start();
-        }
 
         if(useConfig) {
 
@@ -197,18 +207,22 @@ public abstract class Robot {
             //If the opmode is annotated as StandAlone, add the config menu in standalone mode.
             if(opMode.getClass().isAnnotationPresent(StandAlone.class)) {
                 if(opMode instanceof BaseAutonomous) {
-                    configGui.addMenu("config",new ConfigMenu(configGui,autoDir.getPath(),true));
+                    gui.addMenu("config",new ConfigMenu(gui,autoDir.getPath(),true));
                 }
                 else if(opMode instanceof BaseTeleop) {
-                    configGui.addMenu("config",new ConfigMenu(configGui,teleopDir.getPath(),true));
+                    gui.addMenu("config",new ConfigMenu(gui,teleopDir.getPath(),true));
                 }
             }
             //Otherwise, add the config menu in non-standalone mode.
             else {
-                configGui.addMenu("config",new ConfigMenu(configGui,robotConfigDirectory.getPath(),false));
+                gui.addMenu("config",new ConfigMenu(gui,robotConfigDirectory.getPath(),false));
             }
 
-            configGui.start();
+            gui.setActiveMenu("config");
+        }
+
+        if(useGui) {
+            gui.start();
         }
 
         for (SubSystem subSystem : subSystems.values()){
@@ -232,14 +246,18 @@ public abstract class Robot {
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
 
-        for (SubSystem subSystem : subSystems.values()) {
+        if(useGui) {
+            gui.drawCurrentMenuInit();
 
             if(useConfig) {
-                configGui.drawCurrentMenu();
-
-                //If the configmenu is dne configuring, set useconfig to false.
-                useConfig = !((ConfigMenu) configGui.getMenu("config")).isDone && useConfig;
+                if(((ConfigMenu) gui.getMenu("config")).isDone) {
+                    gui.removeMenu("config");
+                    useConfig = false;
+                }
             }
+        }
+
+        for (SubSystem subSystem : subSystems.values()) {
 
             try {
                 subSystem.init_loop();
@@ -251,6 +269,15 @@ public abstract class Robot {
         }
     }
 
+    public final void onStart() {
+        if(useGui) {
+            if(gui.isMenuPresent("config")) {
+                gui.removeMenu("config");
+            }
+            gui.onStart();
+        }
+    }
+
     /**
      * Runs subsystem handle() methods and GUI drawCurrentMenu() every frame in driver controlled programs.
      */
@@ -258,11 +285,6 @@ public abstract class Robot {
     {
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
-
-        if(closeConfig) {
-            closeConfig = false;
-            configGui.stop();
-        }
 
         if(useGui) {
             gui.drawCurrentMenu();
@@ -275,7 +297,6 @@ public abstract class Robot {
             }
             catch (Exception ex)
             {
-                telemetry.addData("Error!!!", ex.getMessage());
                 ex.printStackTrace();
             }
         }
@@ -288,10 +309,6 @@ public abstract class Robot {
 
         if(useGui) {
             gui.stop();
-        }
-
-        if(closeConfig) {
-            configGui.stop();
         }
 
         for (SubSystem subSystem : subSystems.values())

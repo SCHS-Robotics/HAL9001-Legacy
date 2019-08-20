@@ -5,11 +5,14 @@
  * Date: 7/20/19
  */
 
-package org.firstinspires.ftc.teamcode.system.source;
+package org.firstinspires.ftc.teamcode.system.source.GUI;
+
+import android.util.Log;
 
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
+import org.firstinspires.ftc.teamcode.util.exceptions.SkyscraperTooTallException;
 import org.firstinspires.ftc.teamcode.util.exceptions.WrongSkyscraperBlueprintException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -112,6 +115,10 @@ public abstract class Menu {
      */
     protected abstract void render();
 
+    protected abstract void initLoopRender();
+
+    protected abstract void onStart();
+
     /**
      * Abstract method that is called when the gui is stopped.
      */
@@ -125,6 +132,66 @@ public abstract class Menu {
      */
     protected void displayLine(GuiLine line, int lineNumber){
         gui.displayLine(line, lineNumber);
+    }
+
+    protected void displayLines(GuiLine[] lines){
+        if(lines.length > MAXLINESPERSCREEN) {
+            throw new SkyscraperTooTallException("Lines passed to displayLines were more than 8 lines");
+        }
+            if (lines.length != 0) {
+                for (int i = 0; i < lines.length; i++) {
+                    displayLine(lines[i], i);
+                }
+            } else {
+                displayNothing();
+            }
+
+    }
+
+    protected void displayLines(GuiLine[] lines, List<Integer> lineNumbers){
+        if(lineNumbers.size() > MAXLINESPERSCREEN) {
+            throw new SkyscraperTooTallException("More than 8 lines were selected for display");
+        }
+        if(lines.length != 0 && lineNumbers.size() != 0) {
+            for (int i = 0; i < lineNumbers.size(); i++) {
+                displayLine(lines[lineNumbers.get(i)], lineNumbers.get(i));
+            }
+        }
+        else {
+            displayNothing();
+        }
+    }
+
+    protected void displayLines(List<GuiLine> lines){
+        if(lines.size() > MAXLINESPERSCREEN) {
+            throw new SkyscraperTooTallException("Lines passed to displayLines were more than 8 lines");
+        }
+        if(lines.size() != 0) {
+            for (int i = 0; i < lines.size(); i++) {
+                displayLine(lines.get(i), i);
+            }
+        }
+        else {
+            displayNothing();
+        }
+    }
+
+    protected void displayLines(List<GuiLine> lines, List<Integer> lineNumbers){
+        if(lineNumbers.size() > MAXLINESPERSCREEN) {
+            throw new SkyscraperTooTallException("More than 8 lines were selected for display");
+        }
+        if(lines.size() != 0 && lineNumbers.size() != 0) {
+            for (int i = 0; i < lineNumbers.size(); i++) {
+                displayLine(lines.get(lineNumbers.get(i)), lineNumbers.get(i));
+            }
+        }
+        else {
+            displayNothing();
+        }
+    }
+
+    protected void displayNothing(){
+        displayLine(new GuiLine("", "", ""), 0);
     }
 
     /**
@@ -276,6 +343,13 @@ public abstract class Menu {
                     throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
                 }
             }
+
+            if(lines.size() == 0) {
+                selectionZoneHeight = 1;
+                lines.add(new GuiLine("","",""));
+                Log.w("Menu Warning", "Warning: setLines() was passed an empty list. Side effects may include: headache, sad times, and a skyscraper collapse (Wrong skyscraper blueprint exception)");
+            }
+
             this.lines = lines;
         }
         else {

@@ -5,8 +5,9 @@
  * Date: 7/20/19
  */
 
-package org.firstinspires.ftc.teamcode.system.source;
+package org.firstinspires.ftc.teamcode.system.source.GUI;
 
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -56,7 +57,7 @@ public class GUI {
      *
      * @throws NotBooleanInputException - Throws an exception if button does not return boolean values.
      */
-    protected GUI(Robot robot, Button flipMenu) {
+    public GUI(Robot robot, Button flipMenu) {
         this.robot = robot;
         this.menus = new HashMap<>();
 
@@ -85,7 +86,7 @@ public class GUI {
     /**
      * Runs the init() function for every menu contained in the GUI.
      */
-    protected void start(){
+    public void start(){
         if(menus.size() > 0){
             cursor = menus.get(menuKeys.get(activeMenuIdx)).cursor;
         }
@@ -94,22 +95,32 @@ public class GUI {
         }
     }
 
+    public void onStart() {
+        for(Menu m : menus.values()) {
+            m.onStart();
+        }
+    }
+
     /**
      * Draws the current active menu to the screen.
      */
-    protected void drawCurrentMenu(){
+    public void drawCurrentMenu(){
         if(menus.size() != 0) {
             cursor.update();
             if (inputs.getBooleanInput(CYCLE_MENUS) && flag) {
                 activeMenuIdx++;
                 activeMenuIdx = activeMenuIdx % menuKeys.size();
                 setActiveMenu(menuKeys.get(activeMenuIdx));
+                cursor.cursorUpdated = true;
                 flag = false;
+                cycle = true;
             } else if (!inputs.getBooleanInput(CYCLE_MENUS) && !flag) {
                 flag = true;
-                setActiveMenu(menuKeys.get(activeMenuIdx));
+                cycle = false;
             }
-            cycle = !flag;
+            else {
+                cycle = false;
+            }
 
             if (System.currentTimeMillis() - lastRenderTime >= cursor.blinkSpeedMs || cursor.cursorUpdated || cycle) {
 
@@ -126,9 +137,44 @@ public class GUI {
     }
 
     /**
+     * Draws the current active menu to the screen.
+     */
+    public void drawCurrentMenuInit(){
+        if(menus.size() != 0) {
+            cursor.update();
+            if (inputs.getBooleanInput(CYCLE_MENUS) && flag) {
+                activeMenuIdx++;
+                activeMenuIdx = activeMenuIdx % menuKeys.size();
+                setActiveMenu(menuKeys.get(activeMenuIdx));
+                cursor.cursorUpdated = true;
+                flag = false;
+                cycle = true;
+            } else if (!inputs.getBooleanInput(CYCLE_MENUS) && !flag) {
+                flag = true;
+                cycle = false;
+            }
+            else {
+                cycle = false;
+            }
+
+            if (System.currentTimeMillis() - lastRenderTime >= cursor.blinkSpeedMs || cursor.cursorUpdated || cycle) {
+
+                if (cursor.cursorUpdated) {
+                    cursorBlinkState = 0;
+                }
+
+                clearScreen();
+                activeMenu.initLoopRender();
+                robot.telemetry.update();
+                lastRenderTime = System.currentTimeMillis();
+            }
+        }
+    }
+
+    /**
      * Runs the stop function for every menu contained in the GUI.
      */
-    protected void stop() {
+    public void stop() {
         for (Menu m : menus.values()) {
             m.stop();
         }
@@ -162,15 +208,18 @@ public class GUI {
         menus.remove(name);
         activeMenuIdx = activeMenuIdx % menuKeys.size();
         setActiveMenu(menuKeys.get(activeMenuIdx));
+        cycle = true;
     }
 
     /**
      * Sets the active menu.
      *
-     * @param menuName - The name of the menuGto be set as the active menu.
+     * @param menuName - The name of the menu to be set as the active menu.
      */
-    protected void setActiveMenu(String menuName){
+    public void setActiveMenu(String menuName){
+
         this.activeMenu = menus.get(menuName);
+        this.activeMenuIdx = menuKeys.indexOf(menuName);
         menus.get(menuName).open();
         cursor = menus.get(menuName).cursor;
     }
@@ -232,5 +281,14 @@ public class GUI {
      */
     public Menu getMenu(String menuName) {
         return menus.get(menuName);
+    }
+
+    public void setCycleButton(Button cycleButton) {
+        inputs.removeButton(CYCLE_MENUS);
+        inputs.addButton(CYCLE_MENUS,cycleButton);
+    }
+
+    public boolean isMenuPresent(String menuName) {
+        return menuKeys.contains(menuName);
     }
 }

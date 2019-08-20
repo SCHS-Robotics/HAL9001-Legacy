@@ -5,13 +5,16 @@
  * Date: 8/5/19
  */
 
-package org.firstinspires.ftc.teamcode.system.source;
+package org.firstinspires.ftc.teamcode.system.source.GUI;
+
+import android.util.Log;
 
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * The base menu class for DisplayMenus to extend.
@@ -20,10 +23,6 @@ public abstract class BaseDisplayMenu extends Menu {
 
     //The current "level" of screen in the menu. If the number of lines in the menu exceeds the maximum number, menunumber will increase by one for every screen the menu takes up.
     private int menuNumber;
-    //The customizable gamepad storing the menu's scroll button.
-    private CustomizableGamepad inputs;
-    //The name of the menu's scroll button.
-    private final String SELECT = "select";
 
     /**
      * Constructor for BaseDisplayMenu.
@@ -35,9 +34,6 @@ public abstract class BaseDisplayMenu extends Menu {
     public BaseDisplayMenu(GUI gui, Cursor cursor, GuiLine[] startingLines) {
         super(gui, cursor, startingLines,0,0);
         menuNumber = 0;
-
-        inputs = new CustomizableGamepad(gui.robot);
-        inputs.addButton(SELECT,new Button(1, Button.BooleanInputs.a));
     }
 
     /**
@@ -50,9 +46,6 @@ public abstract class BaseDisplayMenu extends Menu {
     public BaseDisplayMenu(GUI gui, Cursor cursor, ArrayList<GuiLine> startingLines) {
         super(gui,cursor, startingLines,0,0);
         menuNumber = 0;
-
-        inputs = new CustomizableGamepad(gui.robot);
-        inputs.addButton(SELECT,new Button(1, Button.BooleanInputs.a));
     }
 
     @Override
@@ -62,12 +55,25 @@ public abstract class BaseDisplayMenu extends Menu {
 
     @Override
     protected void open() {
+        super.setSelectionZoneHeight(0,new GuiLine[]{});
         super.cursor.doBlink = false;
     }
 
     @Override
     protected void render() {
         displayCurrentMenu();
+        clear();
+    }
+
+    @Override
+    protected void initLoopRender() {
+        displayCurrentMenu();
+        clear();
+    }
+
+    @Override
+    protected void onStart() {
+        menuNumber = 0;
     }
 
     @Override
@@ -100,13 +106,19 @@ public abstract class BaseDisplayMenu extends Menu {
      * Displays the current menu.
      */
     private void displayCurrentMenu(){
+
+        List<Integer> lineNums = new ArrayList<>();
         for (int i = menuNumber * Menu.MAXLINESPERSCREEN; i < Math.min(lines.size(),(menuNumber+1)*Menu.MAXLINESPERSCREEN); i++) {
-            super.displayLine(lines.get(i), i);
+            lineNums.add(i);
         }
+
+        displayLines(lines,lineNums);
     }
 
-    public void setSelect(Button selectButton) {
-        inputs.removeButton(SELECT);
-        inputs.addButton(SELECT,selectButton);
+    /**
+     * Clears the screen.
+     */
+    public void clear() {
+        super.setSelectionZoneHeight(0,new GuiLine[]{});
     }
 }

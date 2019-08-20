@@ -10,8 +10,8 @@ package org.firstinspires.ftc.teamcode.season.programs.calibration_programs;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.season.robot.ColorCalibBot;
-import org.firstinspires.ftc.teamcode.system.source.BaseTeleop;
-import org.firstinspires.ftc.teamcode.system.source.Robot;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseTeleop;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
 
 

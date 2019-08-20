@@ -7,8 +7,10 @@
 
 package org.firstinspires.ftc.teamcode.system.menus;
 
-import org.firstinspires.ftc.teamcode.system.source.BaseDisplayMenu;
-import org.firstinspires.ftc.teamcode.system.source.GUI;
+import android.util.Log;
+
+import org.firstinspires.ftc.teamcode.system.source.GUI.BaseDisplayMenu;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.DefaultCursor;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -26,7 +28,7 @@ public class DisplayMenu extends BaseDisplayMenu {
      * @param gui - The GUI used to render the menu.
      */
     public DisplayMenu(GUI gui) {
-        super(gui, new DefaultCursor(gui.robot,500), new GuiLine[]{});
+        super(gui, new DefaultCursor(gui.robot,0), new GuiLine[]{});
     }
 
     @Override
@@ -44,8 +46,11 @@ public class DisplayMenu extends BaseDisplayMenu {
      * @param data - The data to print to the screen.
      */
     public void addData(String caption, Object data){
+        if(lines.size() == 1 && lines.get(0).postSelectionText.equals("")) {
+            clear();
+        }
         List<GuiLine> newLines = lines;
-        lines.add(new GuiLine("", caption+": "+data.toString(),""));
+        newLines.add(new GuiLine("", caption + ": " + data.toString(), ""));
         super.setSelectionZoneHeight(super.getSelectionZoneHeight() + 1, newLines);
     }
 
@@ -55,15 +60,12 @@ public class DisplayMenu extends BaseDisplayMenu {
      * @param text - The text to add.
      */
     public void addLine(String text) {
-        List<GuiLine> newLines = lines;
-        lines.add(new GuiLine("",text,""));
-        super.setSelectionZoneHeight(super.getSelectionZoneHeight() + 1, newLines);
-    }
 
-    /**
-     * Clears the screen.
-     */
-    public void clear() {
-        super.setSelectionZoneHeight(0,new GuiLine[]{});
+        if(lines.size() == 1 && lines.get(0).postSelectionText.equals("")) {
+            clear();
+        }
+        List<GuiLine> newLines = lines;
+        newLines.add(new GuiLine("",text,""));
+        super.setSelectionZoneHeight(super.getSelectionZoneHeight() + 1, newLines);
     }
 }

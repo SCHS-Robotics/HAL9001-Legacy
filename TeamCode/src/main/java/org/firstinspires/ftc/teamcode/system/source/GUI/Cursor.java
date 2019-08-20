@@ -5,7 +5,7 @@
  * Date: 7/20/19
  */
 
-package org.firstinspires.ftc.teamcode.system.source;
+package org.firstinspires.ftc.teamcode.system.source.GUI;
 
 /**
  * An abstract class meant to represent the user's cursor.

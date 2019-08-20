@@ -11,8 +11,8 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
 import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
-import org.firstinspires.ftc.teamcode.system.source.Robot;
-import org.firstinspires.ftc.teamcode.system.source.SubSystem;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.exceptions.ChannelDoesNotExistException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
@@ -298,7 +298,6 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     @Override
     public void handle() {
 
-        displayMenu.clear();
         displayMenu.addData("x_upper",x_upper);
         displayMenu.addData("x_lower",x_lower);
         displayMenu.addData("y_upper",y_upper);
