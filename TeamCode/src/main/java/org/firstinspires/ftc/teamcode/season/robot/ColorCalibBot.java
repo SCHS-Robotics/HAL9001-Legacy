@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.calib.ColorspaceCalib;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 /**
- * A robot object containing a subsystem used to calibrate colorspace settings for computer vision algorithms
+ * A robot object containing a subsystem used to calibrate colorspace settings for computer vision algorithms.
  */
 public class ColorCalibBot extends Robot {
 

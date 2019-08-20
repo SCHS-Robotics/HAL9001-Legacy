@@ -4,7 +4,10 @@
  * Team Name: Level Up, Crow Force
  * Date: 7/20/19
  */
+
 package org.firstinspires.ftc.teamcode.system.source;
+
+import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 import org.firstinspires.ftc.teamcode.util.exceptions.WrongSkyscraperBlueprintException;
@@ -147,17 +150,12 @@ public abstract class Menu {
      *
      * @param selectionZoneWidth - The desired selection zone width.
      * @param newLines - The list of lines to display on the menu with the new format.
-     *
-     * @throws InvalidSelectionZoneException - Throws this exception if the selection zone width is not equal to the length of the
-     *                                         text to display in the selection zone.
      */
     public void setSelectionZoneWidth(int selectionZoneWidth, List<GuiLine> newLines){
         this.selectionZoneWidth = selectionZoneWidth;
-        for(GuiLine line: newLines) {
-            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
-                throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
-            }
-        }
+
+        cursor.x = Range.clip(cursor.x,0,selectionZoneWidth);
+
         setLines(newLines);
     }
 
@@ -166,17 +164,12 @@ public abstract class Menu {
      *
      * @param selectionZoneWidth - The desired selection zone width.
      * @param newLines - The list of lines to display on the menu with the new format.
-     *
-     * @throws InvalidSelectionZoneException - Throws this exception if the selection zone width is not equal to the length of the
-     *                                         text to display in the selection zone.
      */
     public void setSelectionZoneWidth(int selectionZoneWidth, GuiLine[] newLines){
         this.selectionZoneWidth = selectionZoneWidth;
-        for(GuiLine line: newLines) {
-            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
-                throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
-            }
-        }
+
+        cursor.x = Range.clip(cursor.x,0,selectionZoneWidth);
+
         setLines(newLines);
     }
 
@@ -186,14 +179,12 @@ public abstract class Menu {
      *
      * @param selectionZoneHeight - The desired selection zone height.
      * @param newLines - The list of lines to display on the menu with the new format.
-     *
-     * @throws WrongSkyscraperBlueprintException - Throws this exception if there are not enough lines in newLines to fill the selection zone.
      */
     public void setSelectionZoneHeight(int selectionZoneHeight, List<GuiLine> newLines) {
         this.selectionZoneHeight = selectionZoneHeight;
-        if(newLines.size() != selectionZoneHeight){
-            throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
-        }
+
+        cursor.y = Range.clip(cursor.y,0,selectionZoneHeight);
+
         setLines(newLines);
     }
 
@@ -202,14 +193,12 @@ public abstract class Menu {
      *
      * @param selectionZoneHeight - The desired selection zone height.
      * @param newLines - The list of lines to display on the menu with the new format.
-     *
-     * @throws WrongSkyscraperBlueprintException - Throws this exception if there are not enough lines in newLines to fill the selection zone.
      */
     public void setSelectionZoneHeight(int selectionZoneHeight, GuiLine[] newLines) {
         this.selectionZoneHeight = selectionZoneHeight;
-        if(newLines.length != selectionZoneHeight){
-            throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
-        }
+
+        cursor.y = Range.clip(cursor.y,0,selectionZoneHeight);
+
         setLines(newLines);
     }
 
@@ -223,14 +212,10 @@ public abstract class Menu {
     public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, GuiLine[] newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         this.selectionZoneHeight = selectionZoneHeight;
-        for(GuiLine line: newLines) {
-            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
-                throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
-            }
-        }
-        if(newLines.length != selectionZoneHeight){
-            throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
-        }
+
+        cursor.x = Range.clip(cursor.x,0,selectionZoneWidth);
+        cursor.y = Range.clip(cursor.y,0,selectionZoneHeight);
+
         setLines(newLines);
     }
 
@@ -244,14 +229,10 @@ public abstract class Menu {
     public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, List<GuiLine> newLines){
         this.selectionZoneWidth = selectionZoneWidth;
         this.selectionZoneHeight = selectionZoneHeight;
-        for(GuiLine line: newLines) {
-            if (!line.checkSelectionWidthSize(this.getSelectionZoneWidth())) {
-                throw new InvalidSelectionZoneException("Selection zone text width must match menu selection zone width");
-            }
-        }
-        if(newLines.size() != selectionZoneHeight){
-            throw new WrongSkyscraperBlueprintException("New lines do not match the height of selection zone");
-        }
+
+        cursor.x = Range.clip(cursor.x,0,selectionZoneWidth);
+        cursor.y = Range.clip(cursor.y,0,selectionZoneHeight);
+
         setLines(newLines);
     }
 

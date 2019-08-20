@@ -632,7 +632,6 @@ public class ConfigMenu extends ScrollingListMenu {
     private void resetCursorPos() {
         cursor.setX(0);
         cursor.setY(0);
-        menuNumber = 0; //temporary until bug is fixed
     }
 
     /**

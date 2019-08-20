@@ -1,3 +1,10 @@
+/*
+ * Filename: Grapher.java
+ * Author: Cole Savage
+ * Team Name: Level Up
+ * Date: 8/3/19
+ */
+
 package org.firstinspires.ftc.teamcode.util.misc;
 
 import android.os.Environment;
@@ -15,24 +22,34 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 
+/**
+ * A class for graphing functions on the phone in real time/
+ */
 public class Grapher {
 
-    private double maxX;
-    private double maxY;
-    private double t;
-    private double timeStep;
-    private double lastTimeStep;
-
+    //The x and y data of the graph.
+    private Mat xData, yData;
+    //The time in milliseconds of the last time the graph was updated.
     private long lastUpdate;
-
+    //The graph window's max x and y coordinate.
+    private double maxX, maxY;
+    //The time since the grapher was started.
+    private double t;
+    //The timestep in between graph requests.
+    private double timeStep, lastTimeStep;
+    //The current snapshot id. Used for taking snapshots of graph data.
+    private int snapshotNumber;
+    //A boolean specifying if the grapher is on its first loop.
     private boolean firstLoop;
+    //A boolean specifying if the grapher should allow negative y values.
     private boolean negativeY;
 
-    private int snapshotNumber;
-
-    private Mat xData;
-    private Mat yData;
-
+    /**
+     * Constructor for Grapher.
+     *
+     * @param maxX - The graph's maximium displayable x value. This is essentially the width of the graph window.
+     * @param maxY - The graph's maximum displayable y value. This is essentially the height of the graph window.
+     */
     public Grapher(double maxX, double maxY) {
         this.maxX = maxX;
         this.maxY = maxY;
@@ -52,6 +69,13 @@ public class Grapher {
         snapshotNumber = 0;
     }
 
+    /**
+     * Constructor for Grapher.
+     *
+     * @param maxX - The graph's maximium displayable x value. This is essentially the width of the graph window.
+     * @param maxY - The graph's maximum displayable y value. This is essentially the height of the graph window.
+     * @param negativeY - Whether or not to allow negative y coordinates on the graph.
+     */
     public Grapher(double maxX, double maxY, boolean negativeY) {
         this.maxX = maxX;
         this.maxY = maxY;
@@ -71,6 +95,12 @@ public class Grapher {
         snapshotNumber = 0;
     }
 
+    /**
+     * Gets the next graph frame.
+     *
+     * @param nextY - The next y value on the graph.
+     * @return - An image (Mat) of the graph.
+     */
     public Mat getNextFrame(double nextY) {
 
         if(!firstLoop) {
@@ -140,6 +170,10 @@ public class Grapher {
         return plot;
     }
 
+    //TODO may need updating
+    /**
+     * Save a snapshot of all the data currently on the graph.
+     */
     private void saveDataSnapshot() {
 
         snapshotNumber++;

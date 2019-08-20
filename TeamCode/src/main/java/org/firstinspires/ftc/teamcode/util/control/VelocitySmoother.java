@@ -1,4 +1,9 @@
-
+/*
+ * Filename: VelocitySmoother.java
+ * Author: Cole Savage
+ * Team Name: Level Up
+ * Date: 7/27/19
+ */
 
 package org.firstinspires.ftc.teamcode.util.control;
 
@@ -6,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotAGodException;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 
+//TODO class currently broken
 public class VelocitySmoother {
 
     private double aMax;

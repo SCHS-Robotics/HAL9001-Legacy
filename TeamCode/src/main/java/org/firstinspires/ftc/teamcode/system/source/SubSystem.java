@@ -7,8 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.source;
 
-import java.lang.InterruptedException;
-
 /**
  * An abstract class representing a subsystem on the robot.
  */
@@ -16,26 +14,8 @@ public abstract class SubSystem {
 
     //The robot the subsystem belongs to.
     protected Robot robot;
-    public boolean usesConfig;
-
-    /**
-     * An abstract method containing the code that the subsystem runs when being initialized.
-     *
-     * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
-     */
-    public abstract void init() throws InterruptedException;
-
-    public abstract void init_loop() throws InterruptedException;
-
-    /**
-     * An abstract method containing the code that the subsystem runs every loop in a teleop program.
-     */
-    public abstract void handle();
-
-    /**
-     * An abstract method containing the code that the subsystem runs when the program is stopped.
-     */
-    public abstract void stop();
+    //A boolean specifying whether or not the subsystem should use the configuration menu.
+    protected boolean usesConfig;
 
     /**
      * Ctor for subsystem.
@@ -47,6 +27,33 @@ public abstract class SubSystem {
         usesConfig = false;
         initVars();
     }
-    
+
+    /**
+     * An overridable method that allows you to easily initialize variables at the beginning of every constructor for the subsystem.
+     */
     protected void initVars() {}
+
+    /**
+     * An abstract method containing the code that the subsystem runs when being initialized.
+     *
+     * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
+     */
+    public abstract void init() throws InterruptedException;
+
+    /**
+     * An abstract method that contains code that runs in a loop on init.
+     *
+     * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
+     */
+    public abstract void init_loop() throws InterruptedException;
+
+    /**
+     * An abstract method containing the code that the subsystem runs every loop in a teleop program.
+     */
+    public abstract void handle();
+
+    /**
+     * An abstract method containing the code that the subsystem runs when the program is stopped.
+     */
+    public abstract void stop();
 }

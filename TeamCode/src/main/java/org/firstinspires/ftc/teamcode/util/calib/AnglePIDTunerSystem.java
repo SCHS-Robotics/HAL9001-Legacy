@@ -1,3 +1,10 @@
+/*
+ * Filename: AnglePIDTunerSystem.java
+ * Author: Cole Savage
+ * Team Name: Level Up
+ * Date: 8/11/19
+ */
+
 package org.firstinspires.ftc.teamcode.util.calib;
 
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -17,35 +24,49 @@ import org.firstinspires.ftc.teamcode.util.misc.Toggle;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
 
-public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvCameraViewListener2 {
+//TODO test on real robot stuff and add motor turning/config
+/**
+ * A subsystem used to tune turn-to-angle PID controllers.
+ */
+public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBase.CvCameraViewListener2 {
 
+    //The PID controller used to control the robot's angle.
     private PIDController pidTuner;
+    //The customizable gamepad containing all the controls fot the subsystem.
     private CustomizableGamepad inputs;
-
+    //A toggle used to toggle between precision mode and fast mode.
     private Toggle slowModeToggle;
-
-    private double increment;
-    private long lastActivatedTimestamp;
-    private int delayMs;
-
+    //A grapher used to graph the controller's error as a function of time.
     private Grapher grapher;
-
-    private double kp,ki,kd;
-
-    private double setPoint;
-
+    //The gyroscope used to track the robot's angle.
     private BNO055IMU imu;
-
-    private String displayName;
+    //The menu used to display the current kp, ki, and kd values.
     private DisplayMenu display;
-
+    //The last time in milliseconds that the PID coefficients were changed.
+    private long lastActivatedTimestamp;
+    //The PID coefficients.
+    private double kp,ki,kd;
+    //How much the coefficients will be incremented or decremented by.
+    private double increment;
+    //The target angle of the controller.
+    private double setPoint;
+    //The delay between each update to the PID controller's coefficients.
+    private int delayMs;
+    //The names of all the buttons used to change the PID coefficients.
     private final String SLOWMODE = "slowMode", P_INCREMENT = "PUp", P_DECREMENT = "PDown", I_INCREMENT = "IUp", I_DECREMENT = "IDown", D_INCREMENT = "DUp", D_DECREMENT = "DDown";
-
+    //The type of drive system the robot is using.
     public enum DriveType {
         TWOWHEEL, FOURWHEEL
     }
+    private DriveType driveType;
 
-    public AnglePIDTuner(Robot robot, String menuName, double setPoint) {
+    /**
+     * Constructor for AnglePIDTunerSystem.
+     *
+     * @param robot - The robot the subsystem belongs to.
+     * @param setPoint - The controller's setpoint.
+     */
+    public AnglePIDTunerSystem(Robot robot, double setPoint) {
         super(robot);
 
         inputs = new CustomizableGamepad(robot);
@@ -61,11 +82,17 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         pidTuner = new PIDController(kp,ki,kd);
         pidTuner.setSetpoint(setPoint);
 
-        display = (DisplayMenu) robot.gui.getMenu(menuName);
-        displayName = menuName;
+        display = new DisplayMenu(robot.gui);
     }
 
-    public AnglePIDTuner(Robot robot, String menuName, double setPoint, PIDController.Type type) {
+    /**
+     * Constructor for AnglePIDTunerSystem
+     *
+     * @param robot - The robot the subsystem belongs to.
+     * @param setPoint - The controller's setpoint.
+     * @param type - The type of PID controller being used.
+     */
+    public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type) {
         super(robot);
 
         inputs = new CustomizableGamepad(robot);
@@ -83,11 +110,19 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         pidTuner = new PIDController(kp,ki,kd,type);
         pidTuner.setSetpoint(setPoint);
 
-        display = (DisplayMenu) robot.gui.getMenu(menuName);
-        displayName = menuName;
+        display = new DisplayMenu(robot.gui);
     }
 
-    public AnglePIDTuner(Robot robot, String menuName, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper) {
+    /**
+     * Constuctor for AnglePIDTunerSystem.
+     *
+     * @param robot - The robot the subsystem belongs to.
+     * @param setPoint - The controller's setpoint.
+     * @param type - The type of PID controller being used.
+     * @param iClampLower - The lower value for the clamp on the integral term.
+     * @param iClampUpper - The upper value for the clamp on the integral term.
+     */
+    public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper) {
         super(robot);
 
         inputs = new CustomizableGamepad(robot);
@@ -106,11 +141,21 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         pidTuner.setSetpoint(setPoint);
         pidTuner.setIClamp(iClampLower,iClampUpper);
 
-        display = (DisplayMenu) robot.gui.getMenu(menuName);
-        displayName = menuName;
+        display = new DisplayMenu(robot.gui);
     }
 
-    public AnglePIDTuner(Robot robot, String menuName, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper, double outputClampLower, double outputClampUpper) {
+    /**
+     * Constuctor for AnglePIDTunerSystem.
+     *
+     * @param robot - The robot the subsystem belongs to.
+     * @param setPoint - The controller's setpoint.
+     * @param type - The type of PID controller being used.
+     * @param iClampLower - The lower value for the clamp on the integral term.
+     * @param iClampUpper - The upper value for the clamp on the integral term.
+     * @param outputClampLower - The lower value for the clamp on the controller's output.
+     * @param outputClampUpper - The upper value for the clamp on the controller's output.
+     */
+    public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper, double outputClampLower, double outputClampUpper) {
         super(robot);
 
         inputs = new CustomizableGamepad(robot);
@@ -130,11 +175,23 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         pidTuner.setIClamp(iClampLower,iClampUpper);
         pidTuner.setOutputClamp(outputClampLower,outputClampUpper);
 
-        display = (DisplayMenu) robot.gui.getMenu(menuName);
-        displayName = menuName;
+        display = new DisplayMenu(robot.gui);
     }
 
-    public AnglePIDTuner(Robot robot, String menuName, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper, double outputClampLower, double outputClampUpper, double PonMClampLower, double PonMClampUpper) {
+    /**
+     * Constuctor for AnglePIDTunerSystem.
+     *
+     * @param robot - The robot the subsystem belongs to.
+     * @param setPoint - The controller's setpoint.
+     * @param type - The type of PID controller being used.
+     * @param iClampLower - The lower value for the clamp on the integral term.
+     * @param iClampUpper - The upper value for the clamp on the integral term.
+     * @param outputClampLower - The lower value for the clamp on the controller's output.
+     * @param outputClampUpper - The upper value for the clamp on the controller's output.
+     * @param PonMClampLower - The lower value for the clamp on the controller's proportional term in PonM mode.
+     * @param PonMClampUpper - The upper value for the clamp on the controller's proportional term in PonM mode.
+     */
+    public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper, double outputClampLower, double outputClampUpper, double PonMClampLower, double PonMClampUpper) {
         super(robot);
 
         inputs = new CustomizableGamepad(robot);
@@ -155,12 +212,11 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         pidTuner.setOutputClamp(outputClampLower,outputClampUpper);
         pidTuner.setPonMClamp(PonMClampLower,PonMClampUpper);
 
-        display = (DisplayMenu) robot.gui.getMenu(menuName);
-        displayName = menuName;
+        display = new DisplayMenu(robot.gui);
     }
 
     @Override
-    public void init() throws InterruptedException {
+    public void init() {
 
         imu = robot.hardwareMap.get(BNO055IMU.class,"imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -171,10 +227,9 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
         startOpenCV(this);
     }
 
+    //TODO gyro calibration init display
     @Override
-    public void init_loop() {
-
-    }
+    public void init_loop() {}
 
     @Override
     public void handle() {
@@ -253,14 +308,14 @@ public class AnglePIDTuner extends SubSystem implements CameraBridgeViewBase.CvC
     }
 
     /**
-     * Starts OpenCV internally (call startVision to start OpenCV from outside this program).
+     * Starts OpenCV.
      */
     private void startOpenCV(CameraBridgeViewBase.CvCameraViewListener2 cameraViewListener) {
         FtcRobotControllerActivity.turnOnCameraView.obtainMessage(1, cameraViewListener).sendToTarget();
     }
 
     /**
-     * Stops OpenCV internally (call stopVision to stop OpenCV from outside this program).
+     * Stops OpenCV.
      */
     private void stopOpenCV() {
         FtcRobotControllerActivity.turnOffCameraView.obtainMessage().sendToTarget();

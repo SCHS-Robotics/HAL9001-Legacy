@@ -1,5 +1,5 @@
 /*
- * Filename:Button.java
+ * Filename: Button.java
  * Author: Dylan Zueck
  * Team Name: Crow Force
  * Date: 7/20/19
@@ -11,6 +11,7 @@ package org.firstinspires.ftc.teamcode.util.misc;
  * A class representing a button on the gamepad.
  */
 public class Button {
+
     //IsBoolean is ture if is is a boolean input button, isDouble is true if it is a double input button.
     public boolean isBoolean, isDouble;
     //Number of gamepad to use 1 or 2.

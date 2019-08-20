@@ -1,8 +1,8 @@
 /*
- * Filename: DefaultCursor.java
+ * Filename: ConfigCursor.java
  * Author: Dylan Zueck and Cole Savage
  * Team Name: Crow Force, Level Up
- * Date: 7/20/19
+ * Date: 8/13/19
  */
 
 package org.firstinspires.ftc.teamcode.system.subsystems.cursors;
@@ -15,23 +15,23 @@ import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 
 /**
- * A default cursor object with normal movement and selection operations.
+ * A cursor object used in config menus. Contains all the controls needed to use the config system.
  */
 public class ConfigCursor extends Cursor {
 
-    private boolean writeMode;
-
-    //The customizeable set of inputs used to control the cursor.
+    //The customizable set of inputs used to control the cursor.
     private CustomizableGamepad inputs;
-
+    //The millisecond timestamps of the last time when select was pressed and when reverse select was pressed, respectively
     private long timeFromLastPressSelectMill, timeFromLastPressRSelectMill;
     //The names of the controls that are used to interact with the cursor.
     public static final String UP = "up", DOWN = "down", LEFT = "left", RIGHT = "right", SELECT = "select", SWITCH_GAMEPAD = "switchgamepad", REVERSE_SELECT = "it's rewind time", BACK_BUTTON = "back", DISABLE_AUTORUN = "disable autorun";
+    //A boolean value specifying if the cursor has been set to "Write mode"
+    private boolean writeMode;
     //A boolean value used to toggle the controls on and off.
     private boolean flag = true;
 
     /**
-     * Ctor for default cursor.
+     * Ctor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param x - The cursor's initial x coordinate.
@@ -58,7 +58,7 @@ public class ConfigCursor extends Cursor {
     }
 
     /**
-     * Ctor for default cursor.
+     * Ctor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
@@ -83,7 +83,7 @@ public class ConfigCursor extends Cursor {
     }
 
     /**
-     * Ctor for default cursor.
+     * Ctor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
@@ -107,7 +107,7 @@ public class ConfigCursor extends Cursor {
     }
 
     /**
-     * Ctor for default cursor.
+     * Ctor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param x - The cursor's initial x coordinate.
@@ -144,6 +144,7 @@ public class ConfigCursor extends Cursor {
      * @throws NotBooleanInputException - Throws an exception if button does not return boolean values.
      */
     public void setInputs(Button up, Button down, Button left, Button right, Button select, Button reverseSelect, Button switchGamepad, Button backButton){
+
         if(up.isBoolean && down.isBoolean && left.isBoolean && right.isBoolean && select.isBoolean) {
             inputs.addButton(UP, up);
             inputs.addButton(DOWN, down);
@@ -160,9 +161,17 @@ public class ConfigCursor extends Cursor {
         }
     }
 
+    /**
+     * Sets whether the cursor is in write mode.
+     *
+     * @param writeMode - Whether the cursor will be set to write mode (true) or not (false).
+     */
+    public void setWriteMode(boolean writeMode) {
+        this.writeMode = writeMode;
+    }
+
     @Override
     public void update() {
-
         if(inputs.getBooleanInput(SELECT) && (flag || (writeMode && System.currentTimeMillis()-timeFromLastPressSelectMill > 250))){
             super.menu.onSelect();
             super.menu.onButton(SELECT,inputs.getButton(SELECT));
@@ -228,9 +237,5 @@ public class ConfigCursor extends Cursor {
         else {
             forceCursorChar = true;
         }
-    }
-
-    public void setWriteMode(boolean writeMode) {
-        this.writeMode = writeMode;
     }
 }

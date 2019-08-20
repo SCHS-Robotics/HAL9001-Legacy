@@ -7,8 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.util.misc;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 
 import java.util.HashMap;
@@ -343,6 +341,12 @@ public class CustomizableGamepad {
         }
     }
 
+    /**
+     * Gets a button object from the gamepad.
+     *
+     * @param name - The name of the button.
+     * @return - The button object corresponding to that name.
+     */
     public Button getButton(String name) {
         return inputs.get(name);
     }

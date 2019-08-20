@@ -1,6 +1,6 @@
 /*
  * Filename: Robot.java
- * Author: Andrew Liang
+ * Author: Andrew Liang, Dylan Zueck, Cole Savage
  * Team Name: Level Up
  * Date: 2017
  */
@@ -39,25 +39,20 @@ import java.util.Map;
  */
 public abstract class Robot {
 
+    //A map relating the name of each subsystem in the robot to that subsystem's corresponding autonomous config
     public static Map<String, List<ConfigParam>> autonomousConfig = new HashMap<>();
+    //A map relating the name of each subsystem in the robot to that subsystem's corresponding teleop config
     public static Map<String, List<ConfigParam>> teleopConfig = new HashMap<>();
-
-    public String rId;
-
     //A hashmap mapping the name of a subsystem to the actual subsystem object.
-    public final Map<String, SubSystem> subSystems;
+    private final Map<String, SubSystem> subSystems;
     //The opmode the robot is running.
     private OpMode opMode;
-    //A boolean value specifying whether or not to use a GUI.
-    private boolean useGui, useConfig = false;
-
-    private boolean closeConfig = false;
-
+    //A boolean value specifying whether or not to use a GUI, whether or not to use a config, and whether or not to close the current config GUI.
+    private boolean useGui, useConfig, closeConfig = false;
     //The GUI the robot uses to render the menus.
     public GUI gui;
-
+    //The GUI the robot uses to render the config menus.
     private GUI configGui;
-
     //The gamepads used to control the robot.
     public volatile Gamepad gamepad1, gamepad2;
     //The telemetry used to print lines to the driver station.
@@ -82,7 +77,7 @@ public abstract class Robot {
     }
 
     /**
-     * Adds a subsystem to the robot's hashmap of subsystems.
+     * Adds a subsystem to the robot's hashmap of subsystems and, if the subsystem uses config, load the default config.
      *
      * @param name - The name of the subsystem.
      * @param subSystem - The subsystem object.
@@ -97,9 +92,7 @@ public abstract class Robot {
 
             try {
 
-
                 Method[] methods = subSystem.getClass().getDeclaredMethods();
-
                 for(Method m : methods) {
 
                     //method must be annotated as TeleopConfig, have no parameters, be public and static, and return an array of config params
@@ -142,12 +135,17 @@ public abstract class Robot {
         useGui = true;
     }
 
+    /**
+     * Returns whether the robot has already been set up to use the GUI.
+     *
+     * @return - Whether the GUI has been instantiated.
+     */
     public boolean isUsingGUI() {
         return useGui;
     }
 
     /**
-     * Runs all the initialization methods of every subsystem and the GUI.
+     * Runs all the initialization methods of every subsystem and the GUI. Also starts the config and creates the config file tree if needed.
      */
     public final void init()
     {
@@ -161,10 +159,8 @@ public abstract class Robot {
 
         if(useConfig) {
 
-            rId = this.getClass().getSimpleName();
-
             //create overall robot folder
-            File robotConfigDirectory = new File(Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+rId);
+            File robotConfigDirectory = new File(Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+this.getClass().getSimpleName());
             if(!robotConfigDirectory.exists()) {
                 robotConfigDirectory.mkdir();
                 writeFile(robotConfigDirectory.getPath() + "/robot_info.txt", "");
@@ -187,12 +183,18 @@ public abstract class Robot {
             //These names will be used in the config debugger
             StringBuilder sb = new StringBuilder();
             for(SubSystem subSystem : subSystems.values()) {
-                sb.append(subSystem.getClass().getName());
-                sb.append("\r\n");
+                if(subSystem.usesConfig) {
+                    sb.append(subSystem.getClass().getName());
+                    sb.append("\r\n");
+                }
             }
-            sb.delete(sb.length()-2,sb.length()); //removes trailing \r\n characters so there isn't a blank line at the end of the file
+            if(sb.length() > 2) {
+                sb.delete(sb.length() - 2, sb.length()); //removes trailing \r\n characters so there isn't a blank line at the end of the file
+            }
+
             writeFile(robotConfigDirectory.getPath() + "/robot_info.txt", sb.toString());
 
+            //If the opmode is annotated as StandAlone, add the config menu in standalone mode.
             if(opMode.getClass().isAnnotationPresent(StandAlone.class)) {
                 if(opMode instanceof BaseAutonomous) {
                     configGui.addMenu("config",new ConfigMenu(configGui,autoDir.getPath(),true));
@@ -201,6 +203,7 @@ public abstract class Robot {
                     configGui.addMenu("config",new ConfigMenu(configGui,teleopDir.getPath(),true));
                 }
             }
+            //Otherwise, add the config menu in non-standalone mode.
             else {
                 configGui.addMenu("config",new ConfigMenu(configGui,robotConfigDirectory.getPath(),false));
             }
@@ -221,6 +224,9 @@ public abstract class Robot {
         }
     }
 
+    /**
+     * Runs methods in a loop during init. Runs all subsystem init_loop() methods and draws the configuration menu.
+     */
     public final void init_loop() {
 
         this.gamepad1 = opMode.gamepad1;
@@ -230,6 +236,8 @@ public abstract class Robot {
 
             if(useConfig) {
                 configGui.drawCurrentMenu();
+
+                //If the configmenu is dne configuring, set useconfig to false.
                 useConfig = !((ConfigMenu) configGui.getMenu("config")).isDone && useConfig;
             }
 
@@ -324,10 +332,21 @@ public abstract class Robot {
         return subSystem;
     }
 
+    /**
+     * Gets the opmode the robot is currently running.
+     *
+     * @return - The opmode the robot is running.
+     */
     public final OpMode getOpMode() {
         return opMode;
     }
 
+    /**
+     * Pulls a customizable gamepad object from the teleop config map. Allows for easily getting gamepad data from the configuration.
+     *
+     * @param subsystem - The name of the subsystem to pull the gamepad controls for.
+     * @return - A customizable gamepad containing the configured controls for that subsystem.
+     */
     public CustomizableGamepad pullControls(String subsystem) {
         List<ConfigParam> configParams = teleopConfig.get(subsystem);
         CustomizableGamepad gamepad = new CustomizableGamepad(this);
@@ -339,6 +358,12 @@ public abstract class Robot {
         return gamepad;
     }
 
+    /**
+     * Pulls a map of all non-gamepad-related config settings from the global config. The map format is (option name) -> (option value)
+     *
+     * @param subsystem - The name of the subsystem to pull the gamepad controls for.
+     * @return - A map relating the name of each non-gamepad option to that option's value.
+     */
     public Map<String,String> pullNonGamepad(String subsystem) {
 
         List<ConfigParam> configParamsTeleop = new ArrayList<>();
@@ -368,16 +393,28 @@ public abstract class Robot {
         return output;
     }
 
+    /**
+     * Writes data to a specified filepath. Creates the file if it doesn't exist, overwrites it if it does.
+     *
+     * @param filePath - The path of the file to write to.
+     * @param data - The data to write to the file/
+     */
     private void writeFile(String filePath, String data) {
 
         FileOutputStream fos;
 
         try {
-
             File file = new File(filePath);
             if(file.exists()) {
-                file.delete();
-                file.createNewFile();
+                boolean fileDeleted = file.delete();
+                if(!fileDeleted) {
+                    Log.e("File Error", "Could not delete file at "+filePath);
+                }
+
+                boolean fileCreated = file.createNewFile();
+                if(!fileCreated) {
+                    Log.e("File Error","Could not create file at "+filePath);
+                }
             }
 
             fos = new FileOutputStream(filePath, true);

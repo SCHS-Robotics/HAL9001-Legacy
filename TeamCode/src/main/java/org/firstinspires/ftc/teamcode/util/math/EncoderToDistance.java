@@ -11,6 +11,7 @@ package org.firstinspires.ftc.teamcode.util.math;
  * A calculator that calculates encoder ticks per meter and uses that to find.
  */
 public class EncoderToDistance {
+
     //Conversion of 1 encoder per meter.
     private double encoderPerMeter;
 

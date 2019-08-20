@@ -10,7 +10,7 @@ package org.firstinspires.ftc.teamcode.system.source;
 import android.util.Log;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import java.lang.InterruptedException;
+
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 
 /**

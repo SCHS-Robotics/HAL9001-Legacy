@@ -9,7 +9,6 @@ package org.firstinspires.ftc.teamcode.util.control;
 
 import com.qualcomm.robotcore.util.Range;
 
-import org.firstinspires.ftc.teamcode.system.source.SubSystem;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 
 /**

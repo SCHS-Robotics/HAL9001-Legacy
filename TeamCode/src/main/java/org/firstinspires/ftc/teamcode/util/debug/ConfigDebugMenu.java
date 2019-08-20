@@ -3,12 +3,9 @@ package org.firstinspires.ftc.teamcode.util.debug;
 import android.os.Environment;
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import org.firstinspires.ftc.teamcode.system.source.GUI;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.system.source.ScrollingListMenu;
-import org.firstinspires.ftc.teamcode.system.source.SubSystem;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
@@ -563,16 +560,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
     private void genDefaultConfigMap() {
         config = new HashMap<>();
 
@@ -595,27 +582,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
             }
         }
     }
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
 
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
     private void updateConfigMapSubsystem(List<GuiLine> newConfig) {
         removeDone(newConfig); //gets rid of the Done line
 
@@ -636,16 +603,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
             }
         }
     }
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
 
     private void removeDone(List<GuiLine> lines) {
         for(GuiLine line : lines) {
@@ -656,16 +613,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
+
     private void writeConfigFile() {
 
         File configFile = new File(selectedConfigPath);
@@ -714,16 +662,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
             e.printStackTrace();
         }
     }
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
 
     private String parseName(String input) {
 
@@ -752,7 +690,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         return parsedString.replace('#','_');
     }
 
-
     private ArrayList<Character> getValidChars() {
         ArrayList<Character> outputList = new ArrayList<>();
         for(char c : SUPPORTED_CHARS.toCharArray()) {
@@ -761,16 +698,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         return outputList;
     }
 
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     *
-     */
     private static ArrayList<GuiLine> genInitialLines(String filePath) {
         File rootDirectory = new File(filePath);
         File[] dirs = rootDirectory.listFiles();

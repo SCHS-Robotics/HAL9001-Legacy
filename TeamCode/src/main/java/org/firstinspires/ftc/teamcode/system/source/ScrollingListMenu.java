@@ -10,6 +10,7 @@ package org.firstinspires.ftc.teamcode.system.source;
 import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An abstract class extending Menu.java that represents a common typ of menu.
@@ -23,6 +24,7 @@ public abstract class ScrollingListMenu extends Menu {
      * Ctor for menu class.
      *
      * @param gui - The GUI that will be used to render the menu.
+     * @param cursor - The cursor assigned to this menu.
      * @param startingLines - The list of lines that will be displayed when the menu is first rendered.
      * @param selectionZoneWidth - The maximum x value that the cursor will be able to travel to inside the selection zone.
      *                             Note: This is not the actual width of the zone itself, but a boundary for the index.
@@ -39,6 +41,7 @@ public abstract class ScrollingListMenu extends Menu {
      * Ctor for menu class.
      *
      * @param gui - The GUI that will be used to render the menu.
+     * @param cursor - The cursor assigned to this menu.
      * @param startingLines - The list of lines that will be displayed when the menu is first rendered.
      * @param selectionZoneWidth - The maximum x value that the cursor will be able to travel to inside the selection zone.
      *                             Note: This is not the actual width of the zone itself, but a boundary for the index.
@@ -88,6 +91,30 @@ public abstract class ScrollingListMenu extends Menu {
             menuNumber = 0;
             cursor.y = 0;
         }
+    }
+
+    @Override
+    public void setSelectionZoneHeight(int selectionZoneHeight, List<GuiLine> newLines) {
+        super.setSelectionZoneHeight(selectionZoneHeight, newLines);
+        menuNumber = (int) Math.floor((cursor.y * 1.0)/Menu.MAXLINESPERSCREEN);
+    }
+
+    @Override
+    public void setSelectionZoneHeight(int selectionZoneHeight, GuiLine[] newLines) {
+        super.setSelectionZoneHeight(selectionZoneHeight, newLines);
+        menuNumber = (int) Math.floor((cursor.y * 1.0)/Menu.MAXLINESPERSCREEN);
+    }
+
+    @Override
+    public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, GuiLine[] newLines) {
+        super.setSelectionZoneWidthAndHeight(selectionZoneWidth, selectionZoneHeight, newLines);
+        menuNumber = (int) Math.floor((cursor.y * 1.0)/Menu.MAXLINESPERSCREEN);
+    }
+
+    @Override
+    public void setSelectionZoneWidthAndHeight(int selectionZoneWidth, int selectionZoneHeight, List<GuiLine> newLines) {
+        super.setSelectionZoneWidthAndHeight(selectionZoneWidth, selectionZoneHeight, newLines);
+        menuNumber = (int) Math.floor((cursor.y * 1.0)/Menu.MAXLINESPERSCREEN);
     }
 
     /**

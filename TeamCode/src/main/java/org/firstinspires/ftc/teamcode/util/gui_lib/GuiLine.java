@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneExcept
  * A class representing a line printed on a menu.
  */
 public class GuiLine {
+
     //SelectionZoneText is text for the selection zone, PostSelectionText is text to go after selection zone, divider is text between the two of them.
     public String selectionZoneText, postSelectionText, divider;
     //True if custom divider is used.

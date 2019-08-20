@@ -1,17 +1,15 @@
 /*
  * Filename: QuadWheelDrive.java
- * Author: Dylan Zueck
- * Team Name: Crow Force
- * Date: TODO
+ * Author: Cole Savage
+ * Team Name: Level Up
+ * Date: 8/7/19
  */
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
-import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.robotcore.internal.opengl.models.MeshObject;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.system.source.SubSystem;
 import org.firstinspires.ftc.teamcode.util.control.PIDController;

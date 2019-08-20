@@ -6,10 +6,6 @@
  */
 package org.firstinspires.ftc.teamcode.util.calib;
 
-import android.util.Log;
-
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcontroller.internal.FtcRobotControllerActivity;
@@ -17,7 +13,6 @@ import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.Robot;
 import org.firstinspires.ftc.teamcode.system.source.SubSystem;
-import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.exceptions.ChannelDoesNotExistException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
@@ -40,7 +35,7 @@ import java.util.Map;
 public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.CvCameraViewListener2 {
 
     //The upper and lower limits for the x, y, z values for the color spaces.
-    public int x_lower, y_lower, z_lower, x_upper, y_upper, z_upper;
+    private int x_lower, y_lower, z_lower, x_upper, y_upper, z_upper;
     //Controls the change in x, y, z values.
     private int increment;
     //The collection of user selected inputs.
@@ -59,7 +54,7 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     private int channelIdx, delayMs;
     //The mode of image filtering. Either single chanel images or 3 channel color images.
     private ImageType imageType;
-
+    //The menu used to display the colorspace bounds to the screen.
     private DisplayMenu displayMenu;
 
     /**
@@ -77,6 +72,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     }
 
 
+    /**
+     * Constructor that uses configuration to set everything.
+     *
+     * @param robot - The robot running the program.
+     */
     public ColorspaceCalib(Robot robot) {
         super(robot);
 
@@ -569,6 +569,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         }
     }
 
+    /**
+     * Returns a list of all of the settings that need to be configured for this program in teleop.
+     *
+     * @return - The settings this program needs to be configured for teleop.
+     */
     @TeleopConfig
     public static ConfigParam[] teleopConfig() {
         return new ConfigParam[] {
