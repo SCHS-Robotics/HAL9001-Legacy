@@ -47,6 +47,8 @@ public abstract class SubSystem {
      */
     public abstract void init_loop() throws InterruptedException;
 
+    public abstract void start();
+
     /**
      * An abstract method containing the code that the subsystem runs every loop in a teleop program.
      */

@@ -36,6 +36,7 @@ public class ConfigParam {
     public boolean usesGamepad;
     //A boolean value specifying if the option is a boolean button on a gamepad.
     private boolean isBoolButton;
+    private boolean isDoubleButton;
 
     /**
      * Constructor for ConfigParam that provides default settings for a boolean button on the gamepad.
@@ -51,6 +52,7 @@ public class ConfigParam {
         currentOption = this.defaultOption;
 
         isBoolButton = true;
+        isDoubleButton = false;
 
         usesGamepad = true;
 
@@ -75,6 +77,7 @@ public class ConfigParam {
         currentOption = this.defaultOption;
 
         isBoolButton = true;
+        isDoubleButton = false;
 
         usesGamepad = true;
 
@@ -102,6 +105,7 @@ public class ConfigParam {
         currentOption = this.defaultOption;
 
         isBoolButton = false;
+        isDoubleButton = true;
 
         usesGamepad = true;
 
@@ -126,6 +130,7 @@ public class ConfigParam {
         currentOption = this.defaultOption;
 
         isBoolButton = false;
+        isDoubleButton = true;
 
         usesGamepad = true;
 
@@ -135,7 +140,43 @@ public class ConfigParam {
 
         String[] gamepadOpts = new String[] {"Gamepad 1", "Gamepad 2"};
         gamepadOptions = new ArrayList<>(Arrays.asList(gamepadOpts));
+        defaultGamepadOption = "Gamepad " + gamepadDefault;
+        currentGamepadOption = this.defaultGamepadOption;
+    }
+
+    public ConfigParam(String name, Button.VectorInputs defaultOption) {
+        this.name = name;
+        String[] doubleOptions = new String[] {"noButton","left_stick", "right_stick"};
+        options = new ArrayList<>(Arrays.asList(doubleOptions));
+        this.defaultOption = defaultOption.name();
+        currentOption = this.defaultOption;
+
+        isBoolButton = false;
+        isDoubleButton = false;
+
+        usesGamepad = true;
+
+        String[] gamepadOpts = new String[] {"Gamepad 1", "Gamepad 2"};
+        gamepadOptions = new ArrayList<>(Arrays.asList(gamepadOpts));
         defaultGamepadOption = "Gamepad 1";
+        currentGamepadOption = this.defaultGamepadOption;
+    }
+
+    public ConfigParam(String name, Button.VectorInputs defaultOption, int gamepadDefault) {
+        this.name = name;
+        String[] doubleOptions = new String[] {"noButton","left_stick", "right_stick"};
+        options = new ArrayList<>(Arrays.asList(doubleOptions));
+        this.defaultOption = defaultOption.name();
+        currentOption = this.defaultOption;
+
+        isBoolButton = false;
+        isDoubleButton = false;
+
+        usesGamepad = true;
+
+        String[] gamepadOpts = new String[] {"Gamepad 1", "Gamepad 2"};
+        gamepadOptions = new ArrayList<>(Arrays.asList(gamepadOpts));
+        defaultGamepadOption = "Gamepad " + gamepadDefault;
         currentGamepadOption = this.defaultGamepadOption;
     }
 
@@ -188,7 +229,7 @@ public class ConfigParam {
      * @param usesGamepad - Whether or not the option uses the gamepad.
      * @param isBoolButton - Whether or not the option is a boolean button on the gamepad.
      */
-    private ConfigParam(String name, List<String> options, String defaultOption, String currentOption, List<String> gamepadOptions, String defaultGamepadOption, String currentGamepadOption, boolean usesGamepad, boolean isBoolButton) {
+    private ConfigParam(String name, List<String> options, String defaultOption, String currentOption, List<String> gamepadOptions, String defaultGamepadOption, String currentGamepadOption, boolean usesGamepad, boolean isBoolButton, boolean isDoubleButton) {
         this.name = name;
         this.options = options;
         this.defaultOption = defaultOption;
@@ -198,6 +239,7 @@ public class ConfigParam {
         this.currentGamepadOption = currentGamepadOption;
         this.usesGamepad = usesGamepad;
         this.isBoolButton = isBoolButton;
+        this.isDoubleButton = isDoubleButton;
     }
 
     /**
@@ -211,8 +253,11 @@ public class ConfigParam {
             if(isBoolButton) {
                 return new Button(currentGamepadOption.equals("Gamepad 1") ? 1 : currentGamepadOption.equals("Gamepad 2") ? 2 : -1, Button.BooleanInputs.valueOf(currentOption));
             }
-            else {
+            else if(isDoubleButton){
                 return new Button(currentGamepadOption.equals("Gamepad 1") ? 1 : currentGamepadOption.equals("Gamepad 2") ? 2 : -1, Button.DoubleInputs.valueOf(currentOption));
+            }
+            else {
+                return new Button(currentGamepadOption.equals("Gamepad 1") ? 1 : currentGamepadOption.equals("Gamepad 2") ? 2 : -1, Button.VectorInputs.valueOf(currentOption));
             }
         }
         else {
@@ -227,6 +272,6 @@ public class ConfigParam {
 
     @Override
     public ConfigParam clone() {
-        return new ConfigParam(name,options,defaultOption,currentOption,gamepadOptions,defaultGamepadOption,currentGamepadOption,usesGamepad,isBoolButton);
+        return new ConfigParam(name,options,defaultOption,currentOption,gamepadOptions,defaultGamepadOption,currentGamepadOption,usesGamepad,isBoolButton,isDoubleButton);
     }
 }

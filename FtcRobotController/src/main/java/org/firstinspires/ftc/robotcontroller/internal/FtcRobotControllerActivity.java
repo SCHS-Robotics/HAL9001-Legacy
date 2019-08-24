@@ -319,6 +319,8 @@ public class FtcRobotControllerActivity extends Activity
 
     mOpenCvCameraView = (JavaCameraView) findViewById(R.id.cameraView);
 
+    mOpenCvCameraView.setMaxFrameSize(640,480);
+
     preferencesHelper = new PreferencesHelper(TAG, context);
     preferencesHelper.writeBooleanPrefIfDifferent(context.getString(R.string.pref_rc_connected), true);
     preferencesHelper.getSharedPreferences().registerOnSharedPreferenceChangeListener(sharedPreferencesListener);

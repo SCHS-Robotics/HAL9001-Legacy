@@ -42,6 +42,11 @@ public class EncoderDistanceCalib extends SubSystem {
     }
 
     @Override
+    public void start() {
+
+    }
+
+    @Override
     public void handle() {
 
     }

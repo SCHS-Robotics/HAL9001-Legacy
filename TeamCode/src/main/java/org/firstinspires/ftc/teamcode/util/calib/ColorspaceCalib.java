@@ -288,6 +288,11 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
     @Override
     public void init_loop() {
+
+    }
+
+    @Override
+    public void start() {
         inputs = robot.pullControls(this.getClass().getSimpleName());
         Map<String,String> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
         if(!settingsData.isEmpty()) {

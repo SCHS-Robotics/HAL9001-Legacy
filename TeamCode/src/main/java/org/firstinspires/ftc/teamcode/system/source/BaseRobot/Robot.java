@@ -154,7 +154,7 @@ public abstract class Robot {
      *
      * @return - Whether the GUI has been instantiated.
      */
-    public boolean isUsingGUI() {
+    public boolean usesGUI() {
         return useGui;
     }
 
@@ -232,8 +232,10 @@ public abstract class Robot {
             }
             catch (Exception ex)
             {
-                telemetry.addData("Error!!!", ex.getMessage());
-                ex.printStackTrace();
+                telemetry.clearAll();
+                telemetry.addData("ERROR!!!", ex.getMessage());
+                telemetry.update();
+                Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
             }
         }
     }
@@ -263,18 +265,35 @@ public abstract class Robot {
                 subSystem.init_loop();
             }
             catch (Exception ex) {
-                telemetry.addData("Error!!!",ex.getMessage());
-                ex.printStackTrace();
+                telemetry.clearAll();
+                telemetry.addData("ERROR!!!", ex.getMessage());
+                telemetry.update();
+                Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
             }
         }
     }
 
     public final void onStart() {
+        this.gamepad1 = opMode.gamepad1;
+        this.gamepad2 = opMode.gamepad2;
+
         if(useGui) {
             if(gui.isMenuPresent("config")) {
                 gui.removeMenu("config");
             }
             gui.onStart();
+        }
+
+        for(SubSystem subSystem : subSystems.values()) {
+            try {
+                subSystem.start();
+            }
+            catch (Exception ex) {
+                telemetry.clearAll();
+                telemetry.addData("ERROR!!!", ex.getMessage());
+                telemetry.update();
+                Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+            }
         }
     }
 
@@ -297,7 +316,10 @@ public abstract class Robot {
             }
             catch (Exception ex)
             {
-                ex.printStackTrace();
+                telemetry.clearAll();
+                telemetry.addData("ERROR!!!", ex.getMessage());
+                telemetry.update();
+                Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
             }
         }
     }
@@ -319,8 +341,10 @@ public abstract class Robot {
             }
             catch (Exception ex)
             {
-                telemetry.addData("Error!!!", ex.getMessage());
-                ex.printStackTrace();
+                telemetry.clearAll();
+                telemetry.addData("ERROR!!!", ex.getMessage());
+                telemetry.update();
+                Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
             }
         }
     }
