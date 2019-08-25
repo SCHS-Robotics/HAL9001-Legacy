@@ -102,10 +102,10 @@ public class MechanumDrive extends SubSystem {
                 input.rotate(-(PI / 4));
 
                 if(!turnLeft && !turnRight) {
-                    topLeft.setPower(Range.clip(input.x + inputs.getDoubleInput(TURNSTICK),-1,1));
-                    topRight.setPower(Range.clip(input.y - inputs.getDoubleInput(TURNSTICK),-1,1));
-                    botLeft.setPower(Range.clip(input.y + inputs.getDoubleInput(TURNSTICK),-1,1));
-                    botRight.setPower(Range.clip(input.x - inputs.getDoubleInput(TURNSTICK),-1,1));
+                    topLeft.setPower(Range.clip(input.x + turnPower,-1,1));
+                    topRight.setPower(Range.clip(input.y - turnPower,-1,1));
+                    botLeft.setPower(Range.clip(input.y + turnPower,-1,1));
+                    botRight.setPower(Range.clip(input.x - turnPower,-1,1));
                 }
                 else if(turnLeft) {
                     topLeft.setPower(Range.clip(input.x - turnLeftPower,-1,1));
@@ -135,38 +135,89 @@ public class MechanumDrive extends SubSystem {
 
                 if(!turnLeft && !turnRight) {
                     if (input.isZeroVector()) {
-                        topLeft.setPower(Range.clip(inputs.getDoubleInput(TURNSTICK),-1,1));
-                        topRight.setPower(Range.clip(-inputs.getDoubleInput(TURNSTICK),-1,1));
-                        botLeft.setPower(Range.clip(inputs.getDoubleInput(TURNSTICK),-1,1));
-                        botRight.setPower(Range.clip(-inputs.getDoubleInput(TURNSTICK),-1,1));
+                        topLeft.setPower(Range.clip(turnPower,-1,1));
+                        topRight.setPower(Range.clip(-turnPower,-1,1));
+                        botLeft.setPower(Range.clip(turnPower,-1,1));
+                        botRight.setPower(Range.clip(-turnPower,-1,1));
                     } else if (input.theta < PI / 4 || input.theta > (7 * PI) / 4) { //right side of the square
-                        topLeft.setPower(Range.clip(input.r + inputs.getDoubleInput(TURNSTICK),-1,1));
-                        topRight.setPower(Range.clip(-input.r - inputs.getDoubleInput(TURNSTICK),-1,1));
-                        botLeft.setPower(Range.clip(-input.r + inputs.getDoubleInput(TURNSTICK),-1,1));
-                        botRight.setPower(Range.clip(input.r - inputs.getDoubleInput(TURNSTICK),-1,1));
+                        topLeft.setPower(Range.clip(input.r + turnPower,-1,1));
+                        topRight.setPower(Range.clip(-input.r - turnPower,-1,1));
+                        botLeft.setPower(Range.clip(-input.r + turnPower,-1,1));
+                        botRight.setPower(Range.clip(input.r - turnPower,-1,1));
                     } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(-input.r);
-                        topRight.setPower(input.r);
-                        botLeft.setPower(input.r);
-                        botRight.setPower(-input.r);
+                        topLeft.setPower(Range.clip(-input.r + turnPower,-1,1));
+                        topRight.setPower(Range.clip(input.r - turnPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r + turnPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r - turnPower,-1,1));
                     } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
-                        topLeft.setPower(input.r);
-                        topRight.setPower(input.r);
-                        botLeft.setPower(input.r);
-                        botRight.setPower(input.r);
+                        topLeft.setPower(Range.clip(input.r + turnPower,-1,1));
+                        topRight.setPower(Range.clip(input.r - turnPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r + turnPower,-1,1));
+                        botRight.setPower(Range.clip(input.r - turnPower,-1,1));
                     } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
-                        topLeft.setPower(-input.r);
-                        topRight.setPower(-input.r);
-                        botLeft.setPower(-input.r);
-                        botRight.setPower(-input.r);
+                        topLeft.setPower(Range.clip(-input.r + turnPower,-1,1));
+                        topRight.setPower(Range.clip(-input.r - turnPower,-1,1));
+                        botLeft.setPower(Range.clip(-input.r + turnPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r - turnPower,-1,1));
                     }
                 }
                 else if(turnLeft) {
-
+                    if (input.isZeroVector()) {
+                        topLeft.setPower(Range.clip(-turnLeftPower,-1,1));
+                        topRight.setPower(Range.clip(turnLeftPower,-1,1));
+                        botLeft.setPower(Range.clip(-turnLeftPower,-1,1));
+                        botRight.setPower(Range.clip(turnLeftPower,-1,1));
+                    } else if (input.theta < PI / 4 || input.theta > (7 * PI) / 4) { //right side of the square
+                        topLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
+                        topRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
+                        botLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
+                        botRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                    } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
+                        topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
+                        topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
+                        topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
+                        botRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                    } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
+                        topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
+                        topRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
+                        botLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
+                    }
                 }
                 else {
-
+                    if (input.isZeroVector()) {
+                        topLeft.setPower(Range.clip(turnRightPower,-1,1));
+                        topRight.setPower(Range.clip(-turnRightPower,-1,1));
+                        botLeft.setPower(Range.clip(turnRightPower,-1,1));
+                        botRight.setPower(Range.clip(-turnRightPower,-1,1));
+                    } else if (input.theta < PI / 4 || input.theta > (7 * PI) / 4) { //right side of the square
+                        topLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
+                        topRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
+                        botLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
+                        botRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                    } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
+                        topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
+                        topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
+                        topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
+                        botRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                    } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
+                        topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
+                        topRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
+                        botLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
+                    }
                 }
+
                 break;
 
             case MATTHEW:
@@ -178,6 +229,7 @@ public class MechanumDrive extends SubSystem {
 
                 topRight.setPower(right.y);
                 botRight.setPower(right.x);
+
                 break;
         }
     }
