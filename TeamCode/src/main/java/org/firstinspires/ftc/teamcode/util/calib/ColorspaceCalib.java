@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.exceptions.ChannelDoesNotExistException;
+import org.firstinspires.ftc.teamcode.util.exceptions.GuiNotPresentException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
@@ -27,6 +28,8 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -80,6 +83,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     public ColorspaceCalib(Robot robot) {
         super(robot);
 
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
+
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
@@ -95,6 +102,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      */
     public ColorspaceCalib(Robot robot, ColorSpace colorSpace){
         super(robot);
+
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
 
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
@@ -117,6 +128,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     public ColorspaceCalib(Robot robot, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
 
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
+
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
@@ -136,6 +151,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      */
     public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter){
         super(robot);
+
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
 
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
@@ -157,6 +176,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      */
     public ColorspaceCalib(Robot robot, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
+
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
 
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
@@ -186,6 +209,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace){
         super(robot);
 
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
+
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
@@ -214,6 +241,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, ColorSpace colorSpace, ImageType imageType, int channelIdx){
         super(robot);
 
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
+
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
@@ -240,6 +271,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
      */
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter){
         super(robot);
+
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
 
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
@@ -270,6 +305,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     public ColorspaceCalib(Robot robot, Button XUp, Button XDown, Button YUp, Button YDown, Button ZUp, Button ZDown, Button slowMode, Button changeLimit, Function<Mat,Mat> converter, ImageType imageType, int channelIdx){
         super(robot);
 
+        if(!robot.usesGUI()){
+            throw new GuiNotPresentException("ColorspaceCalib requires a GUI to correctly run");
+        }
+
         displayMenu = new DisplayMenu(robot.gui);
         robot.gui.addMenu("Colorspace Ranges",displayMenu);
 
@@ -293,10 +332,10 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
     @Override
     public void start() {
-        inputs = robot.pullControls(this.getClass().getSimpleName());
-        Map<String,String> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
-        if(!settingsData.isEmpty()) {
-            colorSpace = ColorSpace.valueOf(settingsData.get("Colorspace"));
+        if(usesConfig) {
+            inputs = robot.pullControls(this.getClass().getSimpleName());
+            Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+            colorSpace = (ColorSpace) settingsData.get("Colorspace");
         }
     }
 
@@ -507,9 +546,9 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
         x_upper = 255;
         y_upper = 255;
         z_upper = 255;
-        slowModeToggle = new Toggle(false);
+        slowModeToggle = new Toggle(Toggle.ToggleTypes.flipToggle, false);
         increment = 5;
-        upperLimit = new Toggle(false);
+        upperLimit = new Toggle(Toggle.ToggleTypes.flipToggle, false);
         lastActivatedTimestamp = 0;
         delayMs = 200;
         inputs = new CustomizableGamepad(robot);
@@ -586,21 +625,22 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
                 new ConfigParam(Y_INCREMENT, Button.BooleanInputs.bool_left_stick_y_up),
                 new ConfigParam(Y_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down),
                 new ConfigParam(Z_INCREMENT, Button.BooleanInputs.bool_right_stick_y_up),
-                new ConfigParam(Z_DECREMENT, Button.BooleanInputs.bool_left_stick_y_down),
+                new ConfigParam(Z_DECREMENT, Button.BooleanInputs.bool_right_stick_y_down),
                 new ConfigParam(SLOWMODE,Button.BooleanInputs.x),
                 new ConfigParam(CHANGELIMIT, Button.BooleanInputs.a),
-                new ConfigParam("Colorspace",new String[]{
-                        ColorSpace.RGB.name(),
-                        ColorSpace.BGR.name(),
-                        ColorSpace.HLS.name(),
-                        ColorSpace.HLS_FULL.name(),
-                        ColorSpace.HSV.name(),
-                        ColorSpace.HSV_FULL.name(),
-                        ColorSpace.Lab.name(),
-                        ColorSpace.LUV.name(),
-                        ColorSpace.YCrCb.name(),
-                        ColorSpace.XYZ.name()
-                }, ColorSpace.RGB.name())
+                new ConfigParam("Colorspace",new LinkedHashMap<String,Object>() {{
+                        put(ColorSpace.RGB.name(),ColorSpace.RGB);
+                        put(ColorSpace.BGR.name(),ColorSpace.BGR);
+                        put(ColorSpace.HSV.name(),ColorSpace.HSV);
+                        put(ColorSpace.HSV_FULL.name(),ColorSpace.HSV_FULL);
+                        put(ColorSpace.HLS.name(),ColorSpace.HLS);
+                        put(ColorSpace.HLS_FULL.name(),ColorSpace.HSV_FULL);
+                        put(ColorSpace.Lab.name(),ColorSpace.Lab);
+                        put(ColorSpace.YUV.name(),ColorSpace.YUV);
+                        put(ColorSpace.LUV.name(),ColorSpace.LUV);
+                        put(ColorSpace.YCrCb.name(),ColorSpace.YCrCb);
+                        put(ColorSpace.XYZ.name(),ColorSpace.XYZ);
+                }}, ColorSpace.RGB.name())
         };
     }
 }

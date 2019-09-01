@@ -7,17 +7,28 @@
 
 package org.firstinspires.ftc.teamcode.util.misc;
 
-import org.firstinspires.ftc.teamcode.util.exceptions.NotAGodException;
+import android.util.Pair;
+
+import org.firstinspires.ftc.teamcode.util.exceptions.NotAnAlchemistException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotARealGamepadException;
+import org.opencv.core.Range;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A class for storing configuration options.
  */
 public class ConfigParam {
+
+    public static Map<String, Object> booleanMap = new HashMap<String,Object>() {{
+        put("true",true);
+        put("false",false);
+    }};
+
     //The name of the option
     public String name;
     //The option's default value.
@@ -26,6 +37,8 @@ public class ConfigParam {
     public String currentOption;
     //A list of possible values the option can take on.
     public List<String> options;
+    //A list of values used for conversion when pulling inputs.
+    public List<Object> vals;
     //The option's default gamepad to use.
     public String defaultGamepadOption;
     //The gamepad that the option is currently using.
@@ -34,6 +47,7 @@ public class ConfigParam {
     public List<String> gamepadOptions;
     //A boolean value specifying if the option uses a gamepad.
     public boolean usesGamepad;
+
     //A boolean value specifying if the option is a boolean button on a gamepad.
     private boolean isBoolButton;
     private boolean isDoubleButton;
@@ -50,6 +64,8 @@ public class ConfigParam {
         options = new ArrayList<>(Arrays.asList(boolOptions));
         this.defaultOption = defaultOption.name();
         currentOption = this.defaultOption;
+
+        vals = new ArrayList<>();
 
         isBoolButton = true;
         isDoubleButton = false;
@@ -75,6 +91,8 @@ public class ConfigParam {
         options = new ArrayList<>(Arrays.asList(boolOptions));
         this.defaultOption = defaultOption.name();
         currentOption = this.defaultOption;
+
+        vals = new ArrayList<>();
 
         isBoolButton = true;
         isDoubleButton = false;
@@ -104,6 +122,8 @@ public class ConfigParam {
         this.defaultOption = defaultOption.name();
         currentOption = this.defaultOption;
 
+        vals = new ArrayList<>();
+
         isBoolButton = false;
         isDoubleButton = true;
 
@@ -129,6 +149,8 @@ public class ConfigParam {
         this.defaultOption = defaultOption.name();
         currentOption = this.defaultOption;
 
+        vals = new ArrayList<>();
+
         isBoolButton = false;
         isDoubleButton = true;
 
@@ -151,6 +173,8 @@ public class ConfigParam {
         this.defaultOption = defaultOption.name();
         currentOption = this.defaultOption;
 
+        vals = new ArrayList<>();
+
         isBoolButton = false;
         isDoubleButton = false;
 
@@ -169,6 +193,8 @@ public class ConfigParam {
         this.defaultOption = defaultOption.name();
         currentOption = this.defaultOption;
 
+        vals = new ArrayList<>();
+
         isBoolButton = false;
         isDoubleButton = false;
 
@@ -181,7 +207,7 @@ public class ConfigParam {
     }
 
     /**
-     * Constructor for ConfigParam for non-gamepad buttons.
+     * Constructor for ConfigParam for non-gamepad options.
      *
      * @param name - The name of the option.
      * @param options - An ArrayList of all possible values the option could take on.
@@ -193,13 +219,16 @@ public class ConfigParam {
         this.defaultOption = defaultOption;
         currentOption = this.defaultOption;
 
+        vals = new ArrayList<>(options);
+
         isBoolButton = false;
+        isDoubleButton = false;
 
         usesGamepad = false;
     }
 
     /**
-     * Constructor for ConfigParam for non-gamepad buttons.
+     * Constructor for ConfigParam for non-gamepad options.
      *
      * @param name - The name of the option.
      * @param options - An array of all possible values the option could take on.
@@ -211,7 +240,40 @@ public class ConfigParam {
         this.defaultOption = defaultOption;
         currentOption = this.defaultOption;
 
+        vals = new ArrayList<>(Arrays.asList(options));
+
         isBoolButton = false;
+        isDoubleButton = false;
+
+        usesGamepad = false;
+    }
+
+    public ConfigParam(String name, Map<String,Object> map, String defaultOption) {
+        this.name = name;
+
+        this.options = new ArrayList<>(map.keySet());
+        this.defaultOption = defaultOption;
+        currentOption = this.defaultOption;
+
+        vals = new ArrayList<>(map.values());
+
+        isBoolButton = false;
+        isDoubleButton = false;
+
+        usesGamepad = false;
+    }
+
+    public ConfigParam(String name, Map<String,Object> map, Object defaultOption) {
+        this.name = name;
+
+        this.options = new ArrayList<>(map.keySet());
+        this.defaultOption = defaultOption.toString();
+        currentOption = this.defaultOption;
+
+        vals = new ArrayList<>(map.values());
+
+        isBoolButton = false;
+        isDoubleButton = false;
 
         usesGamepad = false;
     }
@@ -221,6 +283,7 @@ public class ConfigParam {
      *
      * @param name - The name of the option.
      * @param options - The list of all possible values that the option could take on.
+     * @param vals - The list of all possible values the option could take on, but in actual object form instead of string form.
      * @param defaultOption - The option's default value.
      * @param currentOption - The option's current value.
      * @param gamepadOptions - The list of all possible gamepad values.
@@ -229,9 +292,10 @@ public class ConfigParam {
      * @param usesGamepad - Whether or not the option uses the gamepad.
      * @param isBoolButton - Whether or not the option is a boolean button on the gamepad.
      */
-    private ConfigParam(String name, List<String> options, String defaultOption, String currentOption, List<String> gamepadOptions, String defaultGamepadOption, String currentGamepadOption, boolean usesGamepad, boolean isBoolButton, boolean isDoubleButton) {
+    private ConfigParam(String name, List<String> options, List<Object> vals, String defaultOption, String currentOption, List<String> gamepadOptions, String defaultGamepadOption, String currentGamepadOption, boolean usesGamepad, boolean isBoolButton, boolean isDoubleButton) {
         this.name = name;
         this.options = options;
+        this.vals = vals;
         this.defaultOption = defaultOption;
         this.currentOption = currentOption;
         this.gamepadOptions = gamepadOptions;
@@ -246,7 +310,7 @@ public class ConfigParam {
      * Converts the option to a button object if possible.
      *
      * @return - The button representation of the option.
-     * @throws NotAGodException - Throws this exception if it is not possible to convert the option into a button.
+     * @throws NotAnAlchemistException - Throws this exception if it is not possible to convert the option into a button.
      */
     public Button toButton() {
         if(usesGamepad) {
@@ -261,8 +325,17 @@ public class ConfigParam {
             }
         }
         else {
-           throw new NotAGodException("I'm sorry, but I can't do that. This variable isn't a real button on the gamepad.");
+           throw new NotAnAlchemistException("I'm sorry, but I can't do that. This variable isn't a real button on the gamepad.");
         }
+    }
+
+    public static Map<String,Object> numberMap(double start, double end, double increment) {
+        Map<String,Object> numMap = new HashMap<>();
+        for (double i = start; i < end ; i+= increment) {
+            numMap.put(Double.toString(i), i);
+        }
+        numMap.put(Double.toString(end),end);
+        return numMap;
     }
 
     @Override
@@ -272,6 +345,6 @@ public class ConfigParam {
 
     @Override
     public ConfigParam clone() {
-        return new ConfigParam(name,options,defaultOption,currentOption,gamepadOptions,defaultGamepadOption,currentGamepadOption,usesGamepad,isBoolButton,isDoubleButton);
+        return new ConfigParam(name,options,vals,defaultOption,currentOption,gamepadOptions,defaultGamepadOption,currentGamepadOption,usesGamepad,isBoolButton,isDoubleButton);
     }
 }

@@ -12,16 +12,24 @@ package org.firstinspires.ftc.teamcode.util.misc;
  */
 public class Toggle {
 
+
+    public enum ToggleTypes{
+          flipToggle, trueOnceToggle, trueOnceToggleAllowTurnOff, trueWhileHeldOnce
+    }
+
     //Boolean values representing the current state of the toggle and whether the toggling button has been released.
     private boolean currentState, flag;
-    
+
+    private ToggleTypes toggleType;
+
     /**
      * Ctor for toggle class.
      * 
      * @param currentState - Initial toggle state.
      */
-    public Toggle(boolean currentState){
+    public Toggle(ToggleTypes toggleType, boolean currentState){
         this.currentState = currentState;
+        this.toggleType = toggleType;
         flag = true;
     }
 
@@ -31,12 +39,35 @@ public class Toggle {
      * @param condition - The most recent state of the toggling condition.
      */
     public void updateToggle(boolean condition){
-        if(condition && flag){ //when false turns to true
-            currentState = !currentState;
-            flag = false;
-        }
-        else if(!condition && !flag){ //when true turns to false
-            flag = true;
+        switch(toggleType) {
+            case flipToggle:
+            case trueOnceToggleAllowTurnOff:
+                if (condition && flag) { //when false turns to true
+                    currentState = !currentState;
+                    flag = false;
+                } else if (!condition && !flag) { //when true turns to false
+                    flag = true;
+                }
+                break;
+            case trueOnceToggle:
+                if(condition && flag){
+                    currentState = true;
+                    flag = false;
+                }
+                else if(!condition && !flag){
+                    flag = true;
+                }
+                break;
+            case trueWhileHeldOnce:
+                if(condition && flag){
+                    currentState = true;
+                    flag = false;
+                }
+                else if(!condition && !flag){
+                    currentState = false;
+                    flag = true;
+                }
+                break;
         }
     }
 
@@ -46,6 +77,21 @@ public class Toggle {
      * @return - Returns current toggle state
      */
     public boolean getCurrentState(){
-        return currentState;
+        switch(toggleType) {
+            case flipToggle:
+                return currentState;
+            case trueOnceToggleAllowTurnOff:
+            case trueOnceToggle:
+            case trueWhileHeldOnce:
+                if(currentState) {
+                    currentState = false;
+                    return true;
+                }
+                return false;
+        }
+        return false;
+    }
+
+    public static interface Params {
     }
 }

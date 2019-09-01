@@ -95,8 +95,8 @@ public class Vector {
      * @param length - The length to normalize the vector to.
      */
     public void normalize(double length) {
-        this.x = length*Math.cos(this.theta);
-        this.y = length*Math.sin(this.theta);
+        x = length*(x/r);
+        y = length*(y/r);
         this.r = length;
     }
 
@@ -105,5 +105,13 @@ public class Vector {
      */
     public void normalize() {
         normalize(1.0);
+    }
+
+    public void scalarMultiply(double scalar) {
+        this.normalize(scalar*r);
+    }
+
+    public double dotProduct(Vector v) {
+        return v.x*x + v.y*y;
     }
 }

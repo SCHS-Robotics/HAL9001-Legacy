@@ -41,6 +41,9 @@ public abstract class BaseAutonomous extends LinearOpMode {
 
         try {
             robot.init();
+            while(!isStarted() && !isStopRequested()) {
+                robot.init_loop();
+            }
         } catch (Exception ex) {
             telemetry.clearAll();
             telemetry.addData("ERROR!!!", ex.getMessage());
@@ -49,6 +52,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
         }
 
         try {
+            robot.onStart();
             main();
         } catch (Exception ex) {
             telemetry.clearAll();

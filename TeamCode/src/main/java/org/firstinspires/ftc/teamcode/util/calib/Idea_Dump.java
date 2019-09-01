@@ -2,8 +2,9 @@ package org.firstinspires.ftc.teamcode.util.calib;
 
 public class Idea_Dump {
     /**
-     * camera calibration
-     * pid tuning/autotune (also genetic algorithm)
-     * motion planning fourier transform calibration
+     * TODO list
+     * 2. migrate to new sdk
+     * 3. PID for other drive systems
+     * 5. Kalman filter
      */
 }

@@ -2,7 +2,7 @@
  * Filename: MechanumDrive.java
  * Author: Dylan Zueck and Cole Savage
  * Team Name: Crow Force, Level Up
- * Date: 9/1/19
+ * Date: TODO
  */
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
@@ -49,7 +49,7 @@ import static java.lang.Thread.sleep;
 /**
  * A built in mechanum drive class with 7 drive modes.
  */
-public class MechanumDrive extends SubSystem {
+public class OmniWheelDrive extends SubSystem {
 
     //Names of all the controls.
     private static final String DRIVESTICK = "drivestick", LEFT_DRIVESTICK = "drivestick_left", RIGHT_DRIVESTICK = "drivestick_right", TURNSTICK = "turnstick", TURN_LEFT = "turn_left", TURN_RIGHT = "turn_right", TTA_STICK = "tta_stick", SPEED_MODE = "speed_mode_toggle";
@@ -92,7 +92,7 @@ public class MechanumDrive extends SubSystem {
      * @param robot - The robot the drive is currently being used on.
      * @param params - The parameters for the drive.
      */
-    public MechanumDrive(Robot robot, Params params) {
+    public OmniWheelDrive(Robot robot, Params params) {
         super(robot);
 
         this.driveType = params.driveType;
@@ -150,7 +150,7 @@ public class MechanumDrive extends SubSystem {
         turnRightPower = params.turnRightPower;
     }
 
-    public MechanumDrive(Robot robot, SpecificParams params, boolean usingSpecific) {
+    public OmniWheelDrive(Robot robot, SpecificParams params, boolean usingSpecific) {
         super(robot);
         usesConfig = true;
         useSpecific = usingSpecific;

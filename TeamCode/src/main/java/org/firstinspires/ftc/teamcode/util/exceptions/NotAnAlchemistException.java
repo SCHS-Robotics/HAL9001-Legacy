@@ -1,5 +1,5 @@
 /*
- * Filename: NotAGodException.java
+ * Filename: NotAnAlchemistException.java
  * Author: Cole Savage
  * Team Name: Level Up
  * Date: 7/19/19
@@ -7,8 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.util.exceptions;
 
-public class NotAGodException extends RuntimeException {
-    public NotAGodException(String message) {
+public class NotAnAlchemistException extends RuntimeException {
+    public NotAnAlchemistException(String message) {
         super(message);
     }
 }

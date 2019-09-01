@@ -7,9 +7,10 @@
 
 package org.firstinspires.ftc.teamcode.system.source.GUI;
 
+import android.util.Log;
+
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
-import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 
@@ -190,7 +191,7 @@ public class GUI {
     public void addMenu(String name, Menu menu){
         menus.put(name, menu);
         menuKeys.add(name);
-        if(menus.size() == 0){
+        if(menus.size() == 1){
             setActiveMenu(name);
         }
     }
@@ -277,7 +278,7 @@ public class GUI {
      * Gets a menu in the GUI by its name.
      *
      * @param menuName - The name of the menu in the GUI.
-     * @return - The menu object cooresponding to menuName in the GUI.
+     * @return - The menu object corresponding to menuName in the GUI.
      */
     public Menu getMenu(String menuName) {
         return menus.get(menuName);

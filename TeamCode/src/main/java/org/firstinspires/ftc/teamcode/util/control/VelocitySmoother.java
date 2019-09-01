@@ -8,7 +8,7 @@
 package org.firstinspires.ftc.teamcode.util.control;
 
 import org.firstinspires.ftc.robotcore.external.Function;
-import org.firstinspires.ftc.teamcode.util.exceptions.NotAGodException;
+import org.firstinspires.ftc.teamcode.util.exceptions.NotAnAlchemistException;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 
 //TODO class currently broken
@@ -61,7 +61,7 @@ public class VelocitySmoother {
         double jerk2 = jerkProfile.apply(shift2,tk);
 
         if ((jerk1 < 0  && jerk2 < 0) || jerk1 > 0 && jerk2 > 0) {
-            throw new NotAGodException("Something has gone very wrong :)");
+            throw new NotAnAlchemistException("Something has gone very wrong :)");
         }
         if(dP < 0) {
             xShift = jerk1 < 0 ? shift1 : shift2;

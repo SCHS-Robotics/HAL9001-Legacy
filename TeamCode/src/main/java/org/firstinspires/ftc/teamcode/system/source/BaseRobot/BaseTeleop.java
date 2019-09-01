@@ -61,25 +61,57 @@ public abstract class BaseTeleop extends OpMode {
 
     @Override
     public void init_loop() {
-        robot.init_loop();
+        try {
+            robot.init_loop();
+        }
+        catch (Exception ex){
+            telemetry.clearAll();
+            telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.update();
+            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+        }
     }
 
     @Override
     public final void start() {
-        robot.onStart();
-        onStart();
+        try {
+            robot.onStart();
+            onStart();
+        }
+        catch (Exception ex){
+            telemetry.clearAll();
+            telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.update();
+            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+        }
     }
 
     @Override
     public final void loop() {
-        robot.driverControlledUpdate();
-        onUpdate();
+        try {
+            robot.driverControlledUpdate();
+            onUpdate();
+        }
+        catch (Exception ex){
+            telemetry.clearAll();
+            telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.update();
+            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+        }
     }
 
     @Override
     public void stop() {
-        onStop();
-        robot.stopAllComponents();
+        try {
+            onStop();
+            robot.stopAllComponents();
+        }
+        catch (Exception ex){
+            telemetry.clearAll();
+            telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.update();
+            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+        }
     }
 
     /**

@@ -14,7 +14,6 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 import org.firstinspires.ftc.teamcode.util.exceptions.SkyscraperTooTallException;
 import org.firstinspires.ftc.teamcode.util.exceptions.WrongSkyscraperBlueprintException;
-import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 import java.util.ArrayList;

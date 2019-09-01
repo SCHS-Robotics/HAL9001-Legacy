@@ -22,7 +22,7 @@ public abstract class SubSystem {
      *
      * @param robot - The robot the subsystem is contained within.
      */
-    public SubSystem(Robot robot){
+    public SubSystem(Robot robot) {
         this.robot = robot;
         usesConfig = false;
         initVars();
@@ -47,15 +47,15 @@ public abstract class SubSystem {
      */
     public abstract void init_loop() throws InterruptedException;
 
-    public abstract void start();
+    public abstract void start() throws InterruptedException;
 
     /**
      * An abstract method containing the code that the subsystem runs every loop in a teleop program.
      */
-    public abstract void handle();
+    public abstract void handle() throws InterruptedException;
 
     /**
      * An abstract method containing the code that the subsystem runs when the program is stopped.
      */
-    public abstract void stop();
+    public abstract void stop() throws InterruptedException;
 }

@@ -7,12 +7,10 @@
 
 package org.firstinspires.ftc.teamcode.system.menus;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.system.source.GUI.BaseDisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.DefaultCursor;
-import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 import java.util.List;
@@ -28,7 +26,7 @@ public class DisplayMenu extends BaseDisplayMenu {
      * @param gui - The GUI used to render the menu.
      */
     public DisplayMenu(GUI gui) {
-        super(gui, new DefaultCursor(gui.robot,0), new GuiLine[]{});
+        super(gui, new DefaultCursor(gui.robot,new DefaultCursor.Params().setBlinkSpeedMs(0)), new GuiLine[]{});
     }
 
     @Override

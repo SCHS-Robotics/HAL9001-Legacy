@@ -22,7 +22,6 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO get a good camera calibration using this program
 
 public class CameraCalib extends SubSystem implements CameraBridgeViewBase.CvCameraViewListener2 {
 
@@ -32,8 +31,6 @@ public class CameraCalib extends SubSystem implements CameraBridgeViewBase.CvCam
 
     private boolean flag;
 
-    private boolean captureWasPressed = false;
-    private boolean deleteWasPressed = false;
     private boolean calibrationBegun = false;
     private boolean calibrated = false;
 
@@ -43,8 +40,8 @@ public class CameraCalib extends SubSystem implements CameraBridgeViewBase.CvCam
     private Mat intrinsic;
     private Mat distCoeffs;
 
-    List<Mat> rvecs;
-    List<Mat> tvecs;
+    private List<Mat> rvecs;
+    private List<Mat> tvecs;
 
     private MatOfPoint3f refCoords;
 

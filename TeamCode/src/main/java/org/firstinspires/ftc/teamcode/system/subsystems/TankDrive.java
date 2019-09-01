@@ -7,21 +7,36 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
 
+import android.util.Pair;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseAutonomous;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseTeleop;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
+import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
+import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.control.PIDController;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotDoubleInputException;
+import org.firstinspires.ftc.teamcode.util.misc.BaseParam;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
+import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 import org.firstinspires.ftc.teamcode.util.misc.Toggle;
+
+import java.util.HashMap;
+import java.util.Map;
+
+import static java.lang.Thread.sleep;
 
 /**
  * A customizable tankdrive subsystem.
  */
 public class TankDrive extends SubSystem{
+
+    private static boolean useSpecific = false;
 
     //The drivetrain's two motors
     private DcMotor left, right;
@@ -30,65 +45,55 @@ public class TankDrive extends SubSystem{
     private boolean turnAndMove;
 
     //A toggle object that detects if a boolean input changes twice (like a square pulse)
-    private Toggle speedToggle = new Toggle(false);
+    private Toggle speedToggle = new Toggle(Toggle.ToggleTypes.flipToggle, false);
 
     //Modifiers for speed and joystick operations
-    private double deadzone = 0, currentSpeedModeModifier = 1, speedModeModifier = 1, constantSpeedModifier = 1;
+    private double deadzone, currentSpeedModeModifier, speedModeModifier, constantSpeedModifier;
 
     //Object that stores wanted buttons and is used to retrieve button inputs.
     private CustomizableGamepad inputs;
 
     //Button names CustomizableGamepad will use.
-    private final String SPEEDMODEBUTTON = "speedModeButton", DRIVESTICK = "driveStick", TURNSTICK = "turnStick";
+    private static final String SPEEDMODEBUTTON = "speedModeButton", DRIVESTICK = "driveStick", TURNSTICK = "turnStick";
 
     /**
      * This constructor should be used when using this program for TeleOp.
      *
      * @param robot - The robot we will be using.
-     * @param motorConfig - A string array of size 2 holding the names of the motor configurations. The first element is the left motor and the second element is the right motor.
-     * @param robotConfig - A double array of size 3 used to set configuration values. The first element is the deadzone or the value at which must the input must surpass to be used.
-     *                    The second element is the speedModeModifier which multiplies the power by itself when speed mode is activated. The third element is the constantSpeedModifier
-     *                    which does the same thing as speedModeModifier but is instead always active (set to 1 to do nothing).
-     * @param driveStick - The button for forward and backwards movement that is a double (noButton to disable).
-     * @param turnStick - The button for turning right and left that is a double (noButton to disable).
-     * @param speedModeButton - The button for toggling speedMode that is a boolean (noButton to disable).
-     * @param turnAndMove - A boolean that if true allows the robot to move and turn at the same time.
      */
-    public TankDrive(Robot robot, String[] motorConfig, double[] robotConfig, Button driveStick, Button turnStick, Button speedModeButton, boolean turnAndMove){
+    public TankDrive(Robot robot, Params params){
         super(robot);
 
         inputs = new CustomizableGamepad(robot);
 
-        setMotorConfiguration(motorConfig[0], motorConfig[1]);
-        setDeadzone(robotConfig[0]);
-        setSpeedModeModifier(robotConfig[1]);
-        setConstantSpeedModifier(robotConfig[2]);
-        setTurnAndMove(turnAndMove);
-        setDriveStick(driveStick);
-        setTurnStick(turnStick);
-        setSpeedMode(speedModeButton);
+        setMotorConfiguration(params.leftMotor, params.rightMotor);
+        setDeadzone(params.deadzone);
+        setSpeedModeModifier(params.speedModeModifier);
+        setConstantSpeedModifier(params.constantSpeedModifier);
+        setTurnAndMove(params.turnAndMove);
+        setDriveStick(params.buttonsToSet[0]);
+        setTurnStick(params.buttonsToSet[1]);
+        setSpeedMode(params.buttonsToSet[2]);
     }
-    
-    /**
-     * This constructor should be used when using this program for autonomous.
-     *
-     * @param robot - The robot we will be using
-     * @param motorConfig - A string array of size 2 holding the names of the motor configurations. The first element is the left motor and the second element is the right motor.
-     * @param robotConfig - A double array of size 3 used to set configuration values. The first element is the deadzone or the value at which must the input must surpass to be used.
-     *                    The second element is the speedModeModifier which multiplies the power by itself when speed mode is activated. The third element is the constantSpeedModifier
-     *                    which does the same thing as speedModeModifier but is instead always active (set to 1 to do nothing).
-     */
-    public TankDrive(Robot robot, String[] motorConfig, double[] robotConfig){
+
+    public TankDrive(Robot robot, NumberParams params){
         super(robot);
 
-        inputs = new CustomizableGamepad(robot);
-
-        setMotorConfiguration(motorConfig[0], motorConfig[1]);
-        setDeadzone(robotConfig[0]);
-        setSpeedModeModifier(robotConfig[1]);
-        setConstantSpeedModifier(robotConfig[2]);
+        setDeadzone(params.deadzone);
+        setSpeedModeModifier(params.speedModeModifier);
+        setConstantSpeedModifier(params.constantSpeedModifier);
+        
+        usesConfig = true;
     }
-    
+
+    public TankDrive(Robot robot, String LeftMotorConfig, String RightMotorConfig){
+        super(robot);
+
+        setMotorConfiguration(LeftMotorConfig, RightMotorConfig);
+
+        usesConfig = true;
+    }
+
     @Override
     public void init() throws InterruptedException
     {
@@ -103,7 +108,12 @@ public class TankDrive extends SubSystem{
 
     @Override
     public void start() {
-
+        if(usesConfig && robot.isTeleop()) {
+            setUsingConfigs();
+        }
+        else if(usesConfig && robot.isAutonomous()) {
+            setUsingConfigsAutonomous();
+        }
     }
 
     @Override
@@ -124,13 +134,13 @@ public class TankDrive extends SubSystem{
             } else if (Math.abs(inputs.getDoubleInput(DRIVESTICK)) > deadzone) {
                 driveForward(inputs.getDoubleInput(DRIVESTICK));
             } else if (Math.abs(inputs.getDoubleInput(TURNSTICK)) > deadzone) {
-                turnRight(inputs.getDoubleInput(TURNSTICK));
+                turnClockwise(inputs.getDoubleInput(TURNSTICK));
             }
         }
         //drives forward and turns but not at the same time
         else {
             if (inputs.getDoubleInput(TURNSTICK) > deadzone) {
-                turnRight(inputs.getDoubleInput(TURNSTICK));
+                turnClockwise(inputs.getDoubleInput(TURNSTICK));
             } else if (inputs.getDoubleInput(DRIVESTICK) > deadzone) {
                 driveForward(inputs.getDoubleInput(DRIVESTICK));
             } else {
@@ -185,7 +195,7 @@ public class TankDrive extends SubSystem{
      *
      * @param speed - Speed to turn at(-1)-(1) (positive speed is turn right & negative speed is turn left).
      */
-    public void turnRight(double speed){
+    public void turnClockwise(double speed){
         left.setPower((speed * constantSpeedModifier) * currentSpeedModeModifier);
         right.setPower(-((speed * constantSpeedModifier) * currentSpeedModeModifier));
     }
@@ -233,18 +243,11 @@ public class TankDrive extends SubSystem{
      * @param timeMs - time to drive for in milliseconds.
      * @param power - power to drive at(-1)-(1).
      */
-    public void moveForwardTime(double timeMs, double power){
+    public void driveForwardTime(double timeMs, double power) throws InterruptedException{
         double startTime = System.currentTimeMillis();
-        Thread b  = new Thread() {
-            @Override
-            public void run() {
-                driveForward(power);
-
-                while(System.currentTimeMillis() - startTime <= timeMs);
-                stopMovement();
-            }
-        };
-        b.start();
+        driveForward(power);
+        while(System.currentTimeMillis() - startTime <= timeMs) {sleep(1);}
+        stopMovement();
     }
 
     /**
@@ -253,17 +256,11 @@ public class TankDrive extends SubSystem{
      * @param timeMs - time to turn for in milliseconds.
      * @param power - power to turn at (-1)-(1).
      */
-    public void turnRightTime(double timeMs, double power){
+    public void turnClockwiseTime(double timeMs, double power) throws InterruptedException{
         double startTime = System.currentTimeMillis();
-        Thread b  = new Thread() {
-            @Override
-            public void run() {
-                turnRight(power);
-                while(System.currentTimeMillis() - startTime <= timeMs);
-                stopMovement();
-            }
-        };
-        b.start();
+        turnClockwise(power);
+        while(System.currentTimeMillis() - startTime <= timeMs){sleep(1);}
+        stopMovement();
     }
 
     /**
@@ -273,17 +270,11 @@ public class TankDrive extends SubSystem{
      * @param forwardComponent - double from (-1)-(1) of intensity of forward movement in the turn move
      * @param rightComponent - double from (-1)-(1) of intensity of turn movement in the turn move(positive for right negative for left).
      */
-    public void turnAndMoveRightTime(double timeMs, double forwardComponent, double rightComponent){
+    public void turnAndMoveRightTime(double timeMs, double forwardComponent, double rightComponent) throws InterruptedException{
         double startTime = System.currentTimeMillis();
-        Thread b  = new Thread() {
-            @Override
-            public void run() {
-                turnAndMoveForwardRight(forwardComponent, rightComponent);
-                while(System.currentTimeMillis() - startTime <= timeMs);
-                stopMovement();
-            }
-        };
-        b.start();
+        turnAndMoveForwardRight(forwardComponent, rightComponent);
+        while(System.currentTimeMillis() - startTime <= timeMs){sleep(1);}
+        stopMovement();
     }
 
     /**
@@ -292,17 +283,11 @@ public class TankDrive extends SubSystem{
      * @param encoderDistance - Encoder distance to travel.
      * @param power - Double from (-1)-(1) of intensity of the movement.
      */
-    public void moveForwardEncoders(int encoderDistance, double power){
+    public void moveForwardEncoders(int encoderDistance, double power) throws InterruptedException{
         int startEncoderPos = left.getCurrentPosition();
-        Thread b  = new Thread() {
-            @Override
-            public void run() {
-                driveForward(power);
-                while(Math.abs(left.getCurrentPosition() - startEncoderPos) <= encoderDistance);
-                stopMovement();
-            }
-        };
-        b.start();
+        driveForward(power);
+        while(Math.abs(left.getCurrentPosition() - startEncoderPos) <= encoderDistance) {sleep(1);}
+        stopMovement();
     }
 
     /**
@@ -311,25 +296,19 @@ public class TankDrive extends SubSystem{
      * @param encoderDistance - Encoder distance to travel.
      * @param power - double from (-1)-(1) of intensity of turn in the turn move(positive for right negative for left).
      */
-    public void turnRightEncoders(int encoderDistance, double power){
+    public void turnClockwiseEncoders(int encoderDistance, double power) throws InterruptedException{
         int leftStartEncoderPos = left.getCurrentPosition();
         int rightStartEncoderPos = right.getCurrentPosition();
-        Thread b  = new Thread() {
-            @Override
-            public void run() {
-                if(power > 0) {
-                    turnRight(power);
-                    while (Math.abs(left.getCurrentPosition() - leftStartEncoderPos) <= encoderDistance) ;
-                    stopMovement();
-                }
-                if (power < 0){
-                    turnRight(power);
-                    while (Math.abs(right.getCurrentPosition() - rightStartEncoderPos) <= encoderDistance) ;
-                    stopMovement();
-                }
-            }
-        };
-        b.start();
+        if(power > 0) {
+            turnClockwise(power);
+            while (Math.abs(left.getCurrentPosition() - leftStartEncoderPos) <= encoderDistance) {sleep(1);}
+            stopMovement();
+        }
+        if (power < 0){
+            turnClockwise(power);
+            while (Math.abs(right.getCurrentPosition() - rightStartEncoderPos) <= encoderDistance){sleep(1);}
+            stopMovement();
+        }
     }
 
     /**
@@ -339,27 +318,30 @@ public class TankDrive extends SubSystem{
      * @param forwardComponent - double from (-1)-(1) of intensity of forward movement in the turn move
      * @param rightComponent - double from (-1)-(1) of intensity of turn movement in the turn move(positive for right negative for left).
      */
-    public void turnAndMoveRightEncoders(int encoderDistance, double forwardComponent, double rightComponent){
+    public void turnAndMoveRightEncoders(int encoderDistance, double forwardComponent, double rightComponent) throws InterruptedException{
         int leftStartEncoderPos = left.getCurrentPosition();
         int rightStartEncoderPos = right.getCurrentPosition();
-        Thread b  = new Thread() {
-            @Override
-            public void run() {
-                turnAndMoveForwardRight(forwardComponent, rightComponent);
-                while(Math.abs((left.getCurrentPosition() - leftStartEncoderPos)/2 + (right.getCurrentPosition() - rightStartEncoderPos)/2) <= encoderDistance);
-                stopMovement();
-            }
-        };
-        b.start();
+        turnAndMoveForwardRight(forwardComponent, rightComponent);
+        while(Math.abs((left.getCurrentPosition() - leftStartEncoderPos)/2 + (right.getCurrentPosition() - rightStartEncoderPos)/2) <= encoderDistance) {sleep(1);}
+        stopMovement();
     }
 
 
     /**TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO TODO
      * WIP
      */
-    @Deprecated
-    public void PIDDrive(double kp, double ki, double kd, double targetAngle){
+    public void PIDDrive(double kp, double ki, double kd){
         PIDController pid = new PIDController(kp, ki, kd);
+        //turnClockwise(pid.getCorrection());
+    }
+
+    public void PIDTurn(double kp, double ki, double kd, double targetAngle) {
+        PIDController pid = new PIDController(kp, ki, kd);
+        pid.setSetpoint(targetAngle);
+
+
+
+        //turnClockwise(-pid.getCorrection());
     }
 
     /**
@@ -448,6 +430,165 @@ public class TankDrive extends SubSystem{
         }
         else {
             throw new NotBooleanInputException("speedModeButton was not set to a boolean input");
+        }
+    }
+
+    private void setUsingConfigs() {
+        inputs = robot.pullControls(this.getClass().getSimpleName());
+        Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+
+        setTurnAndMove((Boolean) settingsData.get("Turn and Move"));
+        if (!useSpecific) {
+            setDeadzone((Double) settingsData.get("Deadzone"));
+            setConstantSpeedModifier((Double) settingsData.get("ConstantSpeedModifier"));
+            setSpeedModeModifier((Double) settingsData.get("SpeedModeModifier"));
+        }
+    }
+
+    private void setUsingConfigsAutonomous(){
+        inputs = robot.pullControls(this.getClass().getSimpleName());
+        Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+
+        setConstantSpeedModifier((double) settingsData.get("ConstantSpeedModifier"));
+    }
+
+    public int getLeftMotorEncoderPos(){
+        return left.getCurrentPosition();
+    }
+
+    public int getRightMotorEncoderPos(){
+        return right.getCurrentPosition();
+    }
+
+    public int[] getMotorEncoderPoses(){
+        return new int[]{left.getCurrentPosition(), right.getCurrentPosition()};
+    }
+
+    @TeleopConfig
+    public static ConfigParam[] teleOpConfig() {
+
+        if(useSpecific) {
+            return new ConfigParam[]{
+                    new ConfigParam(DRIVESTICK, Button.DoubleInputs.left_stick_y),
+                    new ConfigParam(TURNSTICK, Button.DoubleInputs.right_stick_x),
+                    new ConfigParam(SPEEDMODEBUTTON, Button.DoubleInputs.noButton),
+                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, "true")
+            };
+        }
+        else {
+            return new ConfigParam[]{
+                    new ConfigParam(DRIVESTICK, Button.DoubleInputs.left_stick_y),
+                    new ConfigParam(TURNSTICK, Button.DoubleInputs.right_stick_x),
+                    new ConfigParam(SPEEDMODEBUTTON, Button.DoubleInputs.noButton),
+                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, "true"),
+                    new ConfigParam("Deadzone", ConfigParam.numberMap(0, 1, .05), 0.0),
+                    new ConfigParam("SpeedModeModifier", ConfigParam.numberMap(0,100, .05), 1.0),
+                    new ConfigParam("ConstantSpeedModifier", ConfigParam.numberMap(0,100, .05), 1.0)
+            };
+        }
+    }
+
+    @AutonomousConfig
+    public static ConfigParam[] autonomousConfig() {
+        return new ConfigParam[]{
+                new ConfigParam("ConstantSpeedModifier", ConfigParam.numberMap(0,100, .05), 1.0)
+        };
+    }
+
+    public static final class Params implements BaseParam {
+
+        //Motor config names to be used in TankDrive to set the motors
+        private String leftMotor, rightMotor;
+
+        //Array of buttons to set the buttons to for the TankDrive class [1] is driveStick, [2] is turnStick, and [3] is speedModeButton.
+        private Button[] buttonsToSet = new Button[3];
+        private boolean turnAndMove;
+        private double deadzone = 0, speedModeModifier = 1, constantSpeedModifier = 1;
+
+        public Params(String leftMotorConfig, String rightMotorConfig) {
+            leftMotor = leftMotorConfig;
+            rightMotor = rightMotorConfig;
+            setDefaultButtons();
+        }
+
+        public Params setTurnAndMove(boolean turnAndMove) {
+            this.turnAndMove = turnAndMove;
+            return this;
+        }
+
+        public Params setDeadzone(double deadzone) {
+            this.deadzone = deadzone;
+            return this;
+        }
+
+        public Params setSpeedModeModifier(double speedModeModifier) {
+            this.speedModeModifier = speedModeModifier;
+            return this;
+        }
+
+        public Params setConstantSpeedModifier(double constantSpeedModifier) {
+            this.constantSpeedModifier = constantSpeedModifier;
+            return this;
+        }
+
+        public Params setDriveStick(Button driveStick) {
+            if(!driveStick.isDouble) {
+                throw new NotDoubleInputException("DriveStick must be a double input.");
+            }
+            buttonsToSet[0] = driveStick;
+
+            return this;
+        }
+
+        public Params setTurnStick(Button turnStick) {
+            if(!turnStick.isDouble) {
+                throw new NotDoubleInputException("TurnStick must be a double input.");
+            }
+            buttonsToSet[1] = turnStick;
+            return this;
+        }
+
+        public Params setSpeedModeButton(Button speedModeButton) {
+            if(!speedModeButton.isBoolean) {
+                throw new NotBooleanInputException("SpeedModeButton must be a boolean input.");
+            }
+            buttonsToSet[2] = speedModeButton;
+            return this;
+        }
+
+        private void setDefaultButtons(){
+            buttonsToSet[0] = new Button(1, Button.DoubleInputs.left_stick_y);
+            buttonsToSet[1] = new Button(1, Button.DoubleInputs.right_stick_x);
+            buttonsToSet[2] = new Button(1, Button.DoubleInputs.noButton);
+        }
+    }
+    
+    public static final class NumberParams implements BaseParam {
+
+        //Motor config names to be used in TankDrive to set the motors
+        private String leftMotor, rightMotor;
+
+        private double deadzone = 0, speedModeModifier = 1, constantSpeedModifier = 1;
+
+        public NumberParams(String leftMotorConfig, String rightMotorConfig) {
+            leftMotor = leftMotorConfig;
+            rightMotor = rightMotorConfig;
+            useSpecific = true;
+        }
+
+        public NumberParams setDeadzone(double deadzone) {
+            this.deadzone = deadzone;
+            return this;
+        }
+
+        public NumberParams setSpeedModeModifier(double speedModeModifier) {
+            this.speedModeModifier = speedModeModifier;
+            return this;
+        }
+
+        public NumberParams setConstantSpeedModifier(double constantSpeedModifier) {
+            this.constantSpeedModifier = constantSpeedModifier;
+            return this;
         }
     }
 }

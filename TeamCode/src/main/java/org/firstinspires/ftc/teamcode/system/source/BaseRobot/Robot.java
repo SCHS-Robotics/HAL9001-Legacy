@@ -90,8 +90,6 @@ public abstract class Robot {
         subSystems.put(name, subSystem);
         if(subSystem.usesConfig) {
 
-
-
             boolean foundTeleopConfig = false;
             boolean foundAutonomousConfig = false;
 
@@ -405,7 +403,7 @@ public abstract class Robot {
      * @param subsystem - The name of the subsystem to pull the gamepad controls for.
      * @return - A map relating the name of each non-gamepad option to that option's value.
      */
-    public Map<String,String> pullNonGamepad(String subsystem) {
+    public Map<String,Object> pullNonGamepad(String subsystem) {
 
         List<ConfigParam> configParamsTeleop = new ArrayList<>();
         List<ConfigParam> configParamsAuto = new ArrayList<>();
@@ -417,21 +415,29 @@ public abstract class Robot {
             configParamsAuto = autonomousConfig.get(subsystem);
         }
 
-        Map<String,String> output = new HashMap<>();
+        Map<String,Object> output = new HashMap<>();
 
         for (ConfigParam param : configParamsAuto) {
             if (!param.usesGamepad) {
-                output.put(param.name, param.currentOption);
+                output.put(param.name, param.vals.get(param.options.indexOf(param.currentOption)));
             }
         }
 
         for (ConfigParam param : configParamsTeleop) {
             if (!param.usesGamepad) {
-                output.put(param.name, param.currentOption);
+                output.put(param.name, param.vals.get(param.options.indexOf(param.currentOption)));
             }
         }
 
         return output;
+    }
+
+    public boolean isTeleop() {
+        return opMode instanceof BaseTeleop;
+    }
+
+    public boolean isAutonomous() {
+        return opMode instanceof BaseAutonomous;
     }
 
     /**

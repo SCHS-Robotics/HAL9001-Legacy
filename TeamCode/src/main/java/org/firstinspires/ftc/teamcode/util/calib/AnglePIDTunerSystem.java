@@ -24,7 +24,6 @@ import org.firstinspires.ftc.teamcode.util.misc.Toggle;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.core.Mat;
 
-//TODO test on real robot stuff and add motor turning/config
 /**
  * A subsystem used to tune turn-to-angle PID controllers.
  */
@@ -227,7 +226,6 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
         startOpenCV(this);
     }
 
-    //TODO gyro calibration init display
     @Override
     public void init_loop() {
 
@@ -307,7 +305,7 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
 
     @Override
     protected void initVars() {
-        slowModeToggle = new Toggle(false);
+        slowModeToggle = new Toggle(Toggle.ToggleTypes.flipToggle, false);
 
         increment = 0.1;
         lastActivatedTimestamp = 0;

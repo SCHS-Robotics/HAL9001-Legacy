@@ -7,12 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.source.GUI;
 
-import android.util.Log;
-
-import org.firstinspires.ftc.teamcode.util.gui_lib.GuiLine;
-import org.firstinspires.ftc.teamcode.util.misc.Button;
-import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -72,9 +66,7 @@ public abstract class BaseDisplayMenu extends Menu {
     }
 
     @Override
-    protected void onStart() {
-        menuNumber = 0;
-    }
+    protected void onStart() {}
 
     @Override
     protected void stop() {}
@@ -85,7 +77,7 @@ public abstract class BaseDisplayMenu extends Menu {
 
         menuNumber--;
 
-        if(menuNumber == -1) {
+        if(menuNumber < 0) {
             menuNumber = (int) Math.floor((lines.size() * 1.0) / Menu.MAXLINESPERSCREEN);
             cursor.y = Math.min(lines.size() - 1,(menuNumber*Menu.MAXLINESPERSCREEN)-1);
         }
@@ -96,7 +88,7 @@ public abstract class BaseDisplayMenu extends Menu {
 
         menuNumber++;
 
-        if(menuNumber == (int) Math.ceil((lines.size() * 1.0) / Menu.MAXLINESPERSCREEN)) {
+        if(menuNumber >= (int) Math.ceil((lines.size() * 1.0) / Menu.MAXLINESPERSCREEN)) {
             menuNumber = 0;
             cursor.y = 0;
         }
