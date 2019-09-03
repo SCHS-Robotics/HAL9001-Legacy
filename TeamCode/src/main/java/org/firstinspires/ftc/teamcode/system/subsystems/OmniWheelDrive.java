@@ -1,8 +1,8 @@
 /*
- * Filename: MechanumDrive.java
+ * Filename: OmniWheelDrive.java
  * Author: Dylan Zueck and Cole Savage
  * Team Name: Crow Force, Level Up
- * Date: TODO
+ * Date: 9/1/19
  */
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
@@ -39,7 +39,6 @@ import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 import org.firstinspires.ftc.teamcode.util.misc.Toggle;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

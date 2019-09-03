@@ -36,7 +36,7 @@ public abstract class Menu {
     public static final int MAXLINESPERSCREEN = 8;
 
     /**
-     * Ctor for menu class.
+     * Constructor for menu class.
      *
      * @param gui - The GUI that will be used to render the menu.
      * @param cursor - The cursor assigned to the menu.
@@ -62,7 +62,7 @@ public abstract class Menu {
     }
 
     /**
-     * Ctor for menu class.
+     * Constructor for menu class.
      *
      * @param gui - The GUI that will be used to render the menu.
      * @param cursor - The cursor assigned to the menu.
@@ -114,8 +114,14 @@ public abstract class Menu {
      */
     protected abstract void render();
 
+    /**
+     * Abstract method that is called every frame on init_loop to render the menu.
+     */
     protected abstract void initLoopRender();
 
+    /**
+     * Abstract method that is called on start.
+     */
     protected abstract void onStart();
 
     /**
@@ -133,9 +139,16 @@ public abstract class Menu {
         gui.displayLine(line, lineNumber);
     }
 
+    /**
+     * Displays multiple lines to the screen.
+     *
+     * @param lines - The lines to display.
+     *
+     * @throws SkyscraperTooTallException - Throws this exception when the number of lines to draw is greater than the number that can fit on the screen.
+     */
     protected void displayLines(GuiLine[] lines){
         if(lines.length > MAXLINESPERSCREEN) {
-            throw new SkyscraperTooTallException("Lines passed to displayLines were more than 8 lines");
+            throw new SkyscraperTooTallException("Lines passed to displayLines were more than "+MAXLINESPERSCREEN+" lines");
         }
             if (lines.length != 0) {
                 for (int i = 0; i < lines.length; i++) {
@@ -147,9 +160,17 @@ public abstract class Menu {
 
     }
 
+    /**
+     * Displays multiple lines to the screen.
+     *
+     * @param lines - The lines to display.
+     * @param lineNumbers - The indexes of the lines to display.
+     *
+     * @throws SkyscraperTooTallException - Throws this exception when the number of lines to draw is greater than the number that can fit on the screen.
+     */
     protected void displayLines(GuiLine[] lines, List<Integer> lineNumbers){
         if(lineNumbers.size() > MAXLINESPERSCREEN) {
-            throw new SkyscraperTooTallException("More than 8 lines were selected for display");
+            throw new SkyscraperTooTallException("More than "+MAXLINESPERSCREEN+" lines were selected for display");
         }
         if(lines.length != 0 && lineNumbers.size() != 0) {
             for (int i = 0; i < lineNumbers.size(); i++) {
@@ -161,6 +182,13 @@ public abstract class Menu {
         }
     }
 
+    /**
+     * Displays multiple lines to the screen.
+     *
+     * @param lines - The lines to display.
+     *
+     * @throws SkyscraperTooTallException - Throws this exception when the number of lines to draw is greater than the number that can fit on the screen.
+     */
     protected void displayLines(List<GuiLine> lines){
         if(lines.size() > MAXLINESPERSCREEN) {
             throw new SkyscraperTooTallException("Lines passed to displayLines were more than 8 lines");
@@ -175,6 +203,14 @@ public abstract class Menu {
         }
     }
 
+    /**
+     * Displays multiple lines to the screen.
+     *
+     * @param lines - The lines to display.
+     * @param lineNumbers - The indexes of the lines to display.
+     *
+     * @throws SkyscraperTooTallException - Throws this exception when the number of lines to draw is greater than the number that can fit on the screen.
+     */
     protected void displayLines(List<GuiLine> lines, List<Integer> lineNumbers){
         if(lineNumbers.size() > MAXLINESPERSCREEN) {
             throw new SkyscraperTooTallException("More than 8 lines were selected for display");
@@ -189,6 +225,9 @@ public abstract class Menu {
         }
     }
 
+    /**
+     * Makes empties the screen display.
+     */
     protected void displayNothing(){
         displayLine(new GuiLine("", "", ""), 0);
     }

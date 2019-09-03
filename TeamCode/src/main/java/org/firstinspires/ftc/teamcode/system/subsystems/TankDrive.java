@@ -7,12 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
 
-import android.util.Pair;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseAutonomous;
-import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseTeleop;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
@@ -26,7 +22,6 @@ import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 import org.firstinspires.ftc.teamcode.util.misc.Toggle;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import static java.lang.Thread.sleep;

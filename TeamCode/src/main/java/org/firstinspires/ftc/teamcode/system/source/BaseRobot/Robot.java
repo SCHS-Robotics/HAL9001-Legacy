@@ -50,11 +50,10 @@ public abstract class Robot {
     private OpMode opMode;
     //A boolean value specifying whether or not to use a GUI, whether or not to use a config, and whether or not to close the current config GUI.
     private boolean useGui;
+    //A boolean value specifying whether or not to use the config system.
     private boolean useConfig;
     //The GUI the robot uses to render the menus.
     public GUI gui;
-    //The GUI the robot uses to render the config menus.
-    //private GUI configGui;
     //The gamepads used to control the robot.
     public volatile Gamepad gamepad1, gamepad2;
     //The telemetry used to print lines to the driver station.
@@ -143,7 +142,7 @@ public abstract class Robot {
             useGui = true;
         }
         else {
-            gui.setCycleButton(cycleButton);
+            gui.overrideCycleButton(cycleButton);
         }
     }
 
@@ -170,20 +169,20 @@ public abstract class Robot {
             //create overall robot folder
             File robotConfigDirectory = new File(Environment.getExternalStorageDirectory().getPath()+"/System64/robot_"+this.getClass().getSimpleName());
             if(!robotConfigDirectory.exists()) {
-                robotConfigDirectory.mkdir();
+                Log.i("File Creation",robotConfigDirectory.mkdir() ? "Directory created!" : "File error, couldn't create directory");
                 writeFile(robotConfigDirectory.getPath() + "/robot_info.txt", "");
             }
 
             //create autonomous directory in robot folder
             File autoDir = new File(robotConfigDirectory.getPath() + "/autonomous");
             if(!autoDir.exists()) {
-                autoDir.mkdir();
+                Log.i("File Creation",autoDir.mkdir() ? "Directory created!" : "File error, couldn't create directory");
                 writeFile(autoDir.getPath() + "/robot_info.txt", "");
             }
             //create teleop directory in robot folder
             File teleopDir = new File(robotConfigDirectory.getPath() + "/teleop");
             if(!teleopDir.exists()) {
-                teleopDir.mkdir();
+                Log.i("File Creation",teleopDir.mkdir() ? "Directory created!" : "File error, couldn't create directory");
                 writeFile(teleopDir.getPath() + "/robot_info.txt", "");
             }
 
@@ -271,6 +270,9 @@ public abstract class Robot {
         }
     }
 
+    /**
+     * Runs this method when the user presses the start button.
+     */
     public final void onStart() {
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
@@ -432,6 +434,11 @@ public abstract class Robot {
         return output;
     }
 
+    /**
+     * Gets if the program the robot is running is a teleop program.
+     *
+     * @return Whether the program being run is a teleop program.
+     */
     public boolean isTeleop() {
         return opMode instanceof BaseTeleop;
     }

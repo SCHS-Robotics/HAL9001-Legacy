@@ -161,7 +161,7 @@ public class EncoderDistanceCalib extends SubSystem {
         sleep(100);
         endingEncoderPos.put("Left", ((TankDrive) driveSubSystem).getLeftMotorEncoderPos());
         endingEncoderPos.put("Right", ((TankDrive) driveSubSystem).getRightMotorEncoderPos());
-        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot, unit, switchSpeedButton, this));
+        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot.gui, unit, switchSpeedButton, this));
         robot.gui.setActiveMenu("Getting menu");
         state = State.DISPLAYING;
     }
@@ -173,7 +173,7 @@ public class EncoderDistanceCalib extends SubSystem {
         endingEncoderPos.put("BotRight", ((MechanumDrive) driveSubSystem).getBotRightEncoderPos());
         endingEncoderPos.put("TopLeft", ((MechanumDrive) driveSubSystem).getTopLeftEncoderPos());
         endingEncoderPos.put("TopRight", ((MechanumDrive) driveSubSystem).getTopRightEncoderPos());
-        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot, unit, switchSpeedButton, this));
+        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot.gui, unit, switchSpeedButton, this));
         robot.gui.setActiveMenu("Getting menu");
         state = State.DISPLAYING;
     }
@@ -185,7 +185,7 @@ public class EncoderDistanceCalib extends SubSystem {
         endingEncoderPos.put("BotRight", ((MechanumDrive) driveSubSystem).getBotRightEncoderPos());
         endingEncoderPos.put("TopLeft", ((MechanumDrive) driveSubSystem).getTopLeftEncoderPos());
         endingEncoderPos.put("TopRight", ((MechanumDrive) driveSubSystem).getTopRightEncoderPos());
-        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot, unit, switchSpeedButton, this));
+        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot.gui, unit, switchSpeedButton, this));
         robot.gui.setActiveMenu("Getting menu");
         state = State.DISPLAYING;
     }
@@ -197,7 +197,7 @@ public class EncoderDistanceCalib extends SubSystem {
         endingEncoderPos.put("BotRight", ((QuadWheelDrive) driveSubSystem).getBotRightMotorEncoderPos());
         endingEncoderPos.put("TopLeft", ((QuadWheelDrive) driveSubSystem).getTopLeftMotorEncoderPos());
         endingEncoderPos.put("TopRight", ((QuadWheelDrive) driveSubSystem).getTopRightMotorEncoderPos());
-        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot, unit, switchSpeedButton, this));
+        robot.gui.addMenu("Getting Menu", new EncoderDistanceCalibMenu(robot.gui, unit, switchSpeedButton, this));
         robot.gui.setActiveMenu("Getting menu");
         state = State.DISPLAYING;
     }

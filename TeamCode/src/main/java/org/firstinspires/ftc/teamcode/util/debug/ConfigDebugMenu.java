@@ -5,12 +5,12 @@ import android.util.Log;
 
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
 import org.firstinspires.ftc.teamcode.system.source.GUI.ScrollingListMenu;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
-import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 

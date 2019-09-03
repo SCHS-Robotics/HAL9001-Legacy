@@ -31,7 +31,7 @@ public class ConfigCursor extends Cursor {
     private boolean flag = true;
 
     /**
-     * Ctor for config cursor.
+     * Constructor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param x - The cursor's initial x coordinate.
@@ -58,7 +58,7 @@ public class ConfigCursor extends Cursor {
     }
 
     /**
-     * Ctor for config cursor.
+     * Constructor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
@@ -83,7 +83,7 @@ public class ConfigCursor extends Cursor {
     }
 
     /**
-     * Ctor for config cursor.
+     * Constructor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param blinkSpeedMs - The cursor's blink speed in milliseconds.
@@ -107,7 +107,7 @@ public class ConfigCursor extends Cursor {
     }
 
     /**
-     * Ctor for config cursor.
+     * Constructor for config cursor.
      *
      * @param robot - The robot the cursor is associataed with.
      * @param x - The cursor's initial x coordinate.

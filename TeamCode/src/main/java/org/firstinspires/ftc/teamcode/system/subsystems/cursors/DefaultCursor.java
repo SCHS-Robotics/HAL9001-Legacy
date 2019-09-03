@@ -28,13 +28,15 @@ public class DefaultCursor extends Cursor {
     private boolean flag = true;
 
     /**
-     * Ctor for default cursor.
+     * Constructor for default cursor.
      *
-     * @param robot - The robot the cursor is associataed with.
+     * @param robot - The robot the cursor is associated with.
      */
     public DefaultCursor(Robot robot, Params params) {
         super(params.x, params.y, params.blinkSpeedMs, params.cursorIcon);
         inputs = new CustomizableGamepad(robot);
+
+        doBlink = params.doBlink;
 
         setInputs(params.buttons[0], params.buttons[1], params.buttons[2], params.buttons[3], params.buttons[4]);
     }
@@ -104,59 +106,125 @@ public class DefaultCursor extends Cursor {
         cursorUpdated = !flag;
     }
 
+    /**
+     * A class that is used to pass parameters to the cursor when it is created.
+     */
     public static final class Params implements BaseParam {
 
         //Buttons to set cursor buttons to. [0] = up, [1] = down, [2] = left, [3] = right, [4] = select
         private Button[] buttons = {new Button(1, Button.BooleanInputs.dpad_up), new Button(1, Button.BooleanInputs.dpad_down), new Button(1, Button.BooleanInputs.dpad_left), new Button(1, Button.BooleanInputs.dpad_right), new Button(1, Button.BooleanInputs.a)};
+        //The cursor's blink speed and starting x,y coordinates.
         private int blinkSpeedMs = 500, x = 0, y = 0;
+        //The cursor blink icon.
         private char cursorIcon = '█';
+        //Whether or not the cursor should blink.
         private boolean doBlink = true;
 
+        /**
+         * Sets the cursor's blink speed.
+         *
+         * @param blinkSpeedMs - The blink speed in miliseconds.
+         * @return This instance of the params class.
+         */
         public Params setBlinkSpeedMs(int blinkSpeedMs) {
             this.blinkSpeedMs = blinkSpeedMs;
             return this;
         }
 
+        /**
+         * Sets the cursor's up button.
+         *
+         * @param button - The up button.
+         * @return This instance of the params class.
+         */
         public Params setUpButton(Button button) {
             buttons[0] = button;
             return this;
         }
 
+        /**
+         * Sets the cursor's down button.
+         *
+         * @param button - The down button.
+         * @return This instance of the params class.
+         */
         public Params setDownButton(Button button) {
             buttons[1] = button;
             return this;
         }
 
+        /**
+         * Sets the cursor's left button.
+         *
+         * @param button - The left button.
+         * @return This instance of the params class.
+         */
         public Params setLeftButton(Button button) {
             buttons[2] = button;
             return this;
         }
 
+        /**
+         * Set the cursor's right button.
+         *
+         * @param button - The right button.
+         * @return This instance of the params class.
+         */
         public Params setRightButton(Button button) {
             buttons[3] = button;
             return this;
         }
 
+        /**
+         * Sets the cursor's select button.
+         *
+         * @param button - The select button.
+         * @return This instance of the params class.
+         */
         public Params setSelectButton(Button button) {
             buttons[4] = button;
             return this;
         }
 
+        /**
+         * Sets the cursor's blink icon.
+         *
+         * @param cursorIcon - The cursor's blink icon.
+         * @return This instance of the params class.
+         */
         public Params setCursorIcon(char cursorIcon) {
             this.cursorIcon = cursorIcon;
             return this;
         }
 
+        /**
+         * Sets whether the cursor should blink.
+         *
+         * @param doBlink - Whether the cursor should blink.
+         * @return This instance of the params class.
+         */
         public Params setDoBlink(boolean doBlink) {
             this.doBlink = doBlink;
             return this;
         }
 
+        /**
+         * Sets the cursor's initial x coordinate.
+         *
+         * @param x - The cursor's initial x coordinate.
+         * @return This instance of the params class.
+         */
         public Params setX(int x) {
             this.x = x;
             return this;
         }
 
+        /**
+         * Sets the cursor's initial y coordinate.
+         *
+         * @param y - The cursor's initial y coordinate.
+         * @return This instance of the params class.
+         */
         public Params setY(int y) {
             this.y = y;
             return this;

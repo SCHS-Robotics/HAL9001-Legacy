@@ -7,7 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.source.GUI;
 
-import org.firstinspires.ftc.teamcode.system.source.GUI.Menu;
 import org.firstinspires.ftc.teamcode.util.exceptions.InvalidSelectionZoneException;
 
 /**

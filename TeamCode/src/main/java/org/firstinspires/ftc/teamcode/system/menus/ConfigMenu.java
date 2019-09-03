@@ -9,13 +9,12 @@ package org.firstinspires.ftc.teamcode.system.menus;
 
 import android.util.Log;
 
-import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseAutonomous;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
 import org.firstinspires.ftc.teamcode.system.source.GUI.ScrollingListMenu;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
-import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 
@@ -95,10 +94,10 @@ public class ConfigMenu extends ScrollingListMenu {
            from the autonomous folder filepath. If the situation is the same, except it is being run from a teleop program,
            generate the initial lines from the teleop folder filepath.
         */
-        super(gui, new ConfigCursor(gui.robot,500), genInitialLines(standAloneMode ? filePath : gui.robot.getOpMode() instanceof BaseAutonomous ? filePath + "/autonomous" : filePath + "/teleop"),1,genInitialLines(standAloneMode ? filePath : gui.robot.getOpMode() instanceof BaseAutonomous ? filePath + "/autonomous" : filePath + "/teleop").size());
+        super(gui, new ConfigCursor(gui.robot,500), genInitialLines(standAloneMode ? filePath : gui.robot.isAutonomous() ? filePath + "/autonomous" : filePath + "/teleop"),1,genInitialLines(standAloneMode ? filePath : gui.robot.isAutonomous() ? filePath + "/autonomous" : filePath + "/teleop").size());
 
         menuState = MenuState.ROOT_DIR;
-        configState = gui.robot.getOpMode() instanceof BaseAutonomous ? ConfigurationState.AUTONOMOUS : ConfigurationState.TELEOP;
+        configState = gui.robot.isAutonomous() ? ConfigurationState.AUTONOMOUS : ConfigurationState.TELEOP;
         config = new HashMap<>();
 
         //Is in standalone mode.
@@ -321,6 +320,7 @@ public class ConfigMenu extends ScrollingListMenu {
                 }
                 break;
 
+            //Select the subsystem on the robot to configure.
             case SELECT_SUBSYSTEM:
                 if(name.equals(ConfigCursor.SELECT)) {
                     //If done isn't selected, transition to configure_subsystem
@@ -360,6 +360,7 @@ public class ConfigMenu extends ScrollingListMenu {
                 }
                 break;
 
+            //Select what options in the subsystem have what values.
             case CONFIGURE_SUBSYSTEM:
                 if(name.equals(ConfigCursor.SELECT)) {
                     //If done isn't selected, cycle the option forward by 1.

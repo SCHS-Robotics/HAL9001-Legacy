@@ -26,7 +26,7 @@ public abstract class Cursor {
     protected boolean forceCursorChar;
 
     /**
-     * Ctor for cursor class.
+     * Constructor for cursor class.
      *
      * @param x            - The cursor's initial x coordinate.
      * @param y            - The cursor's initial y coordinate.
@@ -42,7 +42,7 @@ public abstract class Cursor {
     }
 
     /**
-     * Ctor for cursor class.
+     * Constructor for cursor class.
      *
      * @param blinkSpeedMs - The cursor blink speed in milliseconds.
      * @param cursorIcon   - The char that will represent the cursor when the menu is drawn.
@@ -56,7 +56,7 @@ public abstract class Cursor {
     }
 
     /**
-     * Ctor for cursor class.
+     * Constructor for cursor class.
      *
      * @param blinkSpeedMs - The cursor blink speed in milliseconds.
      */

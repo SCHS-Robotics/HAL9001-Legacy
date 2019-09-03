@@ -19,7 +19,7 @@ public abstract class ScrollingListMenu extends Menu {
     protected int menuNumber;
 
     /**
-     * Ctor for menu class.
+     * Constructor for ScrollingListMenu class.
      *
      * @param gui - The GUI that will be used to render the menu.
      * @param cursor - The cursor assigned to this menu.
@@ -36,7 +36,7 @@ public abstract class ScrollingListMenu extends Menu {
     }
 
     /**
-     * Ctor for menu class.
+     * Constructor for ScrollingListMenu class.
      *
      * @param gui - The GUI that will be used to render the menu.
      * @param cursor - The cursor assigned to this menu.

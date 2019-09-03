@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.control.PIDController;
+import org.firstinspires.ftc.teamcode.util.exceptions.GuiNotPresentException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 import org.firstinspires.ftc.teamcode.util.misc.Grapher;
@@ -64,6 +65,8 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
      *
      * @param robot - The robot the subsystem belongs to.
      * @param setPoint - The controller's setpoint.
+     *
+     * @throws GuiNotPresentException - Throws this exception if the GUI was not started before this subsystem was created.
      */
     public AnglePIDTunerSystem(Robot robot, double setPoint) {
         super(robot);
@@ -81,7 +84,48 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
         pidTuner = new PIDController(kp,ki,kd);
         pidTuner.setSetpoint(setPoint);
 
+        if(!robot.usesGUI()) {
+            throw new GuiNotPresentException("The GUI must be started to use the PID tuning program");
+        }
+
         display = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("display",display);
+    }
+
+    /**
+     * Constructor for AnglePIDTunerSystem.
+     *
+     * @param robot - The robot the subsystem belongs to.
+     * @param pidController - The pid controller to tune.
+     *
+     * @throws GuiNotPresentException - Throws this exception if the GUI was not started before this subsystem was created.
+     */
+    public AnglePIDTunerSystem(Robot robot, PIDController pidController, double setPoint) {
+        super(robot);
+
+        inputs = new CustomizableGamepad(robot);
+
+        inputs.addButton(P_INCREMENT,new Button(1, Button.BooleanInputs.dpad_up));
+        inputs.addButton(P_DECREMENT,new Button(1, Button.BooleanInputs.dpad_down));
+        inputs.addButton(I_INCREMENT,new Button(1, Button.BooleanInputs.bool_left_stick_y_up));
+        inputs.addButton(I_DECREMENT,new Button(1, Button.BooleanInputs.bool_left_stick_y_down));
+        inputs.addButton(D_INCREMENT,new Button(1, Button.BooleanInputs.bool_right_stick_y_up));
+        inputs.addButton(D_DECREMENT,new Button(1, Button.BooleanInputs.bool_right_stick_y_down));
+        inputs.addButton(SLOWMODE,new Button(1, Button.BooleanInputs.x));
+
+        this.setPoint = setPoint;
+
+        pidTuner = pidController;
+        pidTuner.setSetpoint(setPoint);
+        pidTuner.setTunings(kp,ki,kd);
+
+
+        if(!robot.usesGUI()) {
+            throw new GuiNotPresentException("The GUI must be started to use the PID tuning program");
+        }
+
+        display = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("display",display);
     }
 
     /**
@@ -90,6 +134,8 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
      * @param robot - The robot the subsystem belongs to.
      * @param setPoint - The controller's setpoint.
      * @param type - The type of PID controller being used.
+     *
+     * @throws GuiNotPresentException - Throws this exception if the GUI was not started before this subsystem was created.
      */
     public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type) {
         super(robot);
@@ -109,17 +155,24 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
         pidTuner = new PIDController(kp,ki,kd,type);
         pidTuner.setSetpoint(setPoint);
 
+        if(!robot.usesGUI()) {
+            throw new GuiNotPresentException("The GUI must be started to use the PID tuning program");
+        }
+
         display = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("display",display);
     }
 
     /**
-     * Constuctor for AnglePIDTunerSystem.
+     * Constructor for AnglePIDTunerSystem.
      *
      * @param robot - The robot the subsystem belongs to.
      * @param setPoint - The controller's setpoint.
      * @param type - The type of PID controller being used.
      * @param iClampLower - The lower value for the clamp on the integral term.
      * @param iClampUpper - The upper value for the clamp on the integral term.
+     *
+     * @throws GuiNotPresentException - Throws this exception if the GUI was not started before this subsystem was created.
      */
     public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper) {
         super(robot);
@@ -140,11 +193,16 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
         pidTuner.setSetpoint(setPoint);
         pidTuner.setIClamp(iClampLower,iClampUpper);
 
+        if(!robot.usesGUI()) {
+            throw new GuiNotPresentException("The GUI must be started to use the PID tuning program");
+        }
+
         display = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("display",display);
     }
 
     /**
-     * Constuctor for AnglePIDTunerSystem.
+     * Constructor for AnglePIDTunerSystem.
      *
      * @param robot - The robot the subsystem belongs to.
      * @param setPoint - The controller's setpoint.
@@ -153,6 +211,8 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
      * @param iClampUpper - The upper value for the clamp on the integral term.
      * @param outputClampLower - The lower value for the clamp on the controller's output.
      * @param outputClampUpper - The upper value for the clamp on the controller's output.
+     *
+     * @throws GuiNotPresentException - Throws this exception if the GUI was not started before this subsystem was created.
      */
     public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper, double outputClampLower, double outputClampUpper) {
         super(robot);
@@ -174,7 +234,12 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
         pidTuner.setIClamp(iClampLower,iClampUpper);
         pidTuner.setOutputClamp(outputClampLower,outputClampUpper);
 
+        if(!robot.usesGUI()) {
+            throw new GuiNotPresentException("The GUI must be started to use the PID tuning program");
+        }
+
         display = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("display",display);
     }
 
     /**
@@ -189,6 +254,8 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
      * @param outputClampUpper - The upper value for the clamp on the controller's output.
      * @param PonMClampLower - The lower value for the clamp on the controller's proportional term in PonM mode.
      * @param PonMClampUpper - The upper value for the clamp on the controller's proportional term in PonM mode.
+     *
+     * @throws GuiNotPresentException - Throws this exception if the GUI was not started before this subsystem was created.
      */
     public AnglePIDTunerSystem(Robot robot, double setPoint, PIDController.Type type, double iClampLower, double iClampUpper, double outputClampLower, double outputClampUpper, double PonMClampLower, double PonMClampUpper) {
         super(robot);
@@ -211,7 +278,12 @@ public class AnglePIDTunerSystem extends SubSystem implements CameraBridgeViewBa
         pidTuner.setOutputClamp(outputClampLower,outputClampUpper);
         pidTuner.setPonMClamp(PonMClampLower,PonMClampUpper);
 
+        if(!robot.usesGUI()) {
+            throw new GuiNotPresentException("The GUI must be started to use the PID tuning program");
+        }
+
         display = new DisplayMenu(robot.gui);
+        robot.gui.addMenu("display",display);
     }
 
     @Override

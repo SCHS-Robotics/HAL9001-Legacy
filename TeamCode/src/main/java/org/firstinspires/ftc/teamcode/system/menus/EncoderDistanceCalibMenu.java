@@ -7,9 +7,7 @@
 
 package org.firstinspires.ftc.teamcode.system.menus;
 
-import android.widget.Switch;
-
-import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
 import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
 import org.firstinspires.ftc.teamcode.system.source.GUI.Menu;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.DefaultCursor;
@@ -19,37 +17,51 @@ import org.firstinspires.ftc.teamcode.util.math.Units;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
 
+/**
+ * A Menu used in the EncoderDistanceCalibrator to display and calculate the number of encoder ticks per meter.
+ */
 public class EncoderDistanceCalibMenu extends Menu {
 
-    SpeedMode speedMode = SpeedMode.FAST;
-    
-    CustomizableGamepad inputs;
-    
-    private static final String SPEED_MODE_TOGGLE = "SpeedModeToggle";
-
-    private EncoderDistanceCalib calib;
-    
-    private double distance = 0;
-
-    Units unit;
-
+    //How fast the distance input should be increased.
     private enum SpeedMode{
         FAST(25), MEDIUM(10), SLOW(1), PRECISION(.1);
-        
+
         public double increment;
         SpeedMode(double increment) {
             this.increment = increment;
         }
     }
+    private SpeedMode speedMode;
 
-    public EncoderDistanceCalibMenu(Robot robot, Units unit, Button speedToggleButton, EncoderDistanceCalib calib){
-        super(robot.gui, new DefaultCursor(robot, new DefaultCursor.Params()), new GuiLine[]{new GuiLine("<#>", ""), new GuiLine("###", "Done  " + "Increment: " + "Fast")},3,2);
+    //The customizable gamepad that stores all the inputs for the program.
+    private CustomizableGamepad inputs;
+    //The name of the button used to toggle the speed mode.
+    private static final String SPEED_MODE_TOGGLE = "SpeedModeToggle";
+    //The EncoderDistanceCalib subsystem that this menu interacts with.
+    private EncoderDistanceCalib calib;
+    //The distance value that has been entered into the menu.
+    private double distance;
+    //The distance unit being entered into the menu.
+    private Units unit;
+
+    /**
+     * Constructor for EncoderDistanceCalibMenu.
+     *
+     * @param gui - The GUI being used to render the menu.
+     * @param unit - The unit of distance being entered into the menu.
+     * @param speedToggleButton - The button used to toggle the increment/decrement speed.
+     * @param calib - The EncoderDistanceCalib subsystem associated with this menu.
+     */
+    public EncoderDistanceCalibMenu(GUI gui, Units unit, Button speedToggleButton, EncoderDistanceCalib calib){
+        super(gui, new DefaultCursor(gui.robot, new DefaultCursor.Params()), new GuiLine[]{new GuiLine("<#>", ""), new GuiLine("###", "Done  " + "Increment: " + "Fast")},3,2);
+
+        speedMode = SpeedMode.FAST;
+        distance = 0;
 
         this.unit = unit;
-
         this.calib = calib;
 
-        inputs = new CustomizableGamepad(robot);
+        inputs = new CustomizableGamepad(gui.robot);
         if(!speedToggleButton.isBoolean){
             throw new NotBooleanInputException("SpeedToggleButton must be a boolean button");
         }
@@ -85,12 +97,12 @@ public class EncoderDistanceCalibMenu extends Menu {
             if(cursor.y == 0 && cursor.x == 0){
                 distance -= speedMode.increment;
                 cursor.setX(1);
-                updateLinesForIncrament();
+                updateLinesForIncrement();
             }
             else if(cursor.y == 0 && cursor.x == 2){
                 distance += speedMode.increment;
                 cursor.setX(1);
-                updateLinesForIncrament();
+                updateLinesForIncrement();
             }
         }
         if(name.equals(DefaultCursor.UP)){
@@ -98,7 +110,6 @@ public class EncoderDistanceCalibMenu extends Menu {
                 cursor.setX(1);
             }
         }
-
     }
 
     @Override
@@ -141,7 +152,10 @@ public class EncoderDistanceCalibMenu extends Menu {
 
     }
 
-    private void updateLinesForIncrament(){
+    /**
+     * Updates the displayed distance value.
+     */
+    private void updateLinesForIncrement(){
         setLines(new GuiLine[]{
                 new GuiLine(lines.get(0).selectionZoneText, "I traveled: " + distance + unit.abreviation),
                 lines.get(1)

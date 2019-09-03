@@ -7,8 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.source.GUI;
 
-import android.util.Log;
-
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
@@ -51,7 +49,7 @@ public class GUI {
     private static final String CYCLE_MENUS = "CycleMenus";
 
     /**
-     * Ctor for GUI.
+     * Constructor for GUI.
      *
      * @param robot - The robot using the instance of GUI.
      * @param flipMenu - The button used to cycle between multiple stored menus.
@@ -284,11 +282,22 @@ public class GUI {
         return menus.get(menuName);
     }
 
-    public void setCycleButton(Button cycleButton) {
+    /**
+     * Overrides the button used to cycle through menus.
+     *
+     * @param cycleButton - The button that will be used to cycle through menus.
+     */
+    public void overrideCycleButton(Button cycleButton) {
         inputs.removeButton(CYCLE_MENUS);
         inputs.addButton(CYCLE_MENUS,cycleButton);
     }
 
+    /**
+     * Returns if a menu with the provided name is present in the GUI.
+     *
+     * @param menuName - The name of the menu to search for.
+     * @return Whether or not the menu is in the GUI.
+     */
     public boolean isMenuPresent(String menuName) {
         return menuKeys.contains(menuName);
     }

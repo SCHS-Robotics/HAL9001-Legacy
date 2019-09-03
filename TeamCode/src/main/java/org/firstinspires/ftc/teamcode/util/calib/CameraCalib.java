@@ -1,3 +1,10 @@
+/*
+ * Filename: CameraCalib.java
+ * Author: Cole Savage
+ * Team Name: Level Up
+ * Date: 8/24/19
+ */
+
 package org.firstinspires.ftc.teamcode.util.calib;
 
 import android.util.Log;
@@ -7,7 +14,6 @@ import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
-import org.firstinspires.ftc.teamcode.util.misc.Toggle;
 import org.opencv.android.CameraBridgeViewBase;
 import org.opencv.calib3d.Calib3d;
 import org.opencv.core.CvType;

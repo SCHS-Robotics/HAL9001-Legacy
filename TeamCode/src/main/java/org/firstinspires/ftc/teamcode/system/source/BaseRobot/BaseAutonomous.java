@@ -82,7 +82,7 @@ public abstract class BaseAutonomous extends LinearOpMode {
     }
 
     /**
-     * Waits for a boolean function with two inputs to return true.
+     * Waits for a boolean function with two inputs to return true. param1 and 2 must be updated from separate thread.
      *
      * @param condition - An arbitrary function taking two inputs and outputting a boolean.
      * @param param1 - The function's first parameter.

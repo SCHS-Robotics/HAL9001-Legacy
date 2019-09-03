@@ -9,8 +9,8 @@ package org.firstinspires.ftc.teamcode.system.menus;
 
 import org.firstinspires.ftc.teamcode.system.source.GUI.BaseDisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
-import org.firstinspires.ftc.teamcode.system.subsystems.cursors.DefaultCursor;
 import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
+import org.firstinspires.ftc.teamcode.system.subsystems.cursors.DefaultCursor;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 import java.util.List;

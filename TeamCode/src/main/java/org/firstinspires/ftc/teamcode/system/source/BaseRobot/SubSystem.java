@@ -51,11 +51,15 @@ public abstract class SubSystem {
 
     /**
      * An abstract method containing the code that the subsystem runs every loop in a teleop program.
+     *
+     * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public abstract void handle() throws InterruptedException;
 
     /**
      * An abstract method containing the code that the subsystem runs when the program is stopped.
+     *
+     * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public abstract void stop() throws InterruptedException;
 }

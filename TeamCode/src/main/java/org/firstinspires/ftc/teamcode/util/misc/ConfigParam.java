@@ -7,11 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.util.misc;
 
-import android.util.Pair;
-
-import org.firstinspires.ftc.teamcode.util.exceptions.NotAnAlchemistException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotARealGamepadException;
-import org.opencv.core.Range;
+import org.firstinspires.ftc.teamcode.util.exceptions.NotAnAlchemistException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
