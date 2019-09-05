@@ -634,6 +634,13 @@ public class MechanumDrive extends SubSystem {
         botRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void stopAllMotors() {
+        topLeft.setPower(0);
+        topRight.setPower(0);
+        botLeft.setPower(0);
+        botRight.setPower(0);
+    }
+
     /**
      * Turns to a specified angle within a specified tolerance.
      *
@@ -687,6 +694,107 @@ public class MechanumDrive extends SubSystem {
 
         topRight.setPower(rightVector.y);
         botRight.setPower(rightVector.x);
+    }
+
+    /**
+     * Drive method for driving for a certain amount of time with matthew drive.
+     *
+     * @param leftVector - The vector for controlling the left side of the robot.
+     * @param rightVector - The vector for controlling the right side of the robot.
+     * @param timeMs - The total time to run in ms.
+     * @throws InterruptedException - Throws this exception when the program is unexpectedly interrupted.
+     */
+    public void drive(Vector leftVector, Vector rightVector, double timeMs) throws InterruptedException {
+        if (driveType != DriveType.MATTHEW) {
+            throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
+        }
+
+        resetAllEncoders();
+
+        leftVector.rotate(-(PI / 4));
+        rightVector.rotate(-(PI / 4));
+
+        long startTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - startTime < timeMs) {
+            topLeft.setPower(leftVector.x);
+            botLeft.setPower(leftVector.y);
+
+            topRight.setPower(rightVector.y);
+            botRight.setPower(rightVector.x);
+
+            sleep(1);
+        }
+
+        stopAllMotors();
+    }
+
+    /**
+     * Drive method for driving for a certain distance with matthew drive.
+     *
+     * @param leftVector - The left motor vector.
+     * @param rightVector - The right motor vector.
+     * @param distanceLeft - The distance for the left side of the robot to travel.
+     * @param distanceRight - The distance for the right side of the robot to travel.
+     * @param unit - The unit that the distance is being provided in.
+     *
+     * @throws InterruptedException - Throws this exception when the program is unexpectedly interrupted.
+     */
+    public void drive(Vector leftVector, Vector rightVector, double distanceLeft, double distanceRight, Units unit) throws InterruptedException {
+        {
+            if (driveType != DriveType.MATTHEW) {
+                throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
+            }
+
+            if ((leftVector.isZeroVector() && distanceLeft != 0) || (rightVector.isZeroVector() && distanceRight != 0)) {
+                throw new InvalidMoveCommandException("You can't move anywhere if you aren't trying to move ;)");
+            }
+
+            if (distanceLeft < 0 || distanceRight < 0) {
+                throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
+            }
+
+            resetAllEncoders();
+
+            Vector leftDisplacement = new Vector(distanceLeft, leftVector.theta, Vector.CoordinateType.POLAR);
+            Vector rightDisplacement = new Vector(distanceRight, rightVector.theta, Vector.CoordinateType.POLAR);
+
+            EncoderToDistanceProcessor encProcessor = new EncoderToDistanceProcessor(encoderPerMeter);
+
+            leftVector.scalarMultiply(constantSpeedMultiplier);
+            rightVector.scalarMultiply(constantSpeedMultiplier);
+
+            leftVector.rotate(-(PI / 4));
+            rightVector.rotate(-(PI / 4));
+
+            leftDisplacement.rotate(-(PI / 4));
+            rightDisplacement.rotate(-(PI / 4));
+
+            double thresh1Left = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.x), unit);
+            double thresh2Left = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.y), unit);
+
+            double thresh1Right = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.x), unit);
+            double thresh2Right = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.y), unit);
+
+            while (Math.abs(topLeft.getCurrentPosition()) < thresh1Left && Math.abs(topRight.getCurrentPosition()) < thresh2Right && Math.abs(botLeft.getCurrentPosition()) < thresh2Left && Math.abs(botRight.getCurrentPosition()) < thresh1Right) {
+                if (Math.abs(topLeft.getCurrentPosition()) < thresh1Left && Math.abs(botLeft.getCurrentPosition()) < thresh2Left) {
+                    topLeft.setPower(leftVector.x);
+                    botLeft.setPower(leftVector.y);
+                } else {
+                    topLeft.setPower(0);
+                    botLeft.setPower(0);
+                }
+                if (Math.abs(botRight.getCurrentPosition()) < thresh1Right && Math.abs(topRight.getCurrentPosition()) < thresh2Right) {
+                    topRight.setPower(rightVector.y);
+                    botRight.setPower(rightVector.x);
+                } else {
+                    topRight.setPower(0);
+                    botRight.setPower(0);
+                }
+                sleep(1);
+            }
+        }
+
+        stopAllMotors();
     }
 
     /**
@@ -829,12 +937,19 @@ public class MechanumDrive extends SubSystem {
         }
     }
 
+    /**
+     * Makes the robot drive a specified distance in a specified direction.
+     *
+     * @param v - The input velocity vector.
+     * @param distance - The distance the robot should travel.
+     * @param unit - The units of distance.
+     *
+     * @throws InterruptedException - This error is thrown when the program is interrupted unexpectedly.
+     */
     public void drive(Vector v, double distance, Units unit) throws InterruptedException{
         if (driveType == DriveType.MATTHEW) {
             throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
         }
-
-        v.scalarMultiply(constantSpeedMultiplier);
 
         if(v.isZeroVector() && distance != 0) {
             throw new InvalidMoveCommandException("You can't move anywhere if you aren't trying to move ;)");
@@ -847,6 +962,8 @@ public class MechanumDrive extends SubSystem {
         if((driveType == DriveType.ARCADE || driveType == DriveType.ARCADE_TTA) && (v.theta == PI/4 || v.theta == (3*PI)/4 || v.theta == (5*PI)/4 || v.theta == (7*PI)/4)) {
             throw new InvalidMoveCommandException("Error: You input an invalid velocity vector for arcade drive.");
         }
+
+        v.scalarMultiply(constantSpeedMultiplier);
 
         Vector displacement = new Vector(distance,v.theta,Vector.CoordinateType.POLAR);
         EncoderToDistanceProcessor encProcessor = new EncoderToDistanceProcessor(encoderPerMeter);
@@ -936,7 +1053,7 @@ public class MechanumDrive extends SubSystem {
      *
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
-    public void drive(Vector v, double distance, Units unit, boolean stabilityControl) throws InterruptedException{
+    public void drive(Vector v, double distance, Units unit, boolean stabilityControl) throws InterruptedException {
         if (driveType == DriveType.MATTHEW) {
             throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
         }
@@ -1040,6 +1157,8 @@ public class MechanumDrive extends SubSystem {
                 }
                 break;
         }
+
+        stopAllMotors();
     }
 
     /**
@@ -1133,6 +1252,8 @@ public class MechanumDrive extends SubSystem {
                 }
                 break;
         }
+
+        stopAllMotors();
     }
 
     /**
@@ -1215,6 +1336,8 @@ public class MechanumDrive extends SubSystem {
                 }
                 break;
         }
+
+        stopAllMotors();
     }
 
     /**
