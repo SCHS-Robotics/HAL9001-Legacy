@@ -385,6 +385,16 @@ public abstract class Robot {
     /**
      * Pulls a customizable gamepad object from the teleop config map. Allows for easily getting gamepad data from the configuration.
      *
+     * @param subsystem - The subsystem to pull the gamepad controls for.
+     * @return - A customizable gamepad containing the configured controls for that subsystem.
+     */
+    public CustomizableGamepad pullControls(SubSystem subsystem) {
+        return pullControls(subsystem.getClass().getSimpleName());
+    }
+
+    /**
+     * Pulls a customizable gamepad object from the teleop config map. Allows for easily getting gamepad data from the configuration.
+     *
      * @param subsystem - The name of the subsystem to pull the gamepad controls for.
      * @return - A customizable gamepad containing the configured controls for that subsystem.
      */
@@ -397,6 +407,16 @@ public abstract class Robot {
             }
         }
         return gamepad;
+    }
+
+    /**
+     * Pulls a map of all non-gamepad-related config settings from the global config. The map format is (option name) -> (option value)
+     *
+     * @param subsystem - The subsystem to pull the gamepad controls for.
+     * @return - A map relating the name of each non-gamepad option to that option's value.
+     */
+    public Map<String,Object> pullNonGamepad(SubSystem subsystem) {
+        return pullNonGamepad(subsystem.getClass().getSimpleName());
     }
 
     /**

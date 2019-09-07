@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.system.source.GUI.ScrollingListMenu;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
+import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
@@ -313,6 +314,10 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                             }
                         }
 
+                        if(currentParam.options.size() == 0) {
+                            throw new DumpsterFireException("Couldn't find options for configParam");
+                        }
+
                         lines.set(cursor.y, new GuiLine("#", currentParam.usesGamepad ? data[0] + " | " + currentParam.options.get((currentParam.options.indexOf(data[1]) + 1) % currentParam.options.size()) + " | " + data[2] : data[0] + " | " + currentParam.options.get((currentParam.options.indexOf(data[1]) + 1) % currentParam.options.size())));
                     }
                     else {
@@ -338,12 +343,16 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                         }
                     }
 
+                    if(currentParam.options.size() == 0) {
+                        throw new DumpsterFireException("Couldn't find options for configParam");
+                    }
+
                     lines.set(cursor.y, new GuiLine("#", currentParam.usesGamepad ? data[0] + " | " + currentParam.options.get(customMod.apply((currentParam.options.indexOf(data[1])-1), currentParam.options.size())) + " | " + data[2] : data[0] + " | " + currentParam.options.get(customMod.apply((currentParam.options.indexOf(data[1])-1), currentParam.options.size()))));
                 }
 
                 else if(name.equals(ConfigCursor.SWITCH_GAMEPAD) && !lines.get(cursor.y).postSelectionText.equals("Done")) {
                     String unparsedLine = lines.get(cursor.y).postSelectionText;
-                    String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).replace(" ", "");
+                    String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).trim();
 
                     int tempIdx = unparsedLine.substring(unparsedLine.indexOf('|') + 1).indexOf('|'); //This number is the index of the vertical bar in the substring formed by taking all the text after the first vertical bar.
 
@@ -351,8 +360,8 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                     String currentGamepadOptionValue;
 
                     if (tempIdx != -1) {
-                        currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).replace(" ", "");
-                        currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3);
+                        currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).trim();
+                        currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3).trim();
                         List<ConfigParam> subsystemParams = config.get(selectedSubsystemName);
                         ConfigParam currentParam = new ConfigParam("", new String[]{}, "");
 
@@ -361,6 +370,10 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                                 currentParam = param;
                                 break;
                             }
+                        }
+
+                        if(currentParam.options.size() == 0) {
+                            throw new DumpsterFireException("Couldn't find options for configParam");
                         }
 
                         lines.set(cursor.y, new GuiLine("#", currentParam.usesGamepad ? currentOptionName + " | " + currentOptionValue + " | " + currentParam.gamepadOptions.get((currentParam.gamepadOptions.indexOf(currentGamepadOptionValue) + 1) % currentParam.gamepadOptions.size()) : currentOptionName + " | " + currentOptionValue));
@@ -624,7 +637,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                     sb.append(param.currentOption);
                     if(param.usesGamepad) {
                         sb.append(':');
-                        sb.append(param.currentGamepadOption.replace(" ","")); //I don't trust spaces. They make me suspicious.
+                        sb.append(param.currentGamepadOption);
                     }
                     sb.append("\r\n");
                 }
@@ -725,7 +738,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
      */
     private static String[] parseOptionLine(GuiLine line) {
         String unparsedLine = line.postSelectionText;
-        String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).replace(" ", "");
+        String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).trim();
 
         int tempIdx = unparsedLine.substring(unparsedLine.indexOf('|') + 1).indexOf('|'); //This number is the index of the vertical bar in the substring formed by taking all the text after the first vertical bar.
 
@@ -733,11 +746,11 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         String currentGamepadOptionValue;
 
         if(tempIdx != -1) {
-            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).replace(" ","");
-            currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3);
+            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).trim();
+            currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3).trim();
         }
         else {
-            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1).replace(" ","");
+            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1).trim();
             currentGamepadOptionValue = "";
         }
         return new String[] {currentOptionName,currentOptionValue,currentGamepadOptionValue};

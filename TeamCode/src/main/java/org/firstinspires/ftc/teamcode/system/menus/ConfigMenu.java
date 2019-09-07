@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
 import org.firstinspires.ftc.teamcode.system.source.GUI.GuiLine;
 import org.firstinspires.ftc.teamcode.system.source.GUI.ScrollingListMenu;
 import org.firstinspires.ftc.teamcode.system.subsystems.cursors.ConfigCursor;
+import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
@@ -377,6 +378,10 @@ public class ConfigMenu extends ScrollingListMenu {
                             }
                         }
 
+                        if(currentParam.options.size() == 0) {
+                            throw new DumpsterFireException("Couldn't find options for configParam");
+                        }
+
                         lines.set(cursor.y, new GuiLine("#", currentParam.usesGamepad ? data[0] + " | " + currentParam.options.get((currentParam.options.indexOf(data[1]) + 1) % currentParam.options.size()) + " | " + data[2] : data[0] + " | " + currentParam.options.get((currentParam.options.indexOf(data[1]) + 1) % currentParam.options.size())));
                     }
                     //If done is selected, update the config map and transition back to select_subsystem.
@@ -403,12 +408,16 @@ public class ConfigMenu extends ScrollingListMenu {
                         }
                     }
 
+                    if(currentParam.options.size() == 0) {
+                        throw new DumpsterFireException("Couldn't find options for configParam");
+                    }
+
                     lines.set(cursor.y, new GuiLine("#", currentParam.usesGamepad ? data[0] + " | " + currentParam.options.get(customMod.apply((currentParam.options.indexOf(data[1])-1), currentParam.options.size())) + " | " + data[2] : data[0] + " | " + currentParam.options.get(customMod.apply((currentParam.options.indexOf(data[1])-1), currentParam.options.size()))));
                 }
                 //If done isn't selected and the cycle gamepad button is pressed, cycle the setting's gamepad option if possible.
                 else if(name.equals(ConfigCursor.SWITCH_GAMEPAD) && !lines.get(cursor.y).postSelectionText.equals("Done")) {
                     String unparsedLine = lines.get(cursor.y).postSelectionText;
-                    String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).replace(" ", "");
+                    String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).trim();
 
                     int tempIdx = unparsedLine.substring(unparsedLine.indexOf('|') + 1).indexOf('|'); //This number is the index of the vertical bar in the substring formed by taking all the text after the first vertical bar.
 
@@ -416,8 +425,8 @@ public class ConfigMenu extends ScrollingListMenu {
                     String currentGamepadOptionValue;
 
                     if (tempIdx != -1) {
-                        currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).replace(" ", "");
-                        currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3);
+                        currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).trim();
+                        currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3).trim();
                         List<ConfigParam> subsystemParams = config.get(selectedSubsystemName);
                         ConfigParam currentParam = new ConfigParam("", new String[]{}, "");
 
@@ -426,6 +435,10 @@ public class ConfigMenu extends ScrollingListMenu {
                                 currentParam = param;
                                 break;
                             }
+                        }
+
+                        if(currentParam.options.size() == 0) {
+                            throw new DumpsterFireException("Couldn't find options for configParam");
                         }
 
                         lines.set(cursor.y, new GuiLine("#", currentParam.usesGamepad ? currentOptionName + " | " + currentOptionValue + " | " + currentParam.gamepadOptions.get((currentParam.gamepadOptions.indexOf(currentGamepadOptionValue) + 1) % currentParam.gamepadOptions.size()) : currentOptionName + " | " + currentOptionValue));
@@ -505,7 +518,7 @@ public class ConfigMenu extends ScrollingListMenu {
      */
     private static String[] parseOptionLine(GuiLine line) {
         String unparsedLine = line.postSelectionText;
-        String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).replace(" ", "");
+        String currentOptionName = unparsedLine.substring(0, unparsedLine.indexOf('|')).trim();
 
         int tempIdx = unparsedLine.substring(unparsedLine.indexOf('|') + 1).indexOf('|'); //This number is the index of the vertical bar in the substring formed by taking all the text after the first vertical bar.
 
@@ -513,11 +526,11 @@ public class ConfigMenu extends ScrollingListMenu {
         String currentGamepadOptionValue;
 
         if(tempIdx != -1) {
-            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).replace(" ","");
-            currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3);
+            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).trim();
+            currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3).trim();
         }
         else {
-            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1).replace(" ","");
+            currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1).trim();
             currentGamepadOptionValue = "";
         }
         return new String[] {currentOptionName,currentOptionValue,currentGamepadOptionValue};
@@ -753,10 +766,10 @@ public class ConfigMenu extends ScrollingListMenu {
                 String line;
                 while((line = bufferedReader.readLine()) != null) {
                     String[] data = line.split(":");
-                    config.get(data[0]).get(i).name = data[1];
-                    config.get(data[0]).get(i).currentOption = data[2];
+                    config.get(data[0]).get(i).name = data[1].trim();
+                    config.get(data[0]).get(i).currentOption = data[2].trim();
                     if(config.get(data[0]).get(i).usesGamepad) {
-                        config.get(data[0]).get(i).currentGamepadOption = data[3].substring(0,data[3].indexOf('d')+1) + ' ' + data[3].substring(data[3].indexOf('d')+1); //adds a space in between the d in gamepad and the number
+                        config.get(data[0]).get(i).currentGamepadOption = data[3].trim();
                     }
                     i++;
                 }
@@ -831,7 +844,7 @@ public class ConfigMenu extends ScrollingListMenu {
                 sb.append(param.currentOption);
                 if(param.usesGamepad) {
                     sb.append(':');
-                    sb.append(param.currentGamepadOption.replace(" ","")); //I don't trust spaces. They make me suspicious.
+                    sb.append(param.currentGamepadOption); //I don't trust spaces. They make me suspicious.
                 }
                 sb.append("\r\n");
             }

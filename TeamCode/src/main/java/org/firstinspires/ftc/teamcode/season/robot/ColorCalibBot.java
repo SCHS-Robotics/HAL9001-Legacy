@@ -28,7 +28,7 @@ public class ColorCalibBot extends Robot {
      */
     public ColorCalibBot(OpMode opmode) {
         super(opmode);
-        startGui(new Button(1, Button.BooleanInputs.start));
+        startGui(new Button(1, Button.BooleanInputs.noButton));
 
         calibSystem = new ColorspaceCalib(this);
         putSubSystem("Calib", calibSystem);

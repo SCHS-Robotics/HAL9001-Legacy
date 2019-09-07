@@ -332,8 +332,8 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
     @Override
     public void start() {
         if(usesConfig) {
-            inputs = robot.pullControls(this.getClass().getSimpleName());
-            Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+            inputs = robot.pullControls(this);
+            Map<String, Object> settingsData = robot.pullNonGamepad(this);
             colorSpace = (ColorSpace) settingsData.get("Colorspace");
         }
     }

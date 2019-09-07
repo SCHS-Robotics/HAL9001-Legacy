@@ -449,20 +449,19 @@ public class QuadWheelDrive extends SubSystem{
     }
 
     private void setUsingConfigs() {
-        inputs = robot.pullControls(this.getClass().getSimpleName());
-        Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+        inputs = robot.pullControls(this);
+        Map<String, Object> settingsData = robot.pullNonGamepad(this);
 
-        setTurnAndMove((Boolean) settingsData.get("Turn and Move"));
+        setTurnAndMove((boolean) settingsData.get("Turn and Move"));
         if (!useSpecific) {
-            setDeadzone((Double) settingsData.get("Deadzone"));
-            setConstantSpeedModifier((Double) settingsData.get("ConstantSpeedModifier"));
-            setSpeedModeModifier((Double) settingsData.get("SpeedModeModifier"));
+            setDeadzone((double) settingsData.get("Deadzone"));
+            setConstantSpeedModifier((double) settingsData.get("ConstantSpeedModifier"));
+            setSpeedModeModifier((double) settingsData.get("SpeedModeModifier"));
         }
     }
 
     private void setUsingConfigsAutonomous(){
-        inputs = robot.pullControls(this.getClass().getSimpleName());
-        Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+        Map<String, Object> settingsData = robot.pullNonGamepad(this);
 
         setConstantSpeedModifier((double) settingsData.get("ConstantSpeedModifier"));
     }

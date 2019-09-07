@@ -1426,8 +1426,8 @@ public class MechanumDrive extends SubSystem {
      * @throws InterruptedException - Throws this exception is the program is unexpectedly interrupted.
      */
     private void setUsingConfigs() throws InterruptedException{
-        inputs = robot.pullControls(this.getClass().getSimpleName());
-        Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+        inputs = robot.pullControls(this);
+        Map<String, Object> settingsData = robot.pullNonGamepad(this);
 
         imuNumber = (int) settingsData.get("ImuNumber");
 
@@ -1448,7 +1448,7 @@ public class MechanumDrive extends SubSystem {
      * @throws InterruptedException - Throws this exception is the program is unexpectedly interrupted.
      */
     private void setUsingConfigsAutonomous() throws InterruptedException{
-        Map<String, Object> settingsData = robot.pullNonGamepad(this.getClass().getSimpleName());
+        Map<String, Object> settingsData = robot.pullNonGamepad(this);
 
         imuNumber = (int) settingsData.get("ImuNumber");
 
