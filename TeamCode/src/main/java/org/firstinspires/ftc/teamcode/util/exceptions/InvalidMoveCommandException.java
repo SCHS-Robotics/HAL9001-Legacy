@@ -1,13 +1,22 @@
 /*
- * Filename: NotARealGamepadException.java
+ * Filename: InvalidMoveCommandException.java
  * Author: Cole Savage
  * Team Name: Level Up
- * Date: 7/21/19
+ * Date: 9/5/19
  */
 
 package org.firstinspires.ftc.teamcode.util.exceptions;
 
+/**
+ * An exception thrown if a drive train is given an invalid movement command.
+ */
 public class InvalidMoveCommandException extends RuntimeException {
+
+    /**
+     * Constructor for InvalidMoveCommandException.
+     *
+     * @param message - The error message to print to the screen.
+     */
     public InvalidMoveCommandException(String message) {
         super(message);
     }

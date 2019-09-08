@@ -8,14 +8,14 @@
 package org.firstinspires.ftc.teamcode.util.exceptions;
 
 /**
- * An exception thrown if a channel in a color image does not exist.
+ * An exception thrown if a GUI is needed, but is not present.
  */
 public class GuiNotPresentException extends RuntimeException {
 
     /**
-     * Ctor for ChannelDoesNotExistException.
+     * Constructor for GuiNotPresentException
      *
-     * @param message - The message to print to the screen.
+     * @param message - The error message to print to the screen.
      */
     public GuiNotPresentException(String message) {
         super(message);

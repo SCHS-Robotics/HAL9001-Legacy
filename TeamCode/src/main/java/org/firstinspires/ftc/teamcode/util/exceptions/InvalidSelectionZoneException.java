@@ -13,7 +13,7 @@ package org.firstinspires.ftc.teamcode.util.exceptions;
 public class InvalidSelectionZoneException extends RuntimeException {
 
     /**
-     * Ctor for InvalidSelectionZoneException.
+     * Constructor for InvalidSelectionZoneException.
      *
      * @param message - The message to print to the screen.
      */

@@ -107,10 +107,21 @@ public class Vector {
         normalize(1.0);
     }
 
+    /**
+     * Multiply the vector by a scalar.
+     *
+     * @param scalar - A constant number.
+     */
     public void scalarMultiply(double scalar) {
         this.normalize(scalar*r);
     }
 
+    /**
+     * Performs a dot product with another vector.
+     *
+     * @param v - The second vector.
+     * @return The dot product of this vector and v.
+     */
     public double dotProduct(Vector v) {
         return v.x*x + v.y*y;
     }

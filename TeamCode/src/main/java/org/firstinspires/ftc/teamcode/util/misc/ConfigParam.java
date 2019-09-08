@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public class ConfigParam {
 
+    //A map mapping the words true and false to the booleans true and false.
     public static Map<String, Object> booleanMap = new HashMap<String,Object>() {{
         put("true",true);
         put("false",false);
@@ -44,9 +45,9 @@ public class ConfigParam {
     public List<String> gamepadOptions;
     //A boolean value specifying if the option uses a gamepad.
     public boolean usesGamepad;
-
     //A boolean value specifying if the option is a boolean button on a gamepad.
     private boolean isBoolButton;
+    //A boolean value specifying if the option is a double button on a gamepad.
     private boolean isDoubleButton;
 
     /**
@@ -163,6 +164,12 @@ public class ConfigParam {
         currentGamepadOption = this.defaultGamepadOption;
     }
 
+    /**
+     * Constructor for ConfigParam that uses default settings for a Vector button.
+     *
+     * @param name - The name of the parameter.
+     * @param defaultOption - The parameter's default option.
+     */
     public ConfigParam(String name, Button.VectorInputs defaultOption) {
         this.name = name;
         String[] doubleOptions = new String[] {"noButton","left_stick", "right_stick"};
@@ -183,6 +190,13 @@ public class ConfigParam {
         currentGamepadOption = this.defaultGamepadOption;
     }
 
+    /**
+     * Constructor for ConfigParam that uses default settings for a Vector button.
+     *
+     * @param name - The name of the parameter.
+     * @param defaultOption - The parameter's default option.
+     * @param gamepadDefault - The default gamepad setting.
+     */
     public ConfigParam(String name, Button.VectorInputs defaultOption, int gamepadDefault) {
         this.name = name;
         String[] doubleOptions = new String[] {"noButton","left_stick", "right_stick"};
@@ -245,6 +259,13 @@ public class ConfigParam {
         usesGamepad = false;
     }
 
+    /**
+     * Constructor for ConfigParam that uses map of strings to actual objects, which will be returned later when the user gives the name of the object they want.
+     *
+     * @param name - The name of the config parameter.
+     * @param map - The map of strings to objects, representing the mappings of string options for the parameter and more program-friendly representations of the data (ex: int, enum).
+     * @param defaultOption - The option's default option.
+     */
     public ConfigParam(String name, Map<String,Object> map, String defaultOption) {
         this.name = name;
 
@@ -260,6 +281,13 @@ public class ConfigParam {
         usesGamepad = false;
     }
 
+    /**
+     * Constructor for ConfigParam that uses map of strings to actual objects, which will be returned later when the user gives the name of the object they want.
+     *
+     * @param name - The name of the config parameter.
+     * @param map - The map of strings to objects, representing the mappings of string options for the parameter and more program-friendly representations of the data (ex: int, enum).
+     * @param defaultOption - The option's default option.
+     */
     public ConfigParam(String name, Map<String,Object> map, Object defaultOption) {
         this.name = name;
 
@@ -326,6 +354,14 @@ public class ConfigParam {
         }
     }
 
+    /**
+     * Generates a map linking the names of numbers to the actual numbers. Used for config.
+     *
+     * @param start - The lowest possible configurable number.
+     * @param end - The highest possible configurable number.
+     * @param increment - How much to increment by.
+     * @return A map linking the names of numbers to the actual numbers.
+     */
     public static Map<String,Object> numberMap(double start, double end, double increment) {
         Map<String,Object> numMap = new HashMap<>();
         for (double i = start; i < end ; i+= increment) {

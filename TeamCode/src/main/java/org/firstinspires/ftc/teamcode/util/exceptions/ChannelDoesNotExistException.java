@@ -13,7 +13,7 @@ package org.firstinspires.ftc.teamcode.util.exceptions;
 public class ChannelDoesNotExistException extends RuntimeException {
 
     /**
-     * Ctor for ChannelDoesNotExistException.
+     * Constructor for ChannelDoesNotExistException.
      *
      * @param message - The message to print to the screen.
      * @param cause - The cause of the error.
