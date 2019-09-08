@@ -26,25 +26,50 @@ import java.util.LinkedHashMap;
 
 import static java.lang.Thread.sleep;
 
-
+/**
+ * Finds the number of encoder ticks per meter that can be used in the encoder.
+ * 
+ * BeforeHAL: Wow im so bad at coding. I only use one constructor in my classes.
+ * AfterHAL: Wow im so good at coding. I only used one constructor in this class.
+ */
 public class EncoderDistanceCalib extends SubSystem {
 
-    private DriveTrain driveTrain;
+    //The drivetrain subsystem being used.
     private SubSystem driveSubSystem;
+    //How far the user measured the robot to move.
     private double distance;
-    private State state = State.RUNNING;
-    private LinkedHashMap<String, Integer> startEncoderPos, endingEncoderPos;
+    //The unit of distance being entered.
     private Units unit;
+    //Map of motor names to encoder positions at the start and end of the program.
+    private LinkedHashMap<String, Integer> startEncoderPos, endingEncoderPos;
+    //The entry speed mode button.
     private Button switchSpeedButton;
 
+    /**
+     * An enum representing the DriveTrain being used.
+     */
     public enum DriveTrain {
         TANK_DRIVE, QUAD_WHEEL_DRIVE, MECHANUM_DRIVE, OMNIWHEEL_DRIVE
     }
+    private DriveTrain driveTrain;
 
+    /**
+     * An enum representing the state of the calibration program.
+     */
     private enum State{
         RUNNING, DISPLAYING, DONE
     }
+    private State state = State.RUNNING;
 
+    /**
+     * Constructor for EncoderDistanceCalib.
+     *
+     * @param robot - The robot using this subsystem.
+     * @param driveTrain - The drivetrain being used.
+     * @param unit - The unit of distance to enter.
+     * @param params - The drivetrain params to use to create the drivetrain.
+     * @param switchSpeedButton - The speed mode button for distance entry.
+     */
     public EncoderDistanceCalib(Robot robot, DriveTrain driveTrain, Units unit, BaseParam params, Button switchSpeedButton) {
         super(robot);
 
@@ -156,8 +181,13 @@ public class EncoderDistanceCalib extends SubSystem {
     public void stop() {
     }
 
+    /**
+     * Drive forward for 2 seconds using tank drive.
+     *
+     * @throws InterruptedException - Throws this exception when the program is interrupted unexpectedly.
+     */
     private void usingTankDrive() throws InterruptedException {
-        ((TankDrive) driveSubSystem).driveForwardTime(2000, 1);
+        ((TankDrive) driveSubSystem).driveTime(2000, 1);
         sleep(100);
         endingEncoderPos.put("Left", ((TankDrive) driveSubSystem).getLeftMotorEncoderPos());
         endingEncoderPos.put("Right", ((TankDrive) driveSubSystem).getRightMotorEncoderPos());
@@ -166,6 +196,11 @@ public class EncoderDistanceCalib extends SubSystem {
         state = State.DISPLAYING;
     }
 
+    /**
+     * Drive forward for 2 seconds using mechanum drive.
+     *
+     * @throws InterruptedException - Throws this exception when the program is interrupted unexpectedly.
+     */
     private void usingMechanumDrive() throws InterruptedException {
         ((MechanumDrive) driveSubSystem).drive(new Vector(0,1), 2000);
         sleep(100);
@@ -178,6 +213,11 @@ public class EncoderDistanceCalib extends SubSystem {
         state = State.DISPLAYING;
     }
 
+    /**
+     * Drive forward for 2 seconds using omniwheel drive.
+     *
+     * @throws InterruptedException - Throws this exception when the program is interrupted unexpectedly.
+     */
     private void usingOmniWheelDrive() throws InterruptedException{
         ((OmniWheelDrive) driveSubSystem).drive(new Vector(0,1), 2000);
         sleep(100);
@@ -190,8 +230,13 @@ public class EncoderDistanceCalib extends SubSystem {
         state = State.DISPLAYING;
     }
 
+    /**
+     * Drive forward for 2 seconds using quad wheel drive.
+     *
+     * @throws InterruptedException - Throws this exception when the program is interrupted unexpectedly.
+     */
     private void usingQuadWheelDrive() throws InterruptedException {
-        ((QuadWheelDrive) driveSubSystem).driveForwardTime(2000, 1);
+        ((QuadWheelDrive) driveSubSystem).driveTime(2000, 1);
         sleep(100);
         endingEncoderPos.put("BotLeft", ((QuadWheelDrive) driveSubSystem).getBotLeftMotorEncoderPos());
         endingEncoderPos.put("BotRight", ((QuadWheelDrive) driveSubSystem).getBotRightMotorEncoderPos());
@@ -202,6 +247,11 @@ public class EncoderDistanceCalib extends SubSystem {
         state = State.DISPLAYING;
     }
 
+    /**
+     * Closes menu and gets the distance from the user.
+     *
+     * @param distance - The distance entered by the user.
+     */
     public void numberSelected(double distance){
         this.distance = distance;
         state = State.DISPLAYING;

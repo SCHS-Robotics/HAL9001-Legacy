@@ -31,27 +31,59 @@ import java.util.Map;
 
 public class ConfigDebugMenu extends ScrollingListMenu {
 
-    private enum MenuState {
-        START, ROBOTDIRSELECTED, DELETECONFIG, EDITNEWCONFIG, SELECTSUBSYSTEMCONFIG, NEWCONFIG, CONFIGOPTIONS, CREATENEWCONFIG, DELETEROBOT, TELEOP_AUTO_SELECT
-    }
+    /**
+    Internal state of the menu. Controls how it will react when a button is pressed.
+    Menu State Key:
 
+    START: The menu has just started, you are asked to select or delete a robot folder.
+    TELEOP_AUTO_SELECT: Select autonomous or teleop.
+    ROOT_DIR: The menu is currently in the root directory of the config (either the teleop or autonomous directory). Has options to edit, delete, or make a new config. Can also select a config to run.
+    DELETE_CONFIG: Select a config from a list to delete. Will not transition to this state if there are no configs.
+    CHOOSE_EDIT_CONFIG: Select a config from a list of configs to edit. Will not transition to this state if there are no configs.
+    NEW_CONFIG: Create a new config. Type (as best you can) a name into the upper bar, then press done to submit the name. If name is robot_info or "" it will transition back to ROOT_DIR without doing anything.
+    SELECT_SUBSYSTEM: Select a subsystem to configure from a list of subsystems.
+    DONE: Configuration is complete, clear menu screen and mark as done so the GUI can close the menu.
+    AUTO_RUN: Program being run is not standalone and has a config pre-loaded. Do not allow the user to change the config unless they press the center button to confirm they want to.
+     */
+    private enum MenuState {
+        START, ROOT_DIR, DELETE_CONFIG, CHOOSE_EDIT_CONFIG, SELECT_SUBSYSTEM, NEW_CONFIG, CONFIGURE_SUBSYSTEM, DELETE_ROBOT, TELEOP_AUTO_SELECT
+    }
+    private MenuState menuState;
+
+    /**
+     * An enum representing whether it is being configured for teleop or autonomous.
+     */
     private enum ConfigurationState {
         AUTONOMOUS, TELEOP
     }
-
-    private static final String SUPPORTED_CHARS = "#abcdefghijklmnopqrstuvwxyz0123456789";
-    private MenuState menuState;
-    private String currentFilepath;
-    private final ArrayList<Character> VALID_CHARS = getValidChars();
-    private String selectedConfigPath;
-    private String selectedSubsystemName;
-    private Map<String,List<ConfigParam>> config;
-    private boolean creatingNewConfig = false;
-    private GuiLine nameLine;
-    private BiFunction<Integer,Integer,Integer> customMod = (Integer x, Integer m) -> (x % m + m) % m;
-    private String robotFilepath;
     private ConfigurationState configState;
 
+    //A String of supported characters for the menu to render.
+    private static final String SUPPORTED_CHARS = "#abcdefghijklmnopqrstuvwxyz0123456789";
+    //An arraylist version of SUPPORTED_CHARS.
+    private final ArrayList<Character> VALID_CHARS = getValidChars();
+    //The current filepath of the menu.
+    private String currentFilepath;
+    //The current config file's path.
+    private String selectedConfigPath;
+    //The name of the current subsystem being configured.
+    private String selectedSubsystemName;
+    //An internal storage variable used to buffer changes to the config.
+    private Map<String,List<ConfigParam>> config;
+    //A boolean value that represents whether the menu is currently creating a new config file.
+    private boolean creatingNewConfig = false;
+    //The GuiLine use to enter config names. It is saved here so that if the back button is pressed the config name can be edited.
+    private GuiLine nameLine;
+    //A custom version of the modulo function that allows negative numbers to wrap around.
+    private BiFunction<Integer,Integer,Integer> customMod = (Integer x, Integer m) -> (x % m + m) % m;
+    //The path to the robot folder.
+    private String robotFilepath;
+
+    /**
+     * Constructor for ConfigDebugMenu.
+     *
+     * @param gui - The GUI being used to render the menu.
+     */
     public ConfigDebugMenu(GUI gui) {
         super(gui, new ConfigCursor(gui.robot,500), genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/"),1,genInitialLines(Environment.getExternalStorageDirectory().getPath()+"/System64/").size());
         menuState = MenuState.START;
@@ -69,7 +101,6 @@ public class ConfigDebugMenu extends ScrollingListMenu {
     public void onButton(String name, Button button) {
 
         switch (menuState) {
-
             //startup, shows all robot directories.
             case START:
                 if(name.equals(ConfigCursor.SELECT)) {
@@ -85,7 +116,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                         setFolderSelectLines();
                     }
                     else if(new File(currentFilepath).listFiles().length > 0){
-                        menuState = MenuState.DELETEROBOT;
+                        menuState = MenuState.DELETE_ROBOT;
 
                         resetCursorPos();
                         setRootDeleteLines();
@@ -93,7 +124,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 }
                 break;
 
-            case DELETEROBOT:
+            case DELETE_ROBOT:
                 if(name.equals(ConfigCursor.SELECT)) {
                     menuState = MenuState.START;
 
@@ -112,7 +143,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
             case TELEOP_AUTO_SELECT:
                 if(name.equals(ConfigCursor.SELECT)) {
-                    menuState = MenuState.ROBOTDIRSELECTED;
+                    menuState = MenuState.ROOT_DIR;
 
                     configState = lines.get(cursor.y).postSelectionText.equals("autonomous") ? ConfigurationState.AUTONOMOUS : ConfigurationState.TELEOP;
 
@@ -132,17 +163,17 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 break;
 
             //robot directory has been selected, showing all config files in the directory and new/edit/delete options.
-            case ROBOTDIRSELECTED:
+            case ROOT_DIR:
                 if(name.equals(ConfigCursor.SELECT)) {
                     if ((lines.get(cursor.y).postSelectionText.equals("Delete Config") || lines.get(cursor.y).postSelectionText.equals("Edit Config")) && genLines(currentFilepath,"robot_info.txt").size() > 0) {
-                        menuState = lines.get(cursor.y).postSelectionText.equals("Delete Config") ? MenuState.DELETECONFIG : MenuState.EDITNEWCONFIG;
+                        menuState = lines.get(cursor.y).postSelectionText.equals("Delete Config") ? MenuState.DELETE_CONFIG : MenuState.CHOOSE_EDIT_CONFIG;
 
                         genDefaultConfigMap();
                         resetCursorPos();
                         setConfigListLines();
 
                     } else if (lines.get(cursor.y).postSelectionText.equals("New Config")) {
-                        menuState = MenuState.NEWCONFIG;
+                        menuState = MenuState.NEW_CONFIG;
 
                         genDefaultConfigMap();
                         resetCursorPos();
@@ -160,9 +191,9 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 }
                 break;
             //delete option selected. Selected config will be deleted.
-            case DELETECONFIG:
+            case DELETE_CONFIG:
                 if(name.equals(ConfigCursor.SELECT)) {
-                    menuState = MenuState.ROBOTDIRSELECTED;
+                    menuState = MenuState.ROOT_DIR;
 
                     String configPath = currentFilepath + '/' + lines.get(cursor.y).postSelectionText + ".txt";
                     File configFile = new File(configPath);
@@ -177,7 +208,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
                 else if(name.equals(ConfigCursor.BACK_BUTTON)) {
 
-                    menuState = MenuState.ROBOTDIRSELECTED;
+                    menuState = MenuState.ROOT_DIR;
 
                     resetCursorPos();
                     setRobotDirLines();
@@ -185,7 +216,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 break;
 
             //new option selected. will prompt user to enter a name for the config file.
-            case NEWCONFIG:
+            case NEW_CONFIG:
 
                 if(name.equals(ConfigCursor.SELECT)) {
                     if (!lines.get(cursor.y).postSelectionText.equals("Done")) {
@@ -207,14 +238,14 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
                             selectedConfigPath = currentFilepath + '/' + newConfigName + ".txt";
 
-                            menuState = MenuState.SELECTSUBSYSTEMCONFIG;
+                            menuState = MenuState.SELECT_SUBSYSTEM;
 
                             resetCursorPos();
                             setSubsystemSelectionLines();
                         }
 
                         else {
-                            menuState = MenuState.ROBOTDIRSELECTED;
+                            menuState = MenuState.ROOT_DIR;
                             Log.e("Oh No", "Hacker Alert!");
                             resetCursorPos();
                             setRobotDirLines();
@@ -231,7 +262,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 }
 
                 else if(name.equals(ConfigCursor.BACK_BUTTON)) {
-                    menuState = MenuState.ROBOTDIRSELECTED;
+                    menuState = MenuState.ROOT_DIR;
 
                     resetCursorPos();
                     setRobotDirLines();
@@ -240,7 +271,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 break;
 
             //edit option selected. Selected config will be edited
-            case EDITNEWCONFIG:
+            case CHOOSE_EDIT_CONFIG:
 
                 if(name.equals(ConfigCursor.SELECT)) {
 
@@ -248,30 +279,30 @@ public class ConfigDebugMenu extends ScrollingListMenu {
 
                     readConfigFile(selectedConfigPath);
 
-                    menuState = MenuState.SELECTSUBSYSTEMCONFIG;
+                    menuState = MenuState.SELECT_SUBSYSTEM;
 
                     resetCursorPos();
                     setSubsystemSelectionLines();
                 }
 
                 else if(name.equals(ConfigCursor.BACK_BUTTON)) {
-                    menuState = MenuState.ROBOTDIRSELECTED;
+                    menuState = MenuState.ROOT_DIR;
 
                     resetCursorPos();
                     setRobotDirLines();
                 }
 
                 break;
-            case SELECTSUBSYSTEMCONFIG:
+            case SELECT_SUBSYSTEM:
                 if(name.equals(ConfigCursor.SELECT)) {
                     if (!lines.get(cursor.y).postSelectionText.equals("Done")) {
-                        menuState = MenuState.CONFIGOPTIONS;
+                        menuState = MenuState.CONFIGURE_SUBSYSTEM;
                         selectedSubsystemName = lines.get(cursor.y).postSelectionText;
 
                         resetCursorPos();
                         setSubsystemOptionsLines();
                     } else {
-                        menuState = MenuState.ROBOTDIRSELECTED;
+                        menuState = MenuState.ROOT_DIR;
                         creatingNewConfig = false;
 
                         writeConfigFile();
@@ -282,7 +313,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 }
                 if(name.equals(ConfigCursor.BACK_BUTTON)) {
                     if(creatingNewConfig) {
-                        menuState = MenuState.NEWCONFIG;
+                        menuState = MenuState.NEW_CONFIG;
                         creatingNewConfig = false;
 
                         genDefaultConfigMap();
@@ -290,7 +321,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                         setConfigNamingLines(nameLine);
                     }
                     else {
-                        menuState = MenuState.EDITNEWCONFIG;
+                        menuState = MenuState.CHOOSE_EDIT_CONFIG;
 
                         resetCursorPos();
                         setConfigListLines();
@@ -298,7 +329,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 }
                 break;
 
-            case CONFIGOPTIONS:
+            case CONFIGURE_SUBSYSTEM:
                 if(name.equals(ConfigCursor.SELECT)) {
                     if (!lines.get(cursor.y).postSelectionText.equals("Done")) {
 
@@ -321,7 +352,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                         lines.set(cursor.y, new GuiLine("#", currentParam.usesGamepad ? data[0] + " | " + currentParam.options.get((currentParam.options.indexOf(data[1]) + 1) % currentParam.options.size()) + " | " + data[2] : data[0] + " | " + currentParam.options.get((currentParam.options.indexOf(data[1]) + 1) % currentParam.options.size())));
                     }
                     else {
-                        menuState = MenuState.SELECTSUBSYSTEMCONFIG;
+                        menuState = MenuState.SELECT_SUBSYSTEM;
 
                         updateConfigMapSubsystem(lines,selectedSubsystemName);
 
@@ -381,7 +412,7 @@ public class ConfigDebugMenu extends ScrollingListMenu {
                 }
 
                 else if(name.equals(ConfigCursor.BACK_BUTTON)) {
-                    menuState = MenuState.SELECTSUBSYSTEMCONFIG;
+                    menuState = MenuState.SELECT_SUBSYSTEM;
 
                     resetCursorPos();
                     setSubsystemSelectionLines();
@@ -390,22 +421,34 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
+    /**
+     * Sets the root directory lines. Shows all robot folders and gives delete option.
+     */
     private void setRootDirLines() {
         List<GuiLine> newLines = genLines(currentFilepath);
         newLines.add(new GuiLine("#","Delete"));
         super.setSelectionZoneHeight(newLines.size(), newLines);
     }
 
+    /**
+     * Shows all deletable robot folders.
+     */
     private void setRootDeleteLines() {
         List<GuiLine> newLines = genLines(currentFilepath);
         super.setSelectionZoneHeight(newLines.size(), newLines);
     }
 
+    /**
+     * Set the folder select lines. Run when you select a robot folder, lists teleop and autonomous folders.
+     */
     private void setFolderSelectLines() {
         List<GuiLine> newLines = genLines(currentFilepath, "robot_info.txt");
         super.setSelectionZoneHeight(newLines.size(),newLines);
     }
 
+    /**
+     * Sets the normal configuration menu lines.
+     */
     private void setRobotDirLines() {
         List<GuiLine> newLines = new ArrayList<>();
         newLines.add(new GuiLine("#", "New Config"));
@@ -416,6 +459,9 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         super.setSelectionZoneWidthAndHeight(1,newLines.size(), newLines);
     }
 
+    /**
+     * Set the subsystem options lines. Each line is a different configurable option in the subsystem.
+     */
     private void setSubsystemOptionsLines() {
 
         List<GuiLine> newLines = new ArrayList<>();
@@ -428,11 +474,17 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         super.setSelectionZoneHeight(newLines.size(), newLines);
     }
 
+    /**
+     * Sets config list lines. Lists out all config files.
+     */
     private void setConfigListLines() {
         List<GuiLine> newLines = genLines(currentFilepath,"robot_info.txt");
         super.setSelectionZoneHeight(newLines.size(), newLines);
     }
 
+    /**
+     * Sets the config naming lines. Used for naming new config files.
+     */
     private void setConfigNamingLines() {
         List<GuiLine> newLines = new ArrayList<>();
         newLines.add(new GuiLine("###############", "Config Name"));
@@ -440,6 +492,11 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         super.setSelectionZoneWidthAndHeight(newLines.get(0).selectionZoneText.length(), newLines.size(), newLines);
     }
 
+    /**
+     * Sets the config naming lines. Used for naming new config files.
+     *
+     * @param initName - The nameLine value to initialize the nameline as.
+     */
     private void setConfigNamingLines(GuiLine initName) {
         List<GuiLine> newLines = new ArrayList<>();
         newLines.add(initName);
@@ -447,6 +504,9 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         super.setSelectionZoneWidthAndHeight(newLines.get(0).selectionZoneText.length(), newLines.size(), newLines);
     }
 
+    /**
+     * Sets the subsystem selection lines. Lists out all configurable subsystems.
+     */
     private void setSubsystemSelectionLines() {
         List<GuiLine> newLines = new ArrayList<>();
         for(String subsystem : config.keySet()) {
@@ -456,11 +516,19 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         super.setSelectionZoneWidthAndHeight(1, newLines.size(), newLines);
     }
 
+    /**
+     * Resets the cursor's position to (0,0).
+     */
     private void resetCursorPos() {
         cursor.setX(0);
         cursor.setY(0);
     }
 
+    /**
+     * Deletes the directory at the specified filepath.
+     *
+     * @param filePath - The filepath to the folder to delete.
+     */
     private void deleteDirectory(String filePath) {
         File dir = new File(filePath);
         File[] contents = dir.listFiles();
@@ -472,6 +540,11 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         dir.delete();
     }
 
+    /**
+     * Reads a config file from a specified filepath.
+     *
+     * @param filepath - The path to the config file.
+     */
     private void readConfigFile(String filepath) {
 
         FileInputStream fis;
@@ -565,6 +638,9 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
+    /**
+     * Generates the default configuration map based on the values contained in Robot.
+     */
     private void genDefaultConfigMap() {
         config = new HashMap<>();
 
@@ -588,6 +664,12 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
+    /**
+     * Updates the config for a specific subsystem.
+     *
+     * @param newConfig - The new configuration settings.
+     * @param subsystemName - The subsystem being configured.
+     */
     private void updateConfigMapSubsystem(List<GuiLine> newConfig, String subsystemName) {
         removeDone(newConfig); //gets rid of the Done line
 
@@ -603,6 +685,11 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
+    /**
+     * Removes the "Done" line often found at the end of many list of GuiLines.
+     *
+     * @param lines - The lines to search for "Done" in.
+     */
     private void removeDone(List<GuiLine> lines) {
         for(GuiLine line : lines) {
             if(line.postSelectionText.equals("Done")) {
@@ -612,7 +699,9 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
-
+    /**
+     * Writes a config file.
+     */
     private void writeConfigFile() {
 
         File configFile = new File(selectedConfigPath);
@@ -662,6 +751,12 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         }
     }
 
+    /**
+     * Parses a name created by the new config option.
+     *
+     * @param input - The unparsed name of the new config file.
+     * @return The parsed name of the new config file.
+     */
     private String parseName(String input) {
 
         int startIdx = 0;
@@ -689,6 +784,11 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         return parsedString.replace('#','_');
     }
 
+    /**
+     * Gets an arraylist version of the valid_chars string.
+     *
+     * @return An arraylist version of the valid_chars string.
+     */
     private ArrayList<Character> getValidChars() {
         ArrayList<Character> outputList = new ArrayList<>();
         for(char c : SUPPORTED_CHARS.toCharArray()) {
@@ -697,6 +797,12 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         return outputList;
     }
 
+    /**
+     * Generates program's initial lines.
+     *
+     * @param filePath - The filepath to use to generate the initial lines.
+     * @return The program's initial lines.
+     */
     private static ArrayList<GuiLine> genInitialLines(String filePath) {
         File rootDirectory = new File(filePath);
         File[] dirs = rootDirectory.listFiles();
@@ -708,6 +814,12 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         return startingLines;
     }
 
+    /**
+     * Generates GuiLines for a specific filepath.
+     *
+     * @param filePath - The path to the folder to generate GuiLines for.
+     * @return The list of GuiLines representing all the folders/files in that directory.
+     */
     private static ArrayList<GuiLine> genLines(String filePath) {
         File rootDirectory = new File(filePath);
         File[] dirs = rootDirectory.listFiles();
@@ -718,6 +830,13 @@ public class ConfigDebugMenu extends ScrollingListMenu {
         return startingLines;
     }
 
+    /**
+     * Generates GuiLines for a specific filepath.
+     *
+     * @param filePath - The path to the folder to generate GuiLines for.
+     * @param exclude - A certain file or folder name to exclude from the list of GuiLines.
+     * @return The list of GuiLines representing all the folders/files in that directory.
+     */
     private static ArrayList<GuiLine> genLines(String filePath, String exclude) {
         File rootDirectory = new File(filePath);
         File[] dirs = rootDirectory.listFiles();

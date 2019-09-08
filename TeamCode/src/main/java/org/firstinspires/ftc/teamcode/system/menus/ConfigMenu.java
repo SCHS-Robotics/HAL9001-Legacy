@@ -35,7 +35,7 @@ import java.util.Map;
  */
 public class ConfigMenu extends ScrollingListMenu {
 
-    /*
+    /**
     Internal state of the menu. Controls how it will react when a button is pressed.
     Menu State Key:
 
@@ -44,7 +44,6 @@ public class ConfigMenu extends ScrollingListMenu {
     CHOOSE_EDIT_CONFIG: Select a config from a list of configs to edit. Will not transition to this state if there are no configs.
     NEW_CONFIG: Create a new config. Type (as best you can) a name into the upper bar, then press done to submit the name. If name is robot_info or "" it will transition back to ROOT_DIR without doing anything.
     SELECT_SUBSYSTEM: Select a subsystem to configure from a list of subsystems.
-    EDIT_CONFIG: Cycle through all config options. Press select Done when you have chosen desired options.
     DONE: Configuration is complete, clear menu screen and mark as done so the GUI can close the menu.
     AUTO_RUN: Program being run is not standalone and has a config pre-loaded. Do not allow the user to change the config unless they press the center button to confirm they want to.
      */

@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.util.calib.CameraCalib;
+import org.opencv.core.Size;
 
 /**
  * A robot containing the color calibration subsystem.
@@ -28,7 +29,7 @@ public class CameraCalibBot extends Robot {
     public CameraCalibBot(OpMode opMode) {
         super(opMode);
 
-        calib = new CameraCalib(this);
+        calib = new CameraCalib(this, new Size(9,4));
         putSubSystem("Camera Calib",calib);
     }
 }

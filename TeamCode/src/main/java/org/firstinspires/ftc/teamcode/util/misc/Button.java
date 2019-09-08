@@ -23,7 +23,7 @@ public class Button {
 
     public VectorInputs vectorInput;
     //Deadzone to use for the boolean version of the double inputs.
-    public double deadzone = .05;
+    public double deadzone = 0;
 
     /**
      * Represents the allowed input methods for controls that return double values.

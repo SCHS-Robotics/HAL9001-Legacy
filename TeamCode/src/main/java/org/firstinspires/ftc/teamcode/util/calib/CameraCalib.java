@@ -28,38 +28,41 @@ import org.opencv.imgproc.Imgproc;
 import java.util.ArrayList;
 import java.util.List;
 
-
+/**
+ * A class for calibrating the phone camera in real-ish (surreal?) time.
+ */
 public class CameraCalib extends SubSystem implements CameraBridgeViewBase.CvCameraViewListener2 {
 
-
+    //The customizable gamepad holding all the controls for the calibration class.
     private CustomizableGamepad inputs;
+    //The names all the gamepad's buttons.
     private static final String CAPTURE = "capture", DELETE_CAPTURE = "delete capture", CALIBRATE = "calibrate";
-
+    //A flag value used to detect if any of the buttons have been pushed.
     private boolean flag;
-
-    private boolean calibrationBegun = false;
-    private boolean calibrated = false;
-
-    private List<Mat> refPoints;
-    private List<Mat> capturePoints;
-
-    private Mat intrinsic;
-    private Mat distCoeffs;
-
-    private List<Mat> rvecs;
-    private List<Mat> tvecs;
-
+    //Boolean values specifying the state of the camera calibration.
+    private boolean calibrationBegun = false, calibrated = false;
+    //Lists of points on the calibration pattern, both expected and detected.
+    private List<Mat> refPoints, capturePoints;
+    //Camera matrix and the distortion coefficients.
+    private Mat intrinsic, distCoeffs;
+    //Rotation vectors and translation vectors to be applied to correct the distortion.
+    private List<Mat> rvecs, tvecs;
+    //The reference coordinates.
     private MatOfPoint3f refCoords;
-
-    private int width;
-    private int height;
-
+    //The width and height of the camera frame.
+    private int width, height;
+    //The size of the calibration pattern.
     private Size size;
-
+    //The reprojection error.
     private double reprojError;
 
-
-    public CameraCalib(Robot robot) {
+    /**
+     * Constructor for CameraCalib.
+     *
+     * @param robot - The robot using this subsystem.
+     * @param chessboardSize - The size of the chessboard pattern.
+     */
+    public CameraCalib(Robot robot, Size chessboardSize) {
         super(robot);
         inputs = new CustomizableGamepad(robot);
         inputs.addButton(CAPTURE, new Button(1, Button.BooleanInputs.x));
@@ -69,7 +72,7 @@ public class CameraCalib extends SubSystem implements CameraBridgeViewBase.CvCam
         refPoints = new ArrayList<>();
         capturePoints = new ArrayList<>();
 
-        size = new Size(9, 6);
+        size = chessboardSize;
 
         refCoords = new MatOfPoint3f();
         double squareSize = 1;
