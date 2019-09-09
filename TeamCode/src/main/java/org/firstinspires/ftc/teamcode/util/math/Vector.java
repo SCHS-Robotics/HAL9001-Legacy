@@ -8,7 +8,7 @@
 package org.firstinspires.ftc.teamcode.util.math;
 
 /**
- * A class for doing mathematical operations on vectors.
+ * A class for doing mathematical operations on 2 dimensional vectors.
  */
 public class Vector {
 
