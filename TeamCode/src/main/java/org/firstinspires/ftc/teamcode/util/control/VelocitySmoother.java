@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Function;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotAnAlchemistException;
 import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 
+@Deprecated
 //TODO class currently broken
 public class VelocitySmoother {
 

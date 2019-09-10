@@ -76,6 +76,8 @@ public class OmniWheelDrive extends SubSystem {
     private Toggle speedModeToggle;
     //A boolean specifying whether the drive system is using specific values for the configurable settings.
     private static boolean useSpecific = false;
+    //Boolean values specifying whether the turn and stability PID controllers use degrees.
+    private boolean useDegreesTurn, useDegreesStability;
 
     //Specifies the type of drive the user will use.
     public enum DriveType {
@@ -145,6 +147,9 @@ public class OmniWheelDrive extends SubSystem {
 
         turnLeftPower = params.turnLeftPower;
         turnRightPower = params.turnRightPower;
+
+        useDegreesTurn = params.useDegreesTurn;
+        useDegreesStability = params.useDegreesStability;
     }
 
     /**
@@ -187,6 +192,9 @@ public class OmniWheelDrive extends SubSystem {
 
         stabilityPID = params.stabilityPID;
         turnPID = params.turnPID;
+
+        useDegreesTurn = params.useDegreesTurn;
+        useDegreesStability = params.useDegreesStability;
     }
 
     @Override
@@ -247,7 +255,7 @@ public class OmniWheelDrive extends SubSystem {
                 correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle) : 0;
 
                 if((turnPower != 0 || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                 }
 
@@ -276,16 +284,16 @@ public class OmniWheelDrive extends SubSystem {
             case STANDARD_TTA:
                 input.rotate(-(PI / 4));
 
-                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle) : 0;
+                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) : 0;
 
                 if(!tta.isZeroVector() && usesGyro) {
-                    turnPID.setSetpoint(tta.theta);
+                    turnPID.setSetpoint(useDegreesTurn ? Math.toDegrees(tta.theta) : tta.theta);
                 }
 
-                turnCorrection = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                turnCorrection = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesTurn ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
 
                 if((!tta.isZeroVector() || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                     turnCorrection = 0;
                 }
@@ -315,10 +323,10 @@ public class OmniWheelDrive extends SubSystem {
             case FIELD_CENTRIC:
                 input.rotate(-((PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle));
 
-                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle) : 0;
+                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) : 0;
 
                 if((turnPower != 0 || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                 }
 
@@ -346,16 +354,16 @@ public class OmniWheelDrive extends SubSystem {
             case FIELD_CENTRIC_TTA:
                 input.rotate(-((PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle));
 
-                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle) : 0;
+                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) : 0;
 
                 if(!tta.isZeroVector() && usesGyro) {
-                    turnPID.setSetpoint(tta.theta);
+                    turnPID.setSetpoint(useDegreesTurn ? Math.toDegrees(tta.theta) : tta.theta);
                 }
 
-                turnCorrection = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                turnCorrection = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesTurn ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
 
                 if((!tta.isZeroVector() || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                     turnCorrection = 0;
                 }
@@ -382,10 +390,10 @@ public class OmniWheelDrive extends SubSystem {
 
             //Arcade drive.
             case ARCADE:
-                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle) : 0;
+                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) : 0;
 
                 if((turnPower != 0 || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                 }
 
@@ -478,21 +486,21 @@ public class OmniWheelDrive extends SubSystem {
 
             //Arcade drive with turn to angle functionality.
             case ARCADE_TTA:
-                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle) : 0;
+                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) : 0;
 
                 if((turnPower != 0 || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                 }
 
                 if(!tta.isZeroVector() && usesGyro) {
-                    turnPID.setSetpoint(tta.theta);
+                    turnPID.setSetpoint(useDegreesTurn ? Math.toDegrees(tta.theta) : tta.theta);
                 }
 
-                turnCorrection = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                turnCorrection = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesTurn ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
 
                 if((!tta.isZeroVector() || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle);
+                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                     turnCorrection = 0;
                 }
@@ -654,8 +662,8 @@ public class OmniWheelDrive extends SubSystem {
             throw new GuiNotPresentException("turnTo must use a gyroscope");
         }
         turnPID.setSetpoint(angle);
-        while(Math.abs(angle-imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle) < tolerance) {
-            double correction = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
+        while(Math.abs(angle-imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,useDegreesTurn ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) < tolerance) {
+            double correction = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,useDegreesTurn ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
             topLeft.setPower(-correction);
             topRight.setPower(correction);
             botLeft.setPower(-correction);
@@ -878,7 +886,7 @@ public class OmniWheelDrive extends SubSystem {
         double correction;
 
         if(stabilityControl && usesGyro) {
-            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
+            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
         }
         else {
             correction = 0;
@@ -1078,7 +1086,7 @@ public class OmniWheelDrive extends SubSystem {
         double correction;
 
         if(stabilityControl && usesGyro) {
-            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
+            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
         }
         else {
             correction = 0;
@@ -1186,7 +1194,7 @@ public class OmniWheelDrive extends SubSystem {
         double correction;
 
         if(stabilityControl && usesGyro) {
-            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
+            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
         }
         else {
             correction = 0;
@@ -1585,6 +1593,9 @@ public class OmniWheelDrive extends SubSystem {
         private double encoderPerMeter;
         //The constant used to scale the drive's speed and to change the robot's speed in speed mode.
         private double constantSpeedMultiplier, speedModeMultiplier;
+        //Boolean values specifying whether or not degrees should be used for the stability and turn PID controllers.
+        private boolean useDegreesStability, useDegreesTurn;
+
 
         /**
          * A constructor for the parameters object. Sets default parameter values.
@@ -1620,6 +1631,8 @@ public class OmniWheelDrive extends SubSystem {
             stabilityPID = new PIDController(0,0,0);
             encoderPerMeter = 1440;
             constantSpeedMultiplier = 1;
+            useDegreesStability = false;
+            useDegreesTurn = false;
         }
 
         /**
@@ -1813,6 +1826,7 @@ public class OmniWheelDrive extends SubSystem {
          */
         public Params setTurnPIDCoeffs(double kp, double ki, double kd, boolean useDegrees) {
             useGyro = true;
+            useDegreesTurn = useDegrees;
             turnPID = new PIDController(kp, ki, kd, (Double target, Double current) -> {
                 BiFunction<Double, Double, Double> mod = (Double x, Double m) -> (x % m + m) % m;
 
@@ -1835,6 +1849,20 @@ public class OmniWheelDrive extends SubSystem {
          */
         public Params setTurnPID(PIDController turnPID) {
             useGyro = true;
+            this.turnPID = turnPID;
+            return this;
+        }
+
+        /**
+         * Sets the PID controller used for turning to specific angles.
+         *
+         * @param turnPID - The PID to use for turning to specific angles.
+         * @param useDegrees - Whether the PID controller uses degrees.
+         * @return This instance of Params.
+         */
+        public Params setTurnPID(PIDController turnPID, boolean useDegrees) {
+            useGyro = true;
+            useDegreesTurn = useDegrees;
             this.turnPID = turnPID;
             return this;
         }
@@ -1872,6 +1900,7 @@ public class OmniWheelDrive extends SubSystem {
          */
         public Params setStabilityPIDCoeffs(double kp, double ki, double kd, boolean useDegrees) {
             useGyro = true;
+            useDegreesStability = useDegrees;
             stabilityPID = new PIDController(kp, ki, kd, (Double target, Double current) -> {
                 BiFunction<Double, Double, Double> mod = (Double x, Double m) -> (x % m + m) % m;
 
@@ -1894,6 +1923,20 @@ public class OmniWheelDrive extends SubSystem {
          */
         public Params setStabilityPID(PIDController stabilityPID) {
             useGyro = true;
+            this.stabilityPID = stabilityPID;
+            return this;
+        }
+
+        /**
+         * Sets the PID controller that will be used for stability control.
+         *
+         * @param stabilityPID - The PID controller that will be used for stability control.
+         * @param useDegrees - Whether or not the PID controller uses degrees.
+         * @return This instance of SpecificParams.
+         */
+        public Params setStabilityPID(PIDController stabilityPID, boolean useDegrees) {
+            useGyro = true;
+            useDegreesStability = useDegrees;
             this.stabilityPID = stabilityPID;
             return this;
         }
@@ -1965,6 +2008,8 @@ public class OmniWheelDrive extends SubSystem {
         private boolean changeVelocityPID;
         //Two PID controllers used to stabilize linear motion and to turn to specific angles.
         private PIDController stabilityPID, turnPID;
+        //Boolean value specifying whether or not degrees should be used for the turn and stability PID controller.
+        private boolean useDegreesStability, useDegreesTurn;
 
         /**
          * A constructor for SpecificParams.
@@ -1989,6 +2034,9 @@ public class OmniWheelDrive extends SubSystem {
 
             turnPID = new PIDController(0,0,0);
             stabilityPID = new PIDController(0,0,0);
+
+            useDegreesTurn = false;
+            useDegreesStability = false;
         }
 
         /**
@@ -2094,6 +2142,7 @@ public class OmniWheelDrive extends SubSystem {
          * @return - This instance of Params.
          */
         public SpecificParams setTurnPIDCoeffs(double kp, double ki, double kd, boolean useDegrees) {
+            useDegreesTurn = useDegrees;
             turnPID = new PIDController(kp, ki, kd, (Double target, Double current) -> {
                 BiFunction<Double, Double, Double> mod = (Double x, Double m) -> (x % m + m) % m;
 
@@ -2112,9 +2161,22 @@ public class OmniWheelDrive extends SubSystem {
          * Sets the PID controller to use for turning to specific angles.
          *
          * @param turnPID - The PID controller that will be used for turning.
-         * @return - This instance of SpecificParams.
+         * @return This instance of SpecificParams.
          */
         public SpecificParams setTurnPID(PIDController turnPID) {
+            this.turnPID = turnPID;
+            return this;
+        }
+
+        /**
+         * Sets the PID controller to use for turning to specific angles.
+         *
+         * @param turnPID - The PID controller that will be used for turning.
+         * @param useDegrees- Whether or not the PID controller uses degrees.
+         * @return This instance of SpecificParams.
+         */
+        public SpecificParams setTurnPID(PIDController turnPID, boolean useDegrees) {
+            useDegreesTurn = useDegrees;
             this.turnPID = turnPID;
             return this;
         }
@@ -2150,6 +2212,7 @@ public class OmniWheelDrive extends SubSystem {
          * @return - This instance of SpecificParams.
          */
         public SpecificParams setStabilityPIDCoeffs(double kp, double ki, double kd, boolean useDegrees) {
+            useDegreesStability = useDegrees;
             stabilityPID = new PIDController(kp, ki, kd, (Double target, Double current) -> {
                 BiFunction<Double, Double, Double> mod = (Double x, Double m) -> (x % m + m) % m;
 
@@ -2168,9 +2231,22 @@ public class OmniWheelDrive extends SubSystem {
          * Sets the PID controller that will be used for stability control.
          *
          * @param stabilityPID - The PID controller that will be used for stability control.
-         * @return - This instance of SpecificParams.
+         * @return This instance of SpecificParams.
          */
         public SpecificParams setStabilityPID(PIDController stabilityPID) {
+            this.stabilityPID = stabilityPID;
+            return this;
+        }
+
+        /**
+         * Sets the PID controller that will be used for stability control.
+         *
+         * @param stabilityPID - The PID controller that will be used for stability control.
+         * @param useDegrees - Whether or not the PID controller uses degrees.
+         * @return This instance of SpecificParams.
+         */
+        public SpecificParams setStabilityPID(PIDController stabilityPID, boolean useDegrees) {
+            useDegreesStability = useDegrees;
             this.stabilityPID = stabilityPID;
             return this;
         }

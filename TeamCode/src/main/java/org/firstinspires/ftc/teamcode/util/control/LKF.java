@@ -6,6 +6,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Scalar;
 import org.opencv.video.KalmanFilter;
 
+@Deprecated
 //TODO currently broken, WIP
 public class LKF {
     public Point lastResult;
