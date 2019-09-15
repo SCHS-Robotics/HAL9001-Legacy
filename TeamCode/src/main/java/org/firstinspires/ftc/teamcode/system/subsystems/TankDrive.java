@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
 
+import android.util.Log;
+
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
@@ -14,6 +16,8 @@ import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.control.PIDController;
+import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
+import org.firstinspires.ftc.teamcode.util.exceptions.InvalidMoveCommandException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotDoubleInputException;
 import org.firstinspires.ftc.teamcode.util.math.Vector;
@@ -211,7 +215,7 @@ public class TankDrive extends SubSystem{
      * @param input - Sets direction and rotational speed. (X is left and right, Y is forward and backwards)
      */
     public void turnAndMove(Vector input){
-        left.setPower(((input.x - input.y) * constantSpeedModifier) * currentSpeedModeModifier);
+        left.setPower(((input.x + input.y) * constantSpeedModifier) * currentSpeedModeModifier);
         right.setPower(((input.x - input.y) * constantSpeedModifier) * currentSpeedModeModifier);
     }
 
@@ -247,10 +251,17 @@ public class TankDrive extends SubSystem{
      * @param timeMs - time to drive for in milliseconds.
      * @param power - power to drive at. Positive for forward and negative for backwards.
      */
-    public void driveTime(double timeMs, double power) throws InterruptedException{
+    public void driveTime(double timeMs, double power) throws InterruptedException {
+
+        if(timeMs < 0) {
+            throw new DumpsterFireException("HAL is cool, but can't travel back in time. Time must be positive.");
+        }
+
         double startTime = System.currentTimeMillis();
         drive(power);
-        while(System.currentTimeMillis() - startTime <= timeMs) {sleep(1);}
+        while (System.currentTimeMillis() - startTime <= timeMs) {
+            sleep(1);
+        }
         stopMovement();
     }
 
@@ -261,6 +272,11 @@ public class TankDrive extends SubSystem{
      * @param power - power to turn at.
      */
     public void turnTime(double timeMs, double power) throws InterruptedException{
+
+        if(timeMs < 0) {
+            throw new DumpsterFireException("HAL is cool, but can't travel back in time. Time must be positive.");
+        }
+
         double startTime = System.currentTimeMillis();
         turn(power);
         while(System.currentTimeMillis() - startTime <= timeMs){sleep(1);}
@@ -274,6 +290,11 @@ public class TankDrive extends SubSystem{
      * @param input - Sets direction and rotational speed. (X is left and right, Y is forward and backwards)
      */
     public void turnAndMoveTime(double timeMs, Vector input) throws InterruptedException{
+
+        if(timeMs < 0) {
+            throw new DumpsterFireException("HAL is cool, but can't travel back in time. Time must be positive.");
+        }
+
         double startTime = System.currentTimeMillis();
         turnAndMove(input);
         while(System.currentTimeMillis() - startTime <= timeMs){sleep(1);}
@@ -287,6 +308,15 @@ public class TankDrive extends SubSystem{
      * @param power - Double from (-1)-(1) of intensity of the movement.
      */
     public void moveEncoders(int encoderDistance, double power) throws InterruptedException{
+
+        if(power == 0 && encoderDistance != 0) {
+            throw new InvalidMoveCommandException("Power cannot be zero with a non zero target");
+        }
+
+        if (encoderDistance < 0) {
+            throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
+        }
+
         int startEncoderPos = left.getCurrentPosition();
         drive(power);
         while(Math.abs(left.getCurrentPosition() - startEncoderPos) <= encoderDistance) {sleep(1);}
@@ -299,7 +329,12 @@ public class TankDrive extends SubSystem{
      * @param encoderDistance - Encoder distance to travel.
      * @param power - double from (-1)-(1) that represents the speed of turn (positive for counterclockwise negative for clockwise).
      */
-    public void turnClockwiseEncoders(int encoderDistance, double power) throws InterruptedException{
+    public void turnEncoders(int encoderDistance, double power) throws InterruptedException{
+
+        if(encoderDistance < 0) {
+            throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
+        }
+
         int leftStartEncoderPos = left.getCurrentPosition();
         int rightStartEncoderPos = right.getCurrentPosition();
         if(power > 0) {
@@ -320,7 +355,12 @@ public class TankDrive extends SubSystem{
      * @param encoderDistance - Encoder distance to travel.
      * @param input - Sets direction and rotational speed. (X is left and right, Y is forward and backwards)
      */
-    public void turnAndMoveRightEncoders(int encoderDistance, Vector input) throws InterruptedException{
+    public void turnAndMoveEncoders(int encoderDistance, Vector input) throws InterruptedException{
+
+        if(encoderDistance < 0) {
+            throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
+        }
+
         int leftStartEncoderPos = left.getCurrentPosition();
         int rightStartEncoderPos = right.getCurrentPosition();
         turnAndMove(input);
@@ -364,7 +404,10 @@ public class TankDrive extends SubSystem{
      *
      * @param speedModeModifier - Value to set speedModeModifier to.
      */
-    public void setSpeedModeModifier(double speedModeModifier){ this.speedModeModifier = speedModeModifier; }
+    public void setSpeedModeModifier(double speedModeModifier){
+        this.speedModeModifier = speedModeModifier;
+        currentSpeedModeModifier = 1;
+    }
 
     /**
      * Sets constantSpeedModifier.
@@ -523,10 +566,10 @@ public class TankDrive extends SubSystem{
     public static final class Params implements BaseParam {
         //Motor config names to be used in TankDrive to set the motors
         private String leftMotor, rightMotor;
-        //Array of buttons to set the buttons to for the TankDrive class [1] is driveStick, [2] is turnStick, and [3] is speedModeButton.
+        //Array of buttons to set the buttons to for the TankDrive class [0] is driveStick, [1] is turnStick, and [2] is speedModeButton.
         private Button[] buttonsToSet = new Button[3];
         //A boolean value specifying if the drivetrain is allowed to turn and move simultaneously.
-        private boolean turnAndMove;
+        private boolean turnAndMove = true;
         //Various double values for speed control.
         private double speedModeModifier = 1, constantSpeedModifier = 1;
 
@@ -624,7 +667,7 @@ public class TankDrive extends SubSystem{
         private void setDefaultButtons(){
             buttonsToSet[0] = new Button(1, Button.DoubleInputs.left_stick_y);
             buttonsToSet[1] = new Button(1, Button.DoubleInputs.right_stick_x);
-            buttonsToSet[2] = new Button(1, Button.DoubleInputs.noButton);
+            buttonsToSet[2] = new Button(1, Button.BooleanInputs.noButton);
         }
     }
 

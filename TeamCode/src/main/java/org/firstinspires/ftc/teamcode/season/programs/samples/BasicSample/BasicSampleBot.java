@@ -34,6 +34,6 @@ public class BasicSampleBot extends Robot {
          */
 
         putSubSystem("Tank", drive);
-        putSubSystem("Sample",sample);
+        //putSubSystem("Sample",sample);
     }
 }

@@ -1,19 +1,20 @@
 package org.firstinspires.ftc.teamcode.season.programs.samples.BasicSample;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseAutonomous;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
+import org.firstinspires.ftc.teamcode.util.math.Vector;
 
 import java.util.Map;
 
 //@StandAlone is not required but stops it from auto using configs from autonomous
 @StandAlone
 //@Disabled should be removed when using
-@Disabled
-@TeleOp(name = "Tank Sample")
+@Autonomous(name = "Tank Sample")
 //extends BaseTeleop means it is an Autonomous program
 public class BasicSampleAutonomous extends BaseAutonomous {
 
@@ -31,13 +32,9 @@ public class BasicSampleAutonomous extends BaseAutonomous {
         //runs main on start
         //Stuff for init or init_loop belongs in subsystems
 
-        Map<String,Object> config = robot.pullNonGamepad(robot.drive);
-        int theMysticalParamOfMystery = (int) config.get("myIntAutoParam");
+        //Map<String,Object> config = robot.pullNonGamepad(robot.drive);
+        //int theMysticalParamOfMystery = (int) config.get("myIntAutoParam");
 
-        robot.drive.driveTime(900,1);
-        waitFor(1000);
-        robot.drive.turn(theMysticalParamOfMystery);
-        waitFor(1000);
-        robot.drive.stop();
+        robot.drive.driveTime(900,0.5);
     }
 }

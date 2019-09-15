@@ -20,6 +20,7 @@ import org.firstinspires.ftc.teamcode.system.source.GUI.GUI;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
+import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
 import org.firstinspires.ftc.teamcode.util.misc.Button;
 import org.firstinspires.ftc.teamcode.util.misc.ConfigParam;
 import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
@@ -86,6 +87,10 @@ public abstract class Robot {
      */
     protected void putSubSystem(String name, SubSystem subSystem)
     {
+        if(subSystem == null) {
+            throw new DumpsterFireException("Subsystem Cannot be Null");
+        }
+
         subSystems.put(name, subSystem);
         if(subSystem.usesConfig) {
 

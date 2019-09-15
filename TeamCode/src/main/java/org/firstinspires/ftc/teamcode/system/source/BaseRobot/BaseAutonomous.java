@@ -51,15 +51,19 @@ public abstract class BaseAutonomous extends LinearOpMode {
             Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
         }
 
-        try {
-            robot.onStart();
-            main();
-        } catch (Exception ex) {
-            telemetry.clearAll();
-            telemetry.addData("ERROR!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+        if(!isStopRequested()) {
+            try {
+                robot.onStart();
+                main();
+            } catch (Exception ex) {
+                telemetry.clearAll();
+                telemetry.addData("ERROR!", ex.getMessage());
+                telemetry.update();
+                Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+            }
         }
+
+        robot.stopAllComponents();
     }
 
     /**
