@@ -125,4 +125,9 @@ public class Vector {
     public double dotProduct(Vector v) {
         return v.x*x + v.y*y;
     }
+
+    @Override
+    public Vector clone() {
+        return new Vector(x,y);
+    }
 }

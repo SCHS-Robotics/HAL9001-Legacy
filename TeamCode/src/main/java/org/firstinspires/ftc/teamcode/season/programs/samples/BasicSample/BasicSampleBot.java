@@ -9,11 +9,13 @@ import org.firstinspires.ftc.teamcode.system.subsystems.TankDrive;
 public class BasicSampleBot extends Robot {
 
     public TankDrive drive;
+
+
     public SubSystemUsingConfigSample sample;
 
 
     /**
-     * Ctor for robot.
+     * Constructor for robot.
      *
      * @param opMode - The opmode the robot is currently running.
      */
@@ -21,10 +23,18 @@ public class BasicSampleBot extends Robot {
         super(opMode);
         //sets the drive subSystem to tank drive. This one uses default params
         drive = new TankDrive(this, new TankDrive.Params("MotorConfigLeft", "MotorConfigRight"));
+
+        putSubSystem("Tank", drive);
+    }
+}
+
+
+
+//drive = new MechanumDrive(this,new MechanumDrive.Params("topLeft","topRight","botLeft","botRight").setDriveType(MechanumDrive.DriveType.FIELD_CENTRIC));
         /*
         This is an example of how to setup TankDrive without using default params. Use .set(setting to set) to change a setting from default. Otherwise it will stay default.
         Remember to import button if uncomment this (try alt+enter)
-        
+
         drive = new TankDrive(this,
                 new TankDrive.Params("MotorConfigLeft", "MotorConfigRight")
                         .setConstantSpeedModifier(.5)
@@ -33,7 +43,4 @@ public class BasicSampleBot extends Robot {
         );
          */
 
-        putSubSystem("Tank", drive);
-        putSubSystem("Sample",sample);
-    }
-}
+//putSubSystem("Sample",sample);

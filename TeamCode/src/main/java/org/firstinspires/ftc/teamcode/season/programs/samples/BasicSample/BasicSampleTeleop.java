@@ -24,6 +24,14 @@ public class BasicSampleTeleop extends BaseTeleop {
         return robot;
     }
 
+    //Not necessary to have this (you can delete it), basically if you want to do something special on init you would put it here
+    @Override
+    protected void onInit() { super.onInit(); }
+
+    //Not necessary to have this (you can delete it), basically if you want to do something special on init in a loop you would put it here
+    @Override
+    protected void onInitLoop() {super.onInitLoop();}
+
     //Not necessary to have this (you can delete it), basically if you want to do something special on start you would put it here
     @Override
     protected void onStart() {
@@ -40,17 +48,5 @@ public class BasicSampleTeleop extends BaseTeleop {
     @Override
     protected void onStop() {
         super.onStop();
-    }
-
-    //Not necessary to have this (you can delete it), basically if you want to do something special in a loop on init you would put it here
-    @Override
-    public void init_loop() {
-        super.init_loop();
-    }
-
-    //Not necessary to have this (you can delete it), basically if you want to do something special on stop you would put it here
-    @Override
-    public void stop() {
-        super.stop();
     }
 }

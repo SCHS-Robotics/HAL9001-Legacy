@@ -29,6 +29,25 @@ public abstract class BaseAutonomous extends LinearOpMode {
     protected abstract Robot buildRobot();
 
     /**
+     * Method that runs when the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
+    protected void onInit() {};
+
+    /**
+     * Method that runs in a loop after the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
+    protected void onInitLoop() {};
+
+
+    /**
+     * Method that runs when the robot is stopped. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
+    protected void onStop(){}
+
+    /**
      * An abstract method that contains the code for the robot to run.
      *
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
@@ -36,13 +55,15 @@ public abstract class BaseAutonomous extends LinearOpMode {
     public abstract void main() throws InterruptedException;
 
     @Override
-    public void runOpMode() {
+    public final void runOpMode() {
         robot = buildRobot();
 
         try {
             robot.init();
+            onInit();
             while(!isStarted() && !isStopRequested()) {
                 robot.init_loop();
+                onInitLoop();
             }
         } catch (Exception ex) {
             telemetry.clearAll();
@@ -51,15 +72,20 @@ public abstract class BaseAutonomous extends LinearOpMode {
             Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
         }
 
-        try {
-            robot.onStart();
-            main();
-        } catch (Exception ex) {
-            telemetry.clearAll();
-            telemetry.addData("ERROR!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+        if(!isStopRequested()) {
+            try {
+                robot.onStart();
+                main();
+            } catch (Exception ex) {
+                telemetry.clearAll();
+                telemetry.addData("ERROR!", ex.getMessage());
+                telemetry.update();
+                Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+            }
         }
+
+        onStop();
+        robot.stopAllComponents();
     }
 
     /**
