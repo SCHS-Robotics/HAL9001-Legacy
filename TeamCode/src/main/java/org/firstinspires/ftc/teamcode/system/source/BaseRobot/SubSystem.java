@@ -47,6 +47,11 @@ public abstract class SubSystem {
      */
     public abstract void init_loop() throws InterruptedException;
 
+    /**
+     * An abstract method containing the code that the subsystem runs when being start.
+     *
+     * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
+     */
     public abstract void start() throws InterruptedException;
 
     /**

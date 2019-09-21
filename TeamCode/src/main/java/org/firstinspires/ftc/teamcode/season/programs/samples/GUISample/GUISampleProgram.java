@@ -1,0 +1,40 @@
+package org.firstinspires.ftc.teamcode.season.programs.samples.GUISample;
+
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseTeleop;
+import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
+import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
+import org.firstinspires.ftc.teamcode.util.misc.Button;
+
+
+//@StandAlone is not required but stops it from auto using configs from autonomous
+@StandAlone
+//@Disabled should be removed when using
+@Disabled
+@TeleOp(name = "GUISampleTeleop")
+//extends BaseTeleop means it is a TeleOp program
+public class GUISampleProgram extends BaseTeleop {
+
+    private GUISampleBot robot;
+
+    @Override
+    protected Robot buildRobot() {
+        robot = new GUISampleBot(this);
+        return robot;
+    }
+
+    Button button = new Button(1, Button.BooleanInputs.a);
+    Button button2 = new Button(1, Button.DoubleInputs.left_stick_x);
+    Button button3 = new Button(1, Button.VectorInputs.left_stick);
+
+    //There are other methods that you can use to do stuff in teleop, refer to TankSample to see them.
+
+    @Override
+    protected void onUpdate() {
+        robot.displayMenu1.addData("Look at my amazing data",7);
+        robot.displayMenu2.addLine("This quote is plagiarised");
+    }
+}
+

@@ -71,7 +71,6 @@ public abstract class BaseDisplayMenu extends Menu {
     @Override
     protected void stop() {}
 
-
     @Override
     public void menuUp(){
 

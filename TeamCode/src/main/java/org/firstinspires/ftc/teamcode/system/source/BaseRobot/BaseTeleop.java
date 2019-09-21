@@ -27,6 +27,18 @@ public abstract class BaseTeleop extends OpMode {
     protected abstract Robot buildRobot();
 
     /**
+     * Method that runs when the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
+    protected void onInit() {};
+
+    /**
+     * Method that runs in a loop after the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
+     * is unneeded.
+     */
+    protected void onInitLoop() {};
+
+    /**
      * Method that runs when the robot is started. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
@@ -50,6 +62,7 @@ public abstract class BaseTeleop extends OpMode {
 
         try {
             robot.init();
+            onInit();
         }
         catch (Exception ex){
             telemetry.clearAll();
@@ -60,9 +73,10 @@ public abstract class BaseTeleop extends OpMode {
     }
 
     @Override
-    public void init_loop() {
+    public final void init_loop() {
         try {
             robot.init_loop();
+            onInitLoop();
         }
         catch (Exception ex){
             telemetry.clearAll();
@@ -101,7 +115,7 @@ public abstract class BaseTeleop extends OpMode {
     }
 
     @Override
-    public void stop() {
+    public final void stop() {
         try {
             onStop();
             robot.stopAllComponents();

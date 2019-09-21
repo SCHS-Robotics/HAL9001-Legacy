@@ -205,8 +205,8 @@ public class TankDrive extends SubSystem{
      * @param speed - Speed to turn at. (positive speed is turn counterclockwise & negative speed is turn clockwise).
      */
     public void turn(double speed){
-        left.setPower((speed * constantSpeedModifier) * currentSpeedModeModifier);
-        right.setPower(-((speed * constantSpeedModifier) * currentSpeedModeModifier));
+        left.setPower(-(speed * constantSpeedModifier) * currentSpeedModeModifier);
+        right.setPower(((speed * constantSpeedModifier) * currentSpeedModeModifier));
     }
 
     /**
@@ -215,8 +215,8 @@ public class TankDrive extends SubSystem{
      * @param input - Sets direction and rotational speed. (X is left and right, Y is forward and backwards)
      */
     public void turnAndMove(Vector input){
-        left.setPower(((input.x + input.y) * constantSpeedModifier) * currentSpeedModeModifier);
-        right.setPower(((input.x - input.y) * constantSpeedModifier) * currentSpeedModeModifier);
+        left.setPower(((input.x - input.y) * constantSpeedModifier) * currentSpeedModeModifier);
+        right.setPower(((input.x + input.y) * constantSpeedModifier) * currentSpeedModeModifier);
     }
 
     /**
@@ -307,7 +307,7 @@ public class TankDrive extends SubSystem{
      * @param encoderDistance - Encoder distance to travel.
      * @param power - Double from (-1)-(1) of intensity of the movement.
      */
-    public void moveEncoders(int encoderDistance, double power) throws InterruptedException{
+    public void driveEncoders(int encoderDistance, double power) throws InterruptedException{
 
         if(power == 0 && encoderDistance != 0) {
             throw new InvalidMoveCommandException("Power cannot be zero with a non zero target");

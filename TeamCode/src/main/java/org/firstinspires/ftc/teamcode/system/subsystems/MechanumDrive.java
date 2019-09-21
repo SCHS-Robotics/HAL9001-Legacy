@@ -10,6 +10,7 @@ package org.firstinspires.ftc.teamcode.system.subsystems;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.util.Range;
 
@@ -409,15 +410,15 @@ public class MechanumDrive extends SubSystem {
                         botLeft.setPower(Range.clip(-input.r + turnPower - correction,-1,1));
                         botRight.setPower(Range.clip(input.r - turnPower + correction,-1,1));
                     } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(Range.clip(-input.r + turnPower - correction,-1,1));
-                        topRight.setPower(Range.clip(input.r - turnPower + correction,-1,1));
-                        botLeft.setPower(Range.clip(input.r + turnPower - correction,-1,1));
-                        botRight.setPower(Range.clip(-input.r - turnPower + correction,-1,1));
-                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
                         topLeft.setPower(Range.clip(input.r + turnPower - correction,-1,1));
                         topRight.setPower(Range.clip(input.r - turnPower + correction,-1,1));
                         botLeft.setPower(Range.clip(input.r + turnPower - correction,-1,1));
                         botRight.setPower(Range.clip(input.r - turnPower + correction,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(-input.r + turnPower - correction,-1,1));
+                        topRight.setPower(Range.clip(input.r - turnPower + correction,-1,1));
+                        botLeft.setPower(Range.clip(input.r + turnPower - correction,-1,1));
+                        botRight.setPower(Range.clip(-input.r - turnPower + correction,-1,1));
                     } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
                         topLeft.setPower(Range.clip(-input.r + turnPower - correction,-1,1));
                         topRight.setPower(Range.clip(-input.r - turnPower + correction,-1,1));
@@ -437,15 +438,15 @@ public class MechanumDrive extends SubSystem {
                         botLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
                         botRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
                     } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
-                        topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
-                        botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
-                        botRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
-                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
                         topLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
                         topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
                         botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
                         botRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
+                        topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
                     } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
                         topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
                         topRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
@@ -465,15 +466,15 @@ public class MechanumDrive extends SubSystem {
                         botLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
                         botRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
                     } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
-                        topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
-                        botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
-                        botRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
-                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
                         topLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
                         topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
                         botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
                         botRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
+                        topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
                     } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
                         topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
                         topRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
@@ -517,15 +518,15 @@ public class MechanumDrive extends SubSystem {
                         botLeft.setPower(Range.clip(-input.r - turnCorrection - correction,-1,1));
                         botRight.setPower(Range.clip(input.r + turnCorrection + correction,-1,1));
                     } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(Range.clip(-input.r - turnCorrection - correction,-1,1));
-                        topRight.setPower(Range.clip(input.r + turnCorrection + correction,-1,1));
-                        botLeft.setPower(Range.clip(input.r - turnCorrection - correction,-1,1));
-                        botRight.setPower(Range.clip(-input.r + turnCorrection + correction,-1,1));
-                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
                         topLeft.setPower(Range.clip(input.r - turnCorrection - correction,-1,1));
                         topRight.setPower(Range.clip(input.r + turnCorrection + correction,-1,1));
                         botLeft.setPower(Range.clip(input.r - turnCorrection - correction,-1,1));
                         botRight.setPower(Range.clip(input.r + turnCorrection + correction,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(-input.r - turnCorrection - correction,-1,1));
+                        topRight.setPower(Range.clip(input.r + turnCorrection + correction,-1,1));
+                        botLeft.setPower(Range.clip(input.r - turnCorrection - correction,-1,1));
+                        botRight.setPower(Range.clip(-input.r + turnCorrection + correction,-1,1));
                     } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
                         topLeft.setPower(Range.clip(-input.r - turnCorrection - correction,-1,1));
                         topRight.setPower(Range.clip(-input.r + turnCorrection + correction,-1,1));
@@ -545,15 +546,15 @@ public class MechanumDrive extends SubSystem {
                         botLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
                         botRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
                     } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
-                        topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
-                        botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
-                        botRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
-                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
                         topLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
                         topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
                         botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
                         botRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
+                        topRight.setPower(Range.clip(input.r + turnLeftPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r - turnLeftPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
                     } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
                         topLeft.setPower(Range.clip(-input.r - turnLeftPower,-1,1));
                         topRight.setPower(Range.clip(-input.r + turnLeftPower,-1,1));
@@ -573,15 +574,15 @@ public class MechanumDrive extends SubSystem {
                         botLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
                         botRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
                     } else if (input.theta > PI / 4 && input.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
-                        topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
-                        botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
-                        botRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
-                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
                         topLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
                         topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
                         botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
                         botRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                    } else if (input.theta > (3 * PI) / 4 && input.theta < (5 * PI) / 4) { //left side of the square
+                        topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
+                        topRight.setPower(Range.clip(input.r - turnRightPower,-1,1));
+                        botLeft.setPower(Range.clip(input.r + turnRightPower,-1,1));
+                        botRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
                     } else if (input.theta > (5 * PI) / 4 && input.theta < (7 * PI) / 4) { //Bottom side of the square
                         topLeft.setPower(Range.clip(-input.r + turnRightPower,-1,1));
                         topRight.setPower(Range.clip(-input.r - turnRightPower,-1,1));
@@ -597,7 +598,7 @@ public class MechanumDrive extends SubSystem {
                 left.rotate(-(PI / 4));
                 right.rotate(-(PI / 4));
 
-                if(!turnLeft &&  !turnRight) {
+                if(!turnLeft && !turnRight) {
                     topLeft.setPower(left.x);
                     botLeft.setPower(left.y);
 
@@ -649,6 +650,20 @@ public class MechanumDrive extends SubSystem {
         botRight.setPower(0);
     }
 
+    public void reverseDirection() {
+        topLeft.setDirection(DcMotor.Direction.FORWARD);
+        topRight.setDirection(DcMotor.Direction.REVERSE);
+        botLeft.setDirection(DcMotor.Direction.FORWARD);
+        botRight.setDirection(DcMotor.Direction.REVERSE);
+    }
+
+    public void forwardDirection() {
+        topLeft.setDirection(DcMotor.Direction.REVERSE);
+        topRight.setDirection(DcMotor.Direction.FORWARD);
+        botLeft.setDirection(DcMotor.Direction.REVERSE);
+        botRight.setDirection(DcMotor.Direction.FORWARD);
+    }
+
     /**
      * Turns to a specified angle within a specified tolerance.
      *
@@ -694,9 +709,6 @@ public class MechanumDrive extends SubSystem {
         leftVector.rotate(-(PI / 4));
         rightVector.rotate(-(PI / 4));
 
-        leftVector.scalarMultiply(constantSpeedMultiplier);
-        rightVector.scalarMultiply(constantSpeedMultiplier);
-
         topLeft.setPower(leftVector.x);
         botLeft.setPower(leftVector.y);
 
@@ -713,23 +725,10 @@ public class MechanumDrive extends SubSystem {
      * @throws InterruptedException - Throws this exception when the program is unexpectedly interrupted.
      */
     public void drive(Vector leftVector, Vector rightVector, double timeMs) throws InterruptedException {
-        if (driveType != DriveType.MATTHEW) {
-            throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
-        }
-
-        resetAllEncoders();
-
-        leftVector.rotate(-(PI / 4));
-        rightVector.rotate(-(PI / 4));
+        drive(leftVector,rightVector);
 
         long startTime = System.currentTimeMillis();
         while(System.currentTimeMillis() - startTime < timeMs) {
-            topLeft.setPower(leftVector.x);
-            botLeft.setPower(leftVector.y);
-
-            topRight.setPower(rightVector.y);
-            botRight.setPower(rightVector.x);
-
             sleep(1);
         }
 
@@ -780,10 +779,10 @@ public class MechanumDrive extends SubSystem {
             double thresh1Left = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.x), unit);
             double thresh2Left = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.y), unit);
 
-            double thresh1Right = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.x), unit);
-            double thresh2Right = encProcessor.getEncoderAmount(Math.abs(leftDisplacement.y), unit);
+            double thresh1Right = encProcessor.getEncoderAmount(Math.abs(rightDisplacement.x), unit);
+            double thresh2Right = encProcessor.getEncoderAmount(Math.abs(rightDisplacement.y), unit);
 
-            while (Math.abs(topLeft.getCurrentPosition()) < thresh1Left && Math.abs(topRight.getCurrentPosition()) < thresh2Right && Math.abs(botLeft.getCurrentPosition()) < thresh2Left && Math.abs(botRight.getCurrentPosition()) < thresh1Right) {
+            while ((Math.abs(topLeft.getCurrentPosition()) < thresh1Left && Math.abs(botLeft.getCurrentPosition()) < thresh2Left) || (Math.abs(botRight.getCurrentPosition()) < thresh1Right && Math.abs(topRight.getCurrentPosition()) < thresh2Right)) {
                 if (Math.abs(topLeft.getCurrentPosition()) < thresh1Left && Math.abs(botLeft.getCurrentPosition()) < thresh2Left) {
                     topLeft.setPower(leftVector.x);
                     botLeft.setPower(leftVector.y);
@@ -806,72 +805,16 @@ public class MechanumDrive extends SubSystem {
     }
 
     /**
-     * Makes the robot move. Use this for any non-matthew drive mode.
+     * Makes the robot move. Use this for any non-matthew drive mode. You must set the stability control target manually for this to work with stability control.
      *
      * @param v - The direction vector indicating how the robot should move.
      */
-    public void drive(Vector v){
-        if (driveType == DriveType.MATTHEW) {
-            throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
-        }
-
-        v.scalarMultiply(constantSpeedMultiplier);
-
-        switch (driveType) {
-            case STANDARD_TTA:
-            case STANDARD:
-                v.rotate(-(PI / 4));
-                topLeft.setPower(v.x);
-                topRight.setPower(v.y);
-                botLeft.setPower(v.y);
-                botRight.setPower(v.x);
-                break;
-            case FIELD_CENTRIC_TTA:
-            case FIELD_CENTRIC:
-                if(!usesGyro) {
-                    throw new WrongDrivetypeException("Field Centric Drive Must uses the IMU but the IMU was never set up");
-                }
-                v.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
-                topLeft.setPower(v.x);
-                topRight.setPower(v.y);
-                botLeft.setPower(v.y);
-                botRight.setPower(v.x);
-                break;
-            case ARCADE_TTA:
-            case ARCADE:
-                if (v.isZeroVector()) {
-                    topLeft.setPower(0);
-                    topRight.setPower(0);
-                    botLeft.setPower(0);
-                    botRight.setPower(0);
-                }
-                else if (v.theta < PI / 4 || v.theta > (7 * PI) / 4) { //right side of the square
-                    topLeft.setPower(v.r);
-                    topRight.setPower(-v.r);
-                    botLeft.setPower(-v.r);
-                    botRight.setPower(v.r);
-                } else if (v.theta > PI / 4 && v.theta < (3 * PI) / 4) { //top side of the square
-                    topLeft.setPower(-v.r);
-                    topRight.setPower(v.r);
-                    botLeft.setPower(v.r);
-                    botRight.setPower(-v.r);
-                } else if (v.theta > (3 * PI) / 4 && v.theta < (5 * PI) / 4) { //left side of the square
-                    topLeft.setPower(v.r);
-                    topRight.setPower(v.r);
-                    botLeft.setPower(v.r);
-                    botRight.setPower(v.r);
-                } else if (v.theta > (5 * PI) / 4 && v.theta < (7 * PI) / 4) { //Bottom side of the square
-                    topLeft.setPower(-v.r);
-                    topRight.setPower(-v.r);
-                    botLeft.setPower(-v.r);
-                    botRight.setPower(-v.r);
-                }
-                break;
-        }
+    public void drive(Vector v) {
+        drive(v,false);
     }
 
     /**
-     * Makes the robot move. Use this for any non-matthew drive mode.
+     * Makes the robot move. Use this for any non-matthew drive mode. You must set the stability control target manually for this to work with stability control.
      *
      * @param v - The direction and power that the robot should move at.
      * @param stabilityControl - Whether or not to use the drive's stability control system.
@@ -881,61 +824,59 @@ public class MechanumDrive extends SubSystem {
             throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
         }
 
-        v.scalarMultiply(constantSpeedMultiplier);
+        Vector vcpy = v.clone();
 
-        double correction;
+        vcpy.scalarMultiply(constantSpeedMultiplier);
 
-        if(stabilityControl && usesGyro) {
-            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
-        }
-        else {
-            correction = 0;
-        }
+        double correction = stabilityControl && usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) : 0;
 
         switch (driveType) {
             case STANDARD_TTA:
             case STANDARD:
-                v.rotate(-(PI / 4));
-                topLeft.setPower(v.x - correction);
-                topRight.setPower(v.y + correction);
-                botLeft.setPower(v.y - correction);
-                botRight.setPower(v.x + correction);
+
+                vcpy.rotate(-(PI / 4));
+                topLeft.setPower(vcpy.x - correction);
+                topRight.setPower(vcpy.y + correction);
+                botLeft.setPower(vcpy.y - correction);
+                botRight.setPower(vcpy.x + correction);
                 break;
             case FIELD_CENTRIC_TTA:
             case FIELD_CENTRIC:
                 if(!usesGyro) {
                     throw new WrongDrivetypeException("Field Centric Drive Must uses the IMU but the IMU was never set up");
                 }
-                v.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
-                topLeft.setPower(v.x - correction);
-                topRight.setPower(v.y + correction);
-                botLeft.setPower(v.y - correction);
-                botRight.setPower(v.x + correction);
+
+                vcpy.rotate(-((PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle));
+                topLeft.setPower(vcpy.x - correction);
+                topRight.setPower(vcpy.y + correction);
+                botLeft.setPower(vcpy.y - correction);
+                botRight.setPower(vcpy.x + correction);
                 break;
             case ARCADE_TTA:
             case ARCADE:
-                if (v.isZeroVector()) {
+
+                if (vcpy.isZeroVector()) {
                     topLeft.setPower(0);
                     topRight.setPower(0);
                     botLeft.setPower(0);
                     botRight.setPower(0);
                 }
-                else if (v.theta < PI / 4 || v.theta > (7 * PI) / 4) { //right side of the square
+                else if (vcpy.theta < PI / 4 || vcpy.theta > (7 * PI) / 4) { //right side of the square
                     topLeft.setPower(v.r - correction);
                     topRight.setPower(-v.r + correction);
                     botLeft.setPower(-v.r - correction);
                     botRight.setPower(v.r + correction);
-                } else if (v.theta > PI / 4 && v.theta < (3 * PI) / 4) { //top side of the square
-                    topLeft.setPower(-v.r - correction);
-                    topRight.setPower(v.r + correction);
-                    botLeft.setPower(v.r - correction);
-                    botRight.setPower(-v.r + correction);
-                } else if (v.theta > (3 * PI) / 4 && v.theta < (5 * PI) / 4) { //left side of the square
+                } else if (vcpy.theta > PI / 4 && vcpy.theta < (3 * PI) / 4) { //top side of the square
                     topLeft.setPower(v.r - correction);
                     topRight.setPower(v.r + correction);
                     botLeft.setPower(v.r - correction);
                     botRight.setPower(v.r + correction);
-                } else if (v.theta > (5 * PI) / 4 && v.theta < (7 * PI) / 4) { //Bottom side of the square
+                } else if (vcpy.theta > (3 * PI) / 4 && vcpy.theta < (5 * PI) / 4) { //left side of the square
+                    topLeft.setPower(-v.r - correction);
+                    topRight.setPower(v.r + correction);
+                    botLeft.setPower(v.r - correction);
+                    botRight.setPower(-v.r + correction);
+                } else if (vcpy.theta > (5 * PI) / 4 && vcpy.theta < (7 * PI) / 4) { //Bottom side of the square
                     topLeft.setPower(-v.r - correction);
                     topRight.setPower(-v.r + correction);
                     botLeft.setPower(-v.r - correction);
@@ -954,101 +895,8 @@ public class MechanumDrive extends SubSystem {
      *
      * @throws InterruptedException - This error is thrown when the program is interrupted unexpectedly.
      */
-    public void drive(Vector v, double distance, Units unit) throws InterruptedException{
-        if (driveType == DriveType.MATTHEW) {
-            throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
-        }
-
-        if(v.isZeroVector() && distance != 0) {
-            throw new InvalidMoveCommandException("You can't move anywhere if you aren't trying to move ;)");
-        }
-
-        if(distance < 0) {
-            throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
-        }
-
-        if((driveType == DriveType.ARCADE || driveType == DriveType.ARCADE_TTA) && (v.theta == PI/4 || v.theta == (3*PI)/4 || v.theta == (5*PI)/4 || v.theta == (7*PI)/4)) {
-            throw new InvalidMoveCommandException("Error: You input an invalid velocity vector for arcade drive.");
-        }
-
-        v.scalarMultiply(constantSpeedMultiplier);
-
-        Vector displacement = new Vector(distance,v.theta,Vector.CoordinateType.POLAR);
-        EncoderToDistanceProcessor encProcessor = new EncoderToDistanceProcessor(encoderPerMeter);
-
-        resetAllEncoders();
-
-        double thresh1;
-        double thresh2;
-
-        switch (driveType) {
-            case STANDARD_TTA:
-            case STANDARD:
-                v.rotate(-(PI / 4));
-                displacement.rotate(-(PI / 4));
-
-                thresh1 = encProcessor.getEncoderAmount(Math.abs(displacement.x),unit);
-                thresh2 = encProcessor.getEncoderAmount(Math.abs(displacement.y),unit);
-
-                while(Math.abs(topLeft.getCurrentPosition()) < thresh1 && Math.abs(topRight.getCurrentPosition()) < thresh2 && Math.abs(botLeft.getCurrentPosition()) < thresh2 && Math.abs(botRight.getCurrentPosition()) < thresh1) {
-                    topLeft.setPower(v.x);
-                    topRight.setPower(v.y);
-                    botLeft.setPower(v.y);
-                    botRight.setPower(v.x);
-                    sleep(1);
-                }
-                break;
-            case FIELD_CENTRIC_TTA:
-            case FIELD_CENTRIC:
-                if(!usesGyro) {
-                    throw new WrongDrivetypeException("Field Centric Drive Must uses the IMU but the IMU was never set up");
-                }
-
-                v.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
-                displacement.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
-
-                thresh1 = encProcessor.getEncoderAmount(Math.abs(displacement.x),unit);
-                thresh2 = encProcessor.getEncoderAmount(Math.abs(displacement.y),unit);
-
-                while(Math.abs(topLeft.getCurrentPosition()) < thresh1 && Math.abs(topRight.getCurrentPosition()) < thresh2 && Math.abs(botLeft.getCurrentPosition()) < thresh2 && Math.abs(botRight.getCurrentPosition()) < thresh1) {
-                    topLeft.setPower(v.x);
-                    topRight.setPower(v.y);
-                    botLeft.setPower(v.y);
-                    botRight.setPower(v.x);
-                    sleep(1);
-                }
-                break;
-            case ARCADE_TTA:
-            case ARCADE:
-
-                double thresh = encoderPerMeter*Math.sqrt(2)/2;
-
-                while(Math.abs(topLeft.getCurrentPosition()) < thresh && Math.abs(topRight.getCurrentPosition()) < thresh && Math.abs(botLeft.getCurrentPosition()) < thresh && Math.abs(botRight.getCurrentPosition()) < thresh) {
-                    if (v.theta < PI / 4 || v.theta > (7 * PI) / 4) { //right side of the square
-                        topLeft.setPower(v.r);
-                        topRight.setPower(-v.r);
-                        botLeft.setPower(-v.r);
-                        botRight.setPower(v.r);
-                    } else if (v.theta > PI / 4 && v.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(-v.r);
-                        topRight.setPower(v.r);
-                        botLeft.setPower(v.r);
-                        botRight.setPower(-v.r);
-                    } else if (v.theta > (3 * PI) / 4 && v.theta < (5 * PI) / 4) { //left side of the square
-                        topLeft.setPower(v.r);
-                        topRight.setPower(v.r);
-                        botLeft.setPower(v.r);
-                        botRight.setPower(v.r);
-                    } else if (v.theta > (5 * PI) / 4 && v.theta < (7 * PI) / 4) { //Bottom side of the square
-                        topLeft.setPower(-v.r);
-                        topRight.setPower(-v.r);
-                        botLeft.setPower(-v.r);
-                        botRight.setPower(-v.r);
-                    }
-                    sleep(1);
-                }
-                break;
-        }
+    public void drive(Vector v, double distance, Units unit) throws InterruptedException {
+        drive(v,distance,unit,false);
     }
 
     /**
@@ -1062,55 +910,36 @@ public class MechanumDrive extends SubSystem {
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public void drive(Vector v, double distance, Units unit, boolean stabilityControl) throws InterruptedException {
-        if (driveType == DriveType.MATTHEW) {
-            throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
-        }
-
-        v.scalarMultiply(constantSpeedMultiplier);
-
         if(v.isZeroVector() && distance != 0) {
             throw new InvalidMoveCommandException("You can't move anywhere if you aren't trying to move ;)");
         }
-
         if(distance < 0) {
             throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
         }
 
-        if((driveType == DriveType.ARCADE || driveType == DriveType.ARCADE_TTA) && (v.theta == PI/4 || v.theta == (3*PI)/4 || v.theta == (5*PI)/4 || v.theta == (7*PI)/4)) {
-            throw new InvalidMoveCommandException("Error: You input an invalid velocity vector for arcade drive.");
-        }
-
         Vector displacement = new Vector(distance,v.theta,Vector.CoordinateType.POLAR);
         EncoderToDistanceProcessor encProcessor = new EncoderToDistanceProcessor(encoderPerMeter);
-
-        double correction;
-
-        if(stabilityControl && usesGyro) {
-            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
-        }
-        else {
-            correction = 0;
-        }
 
         resetAllEncoders();
 
         double thresh1;
         double thresh2;
 
+        if(stabilityControl) {
+            stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
+        }
+
         switch (driveType) {
             case STANDARD_TTA:
             case STANDARD:
-                v.rotate(-(PI / 4));
+
                 displacement.rotate(-(PI / 4));
 
                 thresh1 = encProcessor.getEncoderAmount(Math.abs(displacement.x),unit);
                 thresh2 = encProcessor.getEncoderAmount(Math.abs(displacement.y),unit);
 
                 while(Math.abs(topLeft.getCurrentPosition()) < thresh1 && Math.abs(topRight.getCurrentPosition()) < thresh2 && Math.abs(botLeft.getCurrentPosition()) < thresh2 && Math.abs(botRight.getCurrentPosition()) < thresh1) {
-                    topLeft.setPower(v.x - correction);
-                    topRight.setPower(v.y + correction);
-                    botLeft.setPower(v.y - correction);
-                    botRight.setPower(v.x + correction);
+                    drive(v,stabilityControl);
                     sleep(1);
                 }
                 break;
@@ -1120,47 +949,23 @@ public class MechanumDrive extends SubSystem {
                     throw new WrongDrivetypeException("Field Centric Drive Must uses the IMU but the IMU was never set up");
                 }
 
-                v.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
-                displacement.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
+                displacement.rotate(-((PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle));
 
                 thresh1 = encProcessor.getEncoderAmount(Math.abs(displacement.x),unit);
                 thresh2 = encProcessor.getEncoderAmount(Math.abs(displacement.y),unit);
 
                 while(Math.abs(topLeft.getCurrentPosition()) < thresh1 && Math.abs(topRight.getCurrentPosition()) < thresh2 && Math.abs(botLeft.getCurrentPosition()) < thresh2 && Math.abs(botRight.getCurrentPosition()) < thresh1) {
-                    topLeft.setPower(v.x - correction);
-                    topRight.setPower(v.y + correction);
-                    botLeft.setPower(v.y - correction);
-                    botRight.setPower(v.x + correction);
+                    drive(v,stabilityControl);
                     sleep(1);
                 }
                 break;
             case ARCADE_TTA:
             case ARCADE:
 
-                double thresh = encoderPerMeter*Math.sqrt(2)/2;
+                double thresh = distance*encoderPerMeter*Math.sqrt(2)/2;
 
                 while(Math.abs(topLeft.getCurrentPosition()) < thresh && Math.abs(topRight.getCurrentPosition()) < thresh && Math.abs(botLeft.getCurrentPosition()) < thresh && Math.abs(botRight.getCurrentPosition()) < thresh) {
-                    if (v.theta < PI / 4 || v.theta > (7 * PI) / 4) { //right side of the square
-                        topLeft.setPower(v.r - correction);
-                        topRight.setPower(-v.r + correction);
-                        botLeft.setPower(-v.r - correction);
-                        botRight.setPower(v.r + correction);
-                    } else if (v.theta > PI / 4 && v.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(-v.r - correction);
-                        topRight.setPower(v.r + correction);
-                        botLeft.setPower(v.r - correction);
-                        botRight.setPower(-v.r + correction);
-                    } else if (v.theta > (3 * PI) / 4 && v.theta < (5 * PI) / 4) { //left side of the square
-                        topLeft.setPower(v.r - correction);
-                        topRight.setPower(v.r + correction);
-                        botLeft.setPower(v.r - correction);
-                        botRight.setPower(v.r + correction);
-                    } else if (v.theta > (5 * PI) / 4 && v.theta < (7 * PI) / 4) { //Bottom side of the square
-                        topLeft.setPower(-v.r - correction);
-                        topRight.setPower(-v.r + correction);
-                        botLeft.setPower(-v.r - correction);
-                        botRight.setPower(-v.r + correction);
-                    }
+                    drive(v,stabilityControl);
                     sleep(1);
                 }
                 break;
@@ -1179,86 +984,14 @@ public class MechanumDrive extends SubSystem {
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public void drive(Vector v, double timeMs, boolean stabilityControl) throws InterruptedException{
-        if (driveType == DriveType.MATTHEW) {
-            throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
+        if(stabilityControl) {
+            stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX,useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
         }
-
-        if((driveType == DriveType.ARCADE || driveType == DriveType.ARCADE_TTA) && (v.theta == PI/4 || v.theta == (3*PI)/4 || v.theta == (5*PI)/4 || v.theta == (7*PI)/4)) {
-            throw new InvalidMoveCommandException("Error: You input an invalid velocity vector for arcade drive.");
-        }
-
-        v.scalarMultiply(constantSpeedMultiplier);
 
         long startTime = System.currentTimeMillis();
-
-        double correction;
-
-        if(stabilityControl && usesGyro) {
-            correction = stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
-        }
-        else {
-            correction = 0;
-        }
-
-        resetAllEncoders();
-
-        switch (driveType) {
-            case STANDARD_TTA:
-            case STANDARD:
-                v.rotate(-(PI / 4));
-
-                while(System.currentTimeMillis() - startTime < timeMs) {
-                    topLeft.setPower(v.x - correction);
-                    topRight.setPower(v.y + correction);
-                    botLeft.setPower(v.y - correction);
-                    botRight.setPower(v.x + correction);
-                    sleep(1);
-                }
-                break;
-            case FIELD_CENTRIC_TTA:
-            case FIELD_CENTRIC:
-                if(!usesGyro) {
-                    throw new WrongDrivetypeException("Field Centric Drive Must uses the IMU but the IMU was never set up");
-                }
-
-                v.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
-
-                while(System.currentTimeMillis() - startTime < timeMs) {
-                    topLeft.setPower(v.x - correction);
-                    topRight.setPower(v.y + correction);
-                    botLeft.setPower(v.y - correction);
-                    botRight.setPower(v.x + correction);
-                    sleep(1);
-                }
-                break;
-            case ARCADE_TTA:
-            case ARCADE:
-
-                while(System.currentTimeMillis() - startTime < timeMs) {
-                    if (v.theta < PI / 4 || v.theta > (7 * PI) / 4) { //right side of the square
-                        topLeft.setPower(v.r - correction);
-                        topRight.setPower(-v.r + correction);
-                        botLeft.setPower(-v.r - correction);
-                        botRight.setPower(v.r + correction);
-                    } else if (v.theta > PI / 4 && v.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(-v.r - correction);
-                        topRight.setPower(v.r + correction);
-                        botLeft.setPower(v.r - correction);
-                        botRight.setPower(-v.r + correction);
-                    } else if (v.theta > (3 * PI) / 4 && v.theta < (5 * PI) / 4) { //left side of the square
-                        topLeft.setPower(v.r - correction);
-                        topRight.setPower(v.r + correction);
-                        botLeft.setPower(v.r - correction);
-                        botRight.setPower(v.r + correction);
-                    } else if (v.theta > (5 * PI) / 4 && v.theta < (7 * PI) / 4) { //Bottom side of the square
-                        topLeft.setPower(-v.r - correction);
-                        topRight.setPower(-v.r + correction);
-                        botLeft.setPower(-v.r - correction);
-                        botRight.setPower(-v.r + correction);
-                    }
-                    sleep(1);
-                }
-                break;
+        while(System.currentTimeMillis() - startTime < timeMs) {
+            drive(v,stabilityControl);
+            sleep(1);
         }
 
         stopAllMotors();
@@ -1272,80 +1005,8 @@ public class MechanumDrive extends SubSystem {
      *
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
-    public void drive(Vector v, double timeMs) throws InterruptedException{
-        if (driveType == DriveType.MATTHEW) {
-            throw new WrongDrivetypeException("Error: Drive arguments do not match drive type.");
-        }
-
-        if((driveType == DriveType.ARCADE || driveType == DriveType.ARCADE_TTA) && (v.theta == PI/4 || v.theta == (3*PI)/4 || v.theta == (5*PI)/4 || v.theta == (7*PI)/4)) {
-            throw new InvalidMoveCommandException("Error: You input an invalid velocity vector for arcade drive.");
-        }
-
-        v.scalarMultiply(constantSpeedMultiplier);
-
-        long startTime = System.currentTimeMillis();
-
-        resetAllEncoders();
-
-        switch (driveType) {
-            case STANDARD_TTA:
-            case STANDARD:
-                v.rotate(-(PI / 4));
-
-                while(System.currentTimeMillis() - startTime < timeMs) {
-                    topLeft.setPower(v.x);
-                    topRight.setPower(v.y);
-                    botLeft.setPower(v.y);
-                    botRight.setPower(v.x);
-                    sleep(1);
-                }
-                break;
-            case FIELD_CENTRIC_TTA:
-            case FIELD_CENTRIC:
-                if(!usesGyro) {
-                    throw new WrongDrivetypeException("Field Centric Drive Must uses the IMU but the IMU was never set up");
-                }
-
-                v.rotate(-(PI / 4) + imu.getAngularOrientation(AxesReference.INTRINSIC,AxesOrder.ZYX,AngleUnit.RADIANS).firstAngle);
-
-                while(System.currentTimeMillis() - startTime < timeMs) {
-                    topLeft.setPower(v.x);
-                    topRight.setPower(v.y);
-                    botLeft.setPower(v.y);
-                    botRight.setPower(v.x);
-                    sleep(1);
-                }
-                break;
-            case ARCADE_TTA:
-            case ARCADE:
-                while(System.currentTimeMillis() - startTime < timeMs) {
-                    if (v.theta < PI / 4 || v.theta > (7 * PI) / 4) { //right side of the square
-                        topLeft.setPower(v.r);
-                        topRight.setPower(-v.r);
-                        botLeft.setPower(-v.r);
-                        botRight.setPower(v.r);
-                    } else if (v.theta > PI / 4 && v.theta < (3 * PI) / 4) { //top side of the square
-                        topLeft.setPower(-v.r);
-                        topRight.setPower(v.r);
-                        botLeft.setPower(v.r);
-                        botRight.setPower(-v.r);
-                    } else if (v.theta > (3 * PI) / 4 && v.theta < (5 * PI) / 4) { //left side of the square
-                        topLeft.setPower(v.r);
-                        topRight.setPower(v.r);
-                        botLeft.setPower(v.r);
-                        botRight.setPower(v.r);
-                    } else if (v.theta > (5 * PI) / 4 && v.theta < (7 * PI) / 4) { //Bottom side of the square
-                        topLeft.setPower(-v.r);
-                        topRight.setPower(-v.r);
-                        botLeft.setPower(-v.r);
-                        botRight.setPower(-v.r);
-                    }
-                    sleep(1);
-                }
-                break;
-        }
-
-        stopAllMotors();
+    public void drive(Vector v, double timeMs) throws InterruptedException {
+        drive(v,timeMs,false);
     }
 
     /**
@@ -1629,7 +1290,7 @@ public class MechanumDrive extends SubSystem {
             changeVelocityPID = false;
             turnPID = new PIDController(0,0,0);
             stabilityPID = new PIDController(0,0,0);
-            encoderPerMeter = 1440;
+            encoderPerMeter = 1;
             constantSpeedMultiplier = 1;
             useDegreesStability = false;
             useDegreesTurn = false;
