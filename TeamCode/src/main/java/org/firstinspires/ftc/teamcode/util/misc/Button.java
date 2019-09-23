@@ -20,7 +20,7 @@ public class Button {
     public DoubleInputs doubleInput;
     //Boolean input to use if it is a boolean input button.
     public BooleanInputs booleanInput;
-
+    //Vector input to use if it is a vector input.
     public VectorInputs vectorInput;
     //Deadzone to use for the boolean version of the double inputs.
     public double deadzone = 0;
@@ -50,11 +50,23 @@ public class Button {
      * @param inputName - DoubleInput that this button will output.
      */
     public Button(int gamepadNumber, DoubleInputs inputName){
+        this(gamepadNumber,inputName,0.0);
+    }
+
+    /**
+     * Constructor for button that makes a double button.
+     *
+     * @param gamepadNumber - Number of gamepad this button will use.
+     * @param inputName - DoubleInput that this button will output.
+     * @param deadzone - Double between 0 and 1 that sets the deadzone.
+     */
+    public Button(int gamepadNumber, DoubleInputs inputName, Double deadzone){
         this.gamepadNumber = gamepadNumber;
         this.doubleInput = inputName;
         this.isDouble = true;
         this.isBoolean = false;
         this.isVector = false;
+        this.deadzone = deadzone;
 
     }
 
@@ -65,13 +77,31 @@ public class Button {
      * @param inputName - BooleanInput that this button will output.
      */
     public Button(int gamepadNumber, BooleanInputs inputName){
+        this(gamepadNumber, inputName, 0.0);
+    }
+
+    /**
+     * Constructor for button that makes a boolean button.
+     *
+     * @param gamepadNumber - Number of gamepad this button will use.
+     * @param inputName - BooleanInput that this button will output.
+     * @param deadzone - Double between 0 and 1 that sets the deadzone.
+     */
+    public Button(int gamepadNumber, BooleanInputs inputName, Double deadzone){
         this.gamepadNumber = gamepadNumber;
         this.booleanInput = inputName;
         this.isDouble = false;
         this.isBoolean = true;
         this.isVector = false;
+        this.deadzone = deadzone;
     }
 
+    /**
+     * Constructor for button that makes a vector button.
+     * 
+     * @param gamepadNumber - Number of gamepad this button will use.
+     *  @param inputName - VectorInput that this button will output.
+     */
     public Button(int gamepadNumber, VectorInputs inputName){
         this.gamepadNumber = gamepadNumber;
         this.vectorInput = inputName;

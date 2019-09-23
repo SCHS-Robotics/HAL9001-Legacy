@@ -7,8 +7,6 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
 
-import android.util.Log;
-
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
@@ -307,7 +305,7 @@ public class TankDrive extends SubSystem{
      * @param encoderDistance - Encoder distance to travel.
      * @param power - Double from (-1)-(1) of intensity of the movement.
      */
-    public void moveEncoders(int encoderDistance, double power) throws InterruptedException{
+    public void driveEncoders(int encoderDistance, double power) throws InterruptedException{
 
         if(power == 0 && encoderDistance != 0) {
             throw new InvalidMoveCommandException("Power cannot be zero with a non zero target");

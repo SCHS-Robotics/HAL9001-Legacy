@@ -85,7 +85,7 @@ public class GUI {
     /**
      * Runs the init() function for every menu contained in the GUI.
      */
-    public void start(){
+    public final void start(){
         if(menus.size() > 0){
             cursor = menus.get(menuKeys.get(activeMenuIdx)).cursor;
         }
@@ -94,7 +94,7 @@ public class GUI {
         }
     }
 
-    public void onStart() {
+    public final void onStart() {
         for(Menu m : menus.values()) {
             m.onStart();
         }

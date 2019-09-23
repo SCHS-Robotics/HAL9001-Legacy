@@ -403,8 +403,6 @@ public class ColorspaceCalib extends SubSystem implements CameraBridgeViewBase.C
 
         z_lower = Range.clip(z_lower,0,z_upper);
         z_upper = Range.clip(z_upper,z_lower,255);
-
-        robot.telemetry.update();
     }
 
     @Override

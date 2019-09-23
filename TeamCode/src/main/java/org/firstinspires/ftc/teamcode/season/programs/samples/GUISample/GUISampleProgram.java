@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
 @Disabled
 @TeleOp(name = "GUISampleTeleop")
 //extends BaseTeleop means it is a TeleOp program
-public class GUISampleTeleOpAndAutonomous extends BaseTeleop {
+public class GUISampleProgram extends BaseTeleop {
 
     private GUISampleBot robot;
 
@@ -26,4 +26,10 @@ public class GUISampleTeleOpAndAutonomous extends BaseTeleop {
 
     //There are other methods that you can use to do stuff in teleop, refer to TankSample to see them.
 
+    @Override
+    protected void onUpdate() {
+        robot.displayMenu1.addData("Look at my amazing data",7);
+        robot.displayMenu2.addLine("This quote is plagiarised");
+    }
 }
+

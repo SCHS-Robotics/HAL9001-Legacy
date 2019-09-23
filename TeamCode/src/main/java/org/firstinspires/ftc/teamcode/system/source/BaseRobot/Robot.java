@@ -63,7 +63,7 @@ public abstract class Robot {
     public final HardwareMap hardwareMap;
 
     /**
-     * Ctor for robot.
+     * Constructor for robot.
      *
      * @param opMode - The opmode the robot is currently running.
      */
@@ -85,7 +85,7 @@ public abstract class Robot {
      * @param name - The name of the subsystem.
      * @param subSystem - The subsystem object.
      */
-    protected void putSubSystem(String name, SubSystem subSystem)
+    protected final void putSubSystem(String name, SubSystem subSystem)
     {
         if(subSystem == null) {
             throw new DumpsterFireException("Subsystem Cannot be Null");
@@ -141,7 +141,7 @@ public abstract class Robot {
      *
      * @param cycleButton - The button used to cycle through multiple menus in GUI.
      */
-    public void startGui(Button cycleButton) {
+    public final void startGui(Button cycleButton) {
         if(!useGui) {
             gui = new GUI(this, cycleButton);
             useGui = true;
@@ -156,7 +156,7 @@ public abstract class Robot {
      *
      * @return - Whether the GUI has been instantiated.
      */
-    public boolean usesGUI() {
+    public final boolean usesGUI() {
         return useGui;
     }
 
@@ -393,7 +393,7 @@ public abstract class Robot {
      * @param subsystem - The subsystem to pull the gamepad controls for.
      * @return - A customizable gamepad containing the configured controls for that subsystem.
      */
-    public CustomizableGamepad pullControls(SubSystem subsystem) {
+    public final CustomizableGamepad pullControls(SubSystem subsystem) {
         return pullControls(subsystem.getClass().getSimpleName());
     }
 
@@ -403,7 +403,7 @@ public abstract class Robot {
      * @param subsystem - The name of the subsystem to pull the gamepad controls for.
      * @return - A customizable gamepad containing the configured controls for that subsystem.
      */
-    public CustomizableGamepad pullControls(String subsystem) {
+    public final CustomizableGamepad pullControls(String subsystem) {
         List<ConfigParam> configParams = teleopConfig.get(subsystem);
         CustomizableGamepad gamepad = new CustomizableGamepad(this);
         for(ConfigParam param : configParams) {
@@ -420,7 +420,7 @@ public abstract class Robot {
      * @param subsystem - The subsystem to pull the gamepad controls for.
      * @return - A map relating the name of each non-gamepad option to that option's value.
      */
-    public Map<String,Object> pullNonGamepad(SubSystem subsystem) {
+    public final Map<String,Object> pullNonGamepad(SubSystem subsystem) {
         return pullNonGamepad(subsystem.getClass().getSimpleName());
     }
 
@@ -430,7 +430,7 @@ public abstract class Robot {
      * @param subsystem - The name of the subsystem to pull the gamepad controls for.
      * @return - A map relating the name of each non-gamepad option to that option's value.
      */
-    public Map<String,Object> pullNonGamepad(String subsystem) {
+    public final Map<String,Object> pullNonGamepad(String subsystem) {
 
         List<ConfigParam> configParamsTeleop = new ArrayList<>();
         List<ConfigParam> configParamsAuto = new ArrayList<>();
@@ -464,11 +464,11 @@ public abstract class Robot {
      *
      * @return Whether the program being run is a teleop program.
      */
-    public boolean isTeleop() {
+    public final boolean isTeleop() {
         return opMode instanceof BaseTeleop;
     }
 
-    public boolean isAutonomous() {
+    public final boolean isAutonomous() {
         return opMode instanceof BaseAutonomous;
     }
 
