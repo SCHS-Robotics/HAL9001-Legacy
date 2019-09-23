@@ -104,10 +104,7 @@ public class CustomizableGamepad {
      * @param buttonName - Key of button to be checked.
      */
     public boolean checkNoButton(String buttonName) {
-        if (inputs.get(buttonName).getInputEnum() == Button.DoubleInputs.noButton || inputs.get(buttonName).getInputEnum() == Button.BooleanInputs.noButton) {
-            return true;
-        }
-        return false;
+        return inputs.get(buttonName).getInputEnum() == Button.DoubleInputs.noButton || inputs.get(buttonName).getInputEnum() == Button.BooleanInputs.noButton || inputs.get(buttonName).getInputEnum() == Button.VectorInputs.noButton;
     }
 
     /**

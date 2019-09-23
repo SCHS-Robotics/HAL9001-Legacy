@@ -142,6 +142,8 @@ public class TankDrive extends SubSystem{
                 drive(inputs.getDoubleInput(DRIVESTICK));
             } else if (inputs.getDoubleInput(TURNSTICK)!= 0){
                 turn(inputs.getDoubleInput(TURNSTICK));
+            } else {
+                stopMovement();
             }
         }
         //drives forward and turns but not at the same time
@@ -530,16 +532,16 @@ public class TankDrive extends SubSystem{
             return new ConfigParam[]{
                     new ConfigParam(DRIVESTICK, Button.DoubleInputs.left_stick_y),
                     new ConfigParam(TURNSTICK, Button.DoubleInputs.right_stick_x),
-                    new ConfigParam(SPEEDMODEBUTTON, Button.DoubleInputs.noButton),
-                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, "true")
+                    new ConfigParam(SPEEDMODEBUTTON, Button.BooleanInputs.noButton),
+                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, true)
             };
         }
         else {
             return new ConfigParam[]{
                     new ConfigParam(DRIVESTICK, Button.DoubleInputs.left_stick_y),
                     new ConfigParam(TURNSTICK, Button.DoubleInputs.right_stick_x),
-                    new ConfigParam(SPEEDMODEBUTTON, Button.DoubleInputs.noButton),
-                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, "true"),
+                    new ConfigParam(SPEEDMODEBUTTON, Button.BooleanInputs.noButton),
+                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, true),
                     new ConfigParam("SpeedModeModifier", ConfigParam.numberMap(0,100, .05), 1.0),
                     new ConfigParam("ConstantSpeedModifier", ConfigParam.numberMap(0,100, .05), 1.0)
             };

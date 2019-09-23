@@ -145,6 +145,7 @@ public class ConfigCursor extends Cursor {
      */
     public void setInputs(Button up, Button down, Button left, Button right, Button select, Button reverseSelect, Button switchGamepad, Button backButton){
 
+        //TODO finish checks
         if(up.isBoolean && down.isBoolean && left.isBoolean && right.isBoolean && select.isBoolean) {
             inputs.addButton(UP, up);
             inputs.addButton(DOWN, down);
