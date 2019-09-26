@@ -2,16 +2,10 @@ package org.firstinspires.ftc.teamcode.season.programs.samples.BasicSample;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseAutonomous;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
-import org.firstinspires.ftc.teamcode.system.subsystems.MechanumDrive;
 import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
-import org.firstinspires.ftc.teamcode.util.math.Units;
-import org.firstinspires.ftc.teamcode.util.math.Vector;
-
-import java.util.Map;
 
 //@StandAlone is not required but stops it from asking for teleOp config
 @StandAlone

@@ -200,13 +200,23 @@ public class GUI {
      * @param name - The name of the menu to be removed.
      */
     public void removeMenu(String name) {
+
+        if(name.equals(menuKeys.get(activeMenuIdx))) {
+            robot.telemetry.clearAll();
+            activeMenu.displayNothing();
+            robot.telemetry.update();
+        }
+
         if(menuKeys.indexOf(name) > activeMenuIdx && activeMenuIdx != menuKeys.size()-1){
             activeMenuIdx--;
         }
         menuKeys.remove(name);
         menus.remove(name);
-        activeMenuIdx = activeMenuIdx % menuKeys.size();
-        setActiveMenu(menuKeys.get(activeMenuIdx));
+
+        activeMenuIdx = menus.size() != 0 ? activeMenuIdx % menuKeys.size() : 0;
+        if(menus.size() != 0) {
+            setActiveMenu(menuKeys.get(activeMenuIdx));
+        }
         cycle = true;
     }
 

@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.util.exceptions.NotAnAlchemistException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -362,10 +363,11 @@ public class ConfigParam {
      * @param increment - How much to increment by.
      * @return A map linking the names of numbers to the actual numbers.
      */
-    public static Map<String,Object> numberMap(double start, double end, double increment) {
-        Map<String,Object> numMap = new HashMap<>();
+    public static LinkedHashMap<String,Object> numberMap(double start, double end, double increment) {
+        int multiplier = (int) Math.pow(10,(Double.toString(increment).substring(Double.toString(increment).indexOf('.')+1).length()));
+        LinkedHashMap<String,Object> numMap = new LinkedHashMap<>();
         for (double i = start; i < end ; i+= increment) {
-            numMap.put(Double.toString(i), i);
+            numMap.put(Double.toString(((double) Math.round(i*multiplier))/multiplier), ((double) Math.round(i*multiplier))/multiplier);
         }
         numMap.put(Double.toString(end),end);
         return numMap;
