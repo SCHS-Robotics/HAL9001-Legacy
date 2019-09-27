@@ -50,8 +50,8 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
-        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
-        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
+        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.x));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.left_bumper));
 
         doBlink = true;
         writeMode = false;
@@ -75,8 +75,8 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
-        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
-        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
+        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.x));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.left_bumper));
 
         doBlink = true;
         writeMode = false;
@@ -99,8 +99,8 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
-        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
-        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
+        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.x));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.left_bumper));
 
         doBlink = true;
         writeMode = false;
@@ -125,8 +125,8 @@ public class ConfigCursor extends Cursor {
         inputs.addButton(SELECT, new Button(1, Button.BooleanInputs.a));
         inputs.addButton(REVERSE_SELECT, new Button(1, Button.BooleanInputs.b));
         inputs.addButton(SWITCH_GAMEPAD, new Button(1, Button.BooleanInputs.y));
-        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.back));
-        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
+        inputs.addButton(BACK_BUTTON, new Button(1, Button.BooleanInputs.x));
+        inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.left_bumper));
 
         doBlink = true;
         writeMode = false;
@@ -154,10 +154,10 @@ public class ConfigCursor extends Cursor {
             inputs.addButton(REVERSE_SELECT, reverseSelect);
             inputs.addButton(SWITCH_GAMEPAD, switchGamepad);
             inputs.addButton(BACK_BUTTON, backButton);
-            inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.guide));
+            inputs.addButton(DISABLE_AUTORUN, new Button(1, Button.BooleanInputs.left_bumper));
         }
         else{
-            throw new NotBooleanInputException("DefaultCursor requires all boolean inputs");
+            throw new NotBooleanInputException("ConfigCursor requires all boolean inputs");
         }
     }
 
@@ -172,19 +172,20 @@ public class ConfigCursor extends Cursor {
 
     @Override
     public void update() {
+
         if(inputs.getBooleanInput(SELECT) && (flag || (writeMode && System.currentTimeMillis()-timeFromLastPressSelectMill > 250))){
-            super.menu.onSelect();
-            super.menu.onButton(SELECT,inputs.getButton(SELECT));
+            menu.onSelect();
+            menu.onButton(SELECT,inputs.getButton(SELECT));
             timeFromLastPressSelectMill = System.currentTimeMillis();
             flag = false;
         }
         else if(inputs.getBooleanInput(REVERSE_SELECT) && (flag || (writeMode && System.currentTimeMillis()-timeFromLastPressRSelectMill > 250))) {
-            super.menu.onButton(REVERSE_SELECT,inputs.getButton(REVERSE_SELECT));
+            menu.onButton(REVERSE_SELECT,inputs.getButton(REVERSE_SELECT));
             timeFromLastPressRSelectMill = System.currentTimeMillis();
             flag = false;
         }
         else if(inputs.getBooleanInput(SWITCH_GAMEPAD) && flag) {
-            super.menu.onButton(SWITCH_GAMEPAD,inputs.getButton(SWITCH_GAMEPAD));
+            menu.onButton(SWITCH_GAMEPAD,inputs.getButton(SWITCH_GAMEPAD));
             flag = false;
         }
         else if (inputs.getBooleanInput(UP) && y - 1 >= 0 && flag) {
@@ -194,38 +195,38 @@ public class ConfigCursor extends Cursor {
             }
             flag = false;
 
-            super.menu.onButton(UP, inputs.getButton(UP));
+            menu.onButton(UP, inputs.getButton(UP));
         }
         else if (inputs.getBooleanInput(DOWN) && y + 1 <= super.menu.getSelectionZoneHeight() - 1 && flag) {
             y++;
             if (y % Menu.MAXLINESPERSCREEN == 0) {
-                super.menu.menuDown();
+                menu.menuDown();
             }
             flag = false;
 
-            super.menu.onButton(DOWN, inputs.getButton(DOWN));
+            menu.onButton(DOWN, inputs.getButton(DOWN));
         }
         else if (inputs.getBooleanInput(LEFT) && x - 1 >= 0 && flag) {
             x--;
             flag = false;
 
-            super.menu.onButton(LEFT, inputs.getButton(LEFT));
+            menu.onButton(LEFT, inputs.getButton(LEFT));
         }
         else if (inputs.getBooleanInput(RIGHT) && x + 1 <= menu.getSelectionZoneWidth() - 1 && flag) {
             x++;
             flag = false;
 
-            super.menu.onButton(RIGHT, inputs.getButton(RIGHT));
+            menu.onButton(RIGHT, inputs.getButton(RIGHT));
         }
         else if(inputs.getBooleanInput(BACK_BUTTON) && flag) {
-            super.menu.onButton(BACK_BUTTON, inputs.getButton(BACK_BUTTON));
+            menu.onButton(BACK_BUTTON, inputs.getButton(BACK_BUTTON));
             flag = false;
         }
         else if(inputs.getBooleanInput(DISABLE_AUTORUN) && flag) {
-            super.menu.onButton(DISABLE_AUTORUN,inputs.getButton(DISABLE_AUTORUN));
+            menu.onButton(DISABLE_AUTORUN,inputs.getButton(DISABLE_AUTORUN));
             flag = false;
         }
-        else if (!inputs.getBooleanInput(SELECT) && !inputs.getBooleanInput(UP) && !inputs.getBooleanInput(DOWN) && !inputs.getBooleanInput(LEFT) && !inputs.getBooleanInput(RIGHT) && !inputs.getBooleanInput(REVERSE_SELECT) && !inputs.getBooleanInput(SWITCH_GAMEPAD) && !inputs.getBooleanInput(BACK_BUTTON) && !flag) {
+        else if (!inputs.getBooleanInput(SELECT) && !inputs.getBooleanInput(UP) && !inputs.getBooleanInput(DOWN) && !inputs.getBooleanInput(LEFT) && !inputs.getBooleanInput(RIGHT) && !inputs.getBooleanInput(REVERSE_SELECT) && !inputs.getBooleanInput(SWITCH_GAMEPAD) && !inputs.getBooleanInput(BACK_BUTTON) && !inputs.getBooleanInput(DISABLE_AUTORUN) && !flag) {
             flag = true;
         }
 
