@@ -7,6 +7,7 @@
 
 package org.firstinspires.ftc.teamcode.season.programs.calibration_programs;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.season.robot.CameraCalibBot;
@@ -18,6 +19,8 @@ import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
  * A simple program for calibrating the phone's camera.
  */
 @StandAlone
+@Disabled
+
 @TeleOp(name = "Camera Calibrator", group = "Calibration")
 public class CameraCalibrator extends BaseTeleop {
 

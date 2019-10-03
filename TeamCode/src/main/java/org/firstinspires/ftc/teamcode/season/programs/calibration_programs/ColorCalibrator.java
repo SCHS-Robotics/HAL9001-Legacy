@@ -7,6 +7,7 @@
 
 package org.firstinspires.ftc.teamcode.season.programs.calibration_programs;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.season.robot.ColorCalibBot;
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
  * A simple teleop program for calibrating colorspaces for computer vision algorithms.
  */
 @StandAlone
+@Disabled
 @TeleOp(name = "Color Calibrator", group = "Calibration")
 public class ColorCalibrator extends BaseTeleop {
 
