@@ -10,6 +10,7 @@ package org.firstinspires.ftc.teamcode.system.source.BaseRobot;
 import android.os.Environment;
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -470,6 +471,13 @@ public abstract class Robot {
 
     public final boolean isAutonomous() {
         return opMode instanceof BaseAutonomous;
+    }
+
+    public final boolean isRunning() {
+        if(!isTeleop() && !isAutonomous()) {
+            throw new DumpsterFireException("Program is not an instance of BaseAutonomous or BaseTeleop, cannot tell if its running. A lot of other things are probably broken too if you're seeing this.");
+        }
+        return ((LinearOpMode) opMode).opModeIsActive();
     }
 
     /**

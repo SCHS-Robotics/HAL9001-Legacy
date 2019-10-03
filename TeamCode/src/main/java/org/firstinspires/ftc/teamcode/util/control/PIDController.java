@@ -16,25 +16,25 @@ import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
  */
 public class PIDController {
 
-    //Function used to calculate error value
+    //Function used to calculate error value.
     private BiFunction<Double,Double,Double> errorFunction;
 
-    //PID(f) coefficients and component values
+    //PID(f) coefficients and component values.
     private double kp,ki,kd,kf,P,I,D,F;
     
-    //PID target value
+    //PID target value.
     private double setpoint;
     
-    //Storage variables for past values
-    private double lastState,lastOutput;
+    //Storage variables for past values.
+    private double lastState, lastOutput;
 
-    //Ranges for clamping components of the PID controller
+    //Ranges for clamping components of the PID controller.
     private double iClampLower,clampLower,iClampUpper,clampUpper,pClampLower, pClampUpper;
 
-    //The system time in milliseconds that the last update to the PID controller occurred at
+    //The system time in milliseconds that the last update to the PID controller occurred at.
     private long lastUpdate;
 
-    //A boolean specifying if the controller is currently active
+    //A boolean specifying if the controller is currently active.
     private boolean active;
 
     /**
@@ -46,23 +46,18 @@ public class PIDController {
     }
 
     /**
-     * Ctor for PID controller with specified coefficients.
+     * Constructor for PID controller with specified coefficients.
      *
      * @param kp - Proportional control coefficient
      * @param ki - Integral control coefficient
      * @param kd - Derivative control coefficient
      */
     public PIDController(double kp, double ki, double kd) {
-        this.kp = kp;
-        this.ki = ki;
-        this.kd = kd;
-        this.kf = 0;
-        this.errorFunction = (Double target, Double current) -> (target - current);
-        this.type = Type.STANDARD;
+        this(kp,ki,kd,(Double target, Double current) -> (target - current),Type.STANDARD);
     }
 
     /**
-     * Ctor for specified error function in addition to specified coefficients.
+     * Constructor for specified error function in addition to specified coefficients.
      *
      * @param kp - Proportional control coefficient
      * @param ki - Integral control coefficient
@@ -70,34 +65,11 @@ public class PIDController {
      * @param errorFunction - Specified error function to use for control
      */
     public PIDController(double kp, double ki, double kd, BiFunction<Double,Double,Double> errorFunction) {
-        this.kp = kp;
-        this.ki = ki;
-        this.kd = kd;
-        this.kf = 0;
-        this.errorFunction = errorFunction;
-        this.type = Type.STANDARD;
+        this(kp,ki,kd,errorFunction,Type.STANDARD);
     }
 
     /**
-     * Ctor for specified error function and type of control in addition to specified coefficients.
-     *
-     * @param kp - Proportional control coefficient
-     * @param ki - Integral control coefficient
-     * @param kd - Derivative control coefficient
-     * @param errorFunction - Specified error function to use for control
-     * @param type - Type of control system to use
-     */
-    public PIDController(double kp, double ki, double kd, BiFunction<Double,Double,Double> errorFunction,Type type) {
-        this.kp = kp;
-        this.ki = ki;
-        this.kd = kd;
-        this.kf = 0;
-        this.errorFunction = errorFunction;
-        this.type = type;
-    }
-
-    /**
-     * Ctor for specified type of control in addition to specified coefficients.
+     * Constructor for specified type of control in addition to specified coefficients.
      *
      * @param kp - Proportional control coefficient.
      * @param ki - Integral control coefficient.
@@ -105,16 +77,29 @@ public class PIDController {
      * @param type - Type of control system to use.
      */
     public PIDController(double kp, double ki, double kd, Type type) {
+        this(kp,ki,kd,(Double target, Double current) -> (target - current),type);
+    }
+    
+    /**
+     * Constructor for specified error function and type of control in addition to specified coefficients.
+     *
+     * @param kp - Proportional control coefficient
+     * @param ki - Integral control coefficient
+     * @param kd - Derivative control coefficient
+     * @param errorFunction - Specified error function to use for control
+     * @param type - Type of control system to use
+     */
+    public PIDController(double kp, double ki, double kd, BiFunction<Double,Double,Double> errorFunction, Type type) {
         this.kp = kp;
         this.ki = ki;
         this.kd = kd;
         this.kf = 0;
-        this.errorFunction = (Double target, Double current) -> (target - current);;
+        this.errorFunction = errorFunction;
         this.type = type;
     }
 
     /**
-     * Ctor for PIDF controller with custom error function.
+     * Constructor for PIDF controller with custom error function.
      *
      * @param kp - Proportional control coefficient.
      * @param ki - Integral control coefficient.
@@ -123,16 +108,36 @@ public class PIDController {
      * @param errorFunction - Specified error function to use for control.
      */
     public PIDController(double kp, double ki, double kd, double kf, BiFunction<Double,Double,Double> errorFunction) {
-        this.kp = kp;
-        this.ki = ki;
-        this.kd = kd;
-        this.kf = kf;
-        this.errorFunction = errorFunction;
-        this.type = Type.FEED_FORWARD;
+        this(kp,ki,kd,kf,errorFunction,Type.FEED_FORWARD);
     }
 
     /**
-     * Ctor for PID(F) controller with adjustable/overrideable type and custom error function.
+     * Constructor for PID(F) controller with adjustable/overrideable type and default error function.
+     *
+     * @param kp - Proportional control coefficient.
+     * @param ki - Integral control coefficient.
+     * @param kd - Derivative control coefficient.
+     * @param kf - Feedforward control coefficient.
+     * @param type - The type of the PID(F) controller.
+     */
+    public PIDController(double kp, double ki, double kd, double kf, Type type) {
+        this(kp,ki,kd,kf,(Double target, Double current) -> (target - current),type);
+    }
+    
+    /**
+     * Constructor for PIDF controller with default error function.
+     *
+     * @param kp - Proportional control coefficient.
+     * @param ki - Integral control coefficient.
+     * @param kd - Derivative control coefficient.
+     * @param kf - Feedforward control coefficient.
+     */
+    public PIDController(double kp, double ki, double kd, double kf) {
+        this(kp,ki,kd,kf,(Double target, Double current) -> (target - current),Type.FEED_FORWARD);
+    }
+    
+    /**
+     * Constructor for PID(F) controller with adjustable/overrideable type and custom error function.
      *
      * @param kp - Proportional control coefficient.
      * @param ki - Integral control coefficient.
@@ -151,41 +156,6 @@ public class PIDController {
     }
 
     /**
-     * Ctor for PIDF controller with default error function.
-     *
-     * @param kp - Proportional control coefficient.
-     * @param ki - Integral control coefficient.
-     * @param kd - Derivative control coefficient.
-     * @param kf - Feedforward control coefficient.
-     */
-    public PIDController(double kp, double ki, double kd, double kf) {
-        this.kp = kp;
-        this.ki = ki;
-        this.kd = kd;
-        this.kf = kf;
-        this.errorFunction = (Double target, Double current) -> (target - current);;
-        this.type = Type.FEED_FORWARD;
-    }
-
-    /**
-     * Ctor for PID(F) controller with adjustable/overrideable type and default error function.
-     *
-     * @param kp - Proportional control coefficient.
-     * @param ki - Integral control coefficient.
-     * @param kd - Derivative control coefficient.
-     * @param kf - Feedforward control coefficient.
-     * @param type - The type of the PID(F) controller.
-     */
-    public PIDController(double kp, double ki, double kd, double kf, Type type) {
-        this.kp = kp;
-        this.ki = ki;
-        this.kd = kd;
-        this.kf = kf;
-        this.errorFunction = (Double target, Double current) -> (target - current);;
-        this.type = type;
-    }
-
-    /**
      * Initializes the control system with a target and initial state.
      *
      * @param setpoint - Target value of anything you want to control
@@ -193,18 +163,18 @@ public class PIDController {
      */
     public void init(double setpoint, double initialState) {
         this.setpoint = setpoint;
-        this.lastUpdate = 0;
         this.lastState = initialState;
+        lastUpdate = 0;
         iClampLower = -Double.MAX_VALUE;
         clampLower = -Double.MAX_VALUE;
         pClampLower = -Double.MAX_VALUE;
         iClampUpper = Double.MAX_VALUE;
         clampUpper = Double.MAX_VALUE;
         pClampUpper = Double.MAX_VALUE;
-        this.P = 0;
-        this.I = 0;
-        this.D = 0;
-        this.F = 0;
+        P = 0;
+        I = 0;
+        D = 0;
+        F = 0;
         active = true;
     }
 
@@ -235,8 +205,8 @@ public class PIDController {
      * @param upper - New upper bound
      */
     public void setIClamp(double lower, double upper) {
-        this.iClampLower = lower;
-        this.iClampUpper = upper;
+        iClampLower = lower;
+        iClampUpper = upper;
     }
 
     /**
@@ -246,8 +216,8 @@ public class PIDController {
      * @param upper - New upper bound
      */
     public void setOutputClamp(double lower, double upper) {
-        this.clampLower = lower;
-        this.clampUpper = upper;
+        clampLower = lower;
+        clampUpper = upper;
     }
 
     /**
@@ -257,8 +227,8 @@ public class PIDController {
      * @param upper - New upper bound
      */
     public void setPonMClamp(double lower, double upper) {
-        this.pClampLower = lower;
-        this.pClampUpper= upper;
+        pClampLower = lower;
+        pClampUpper= upper;
     }
 
     /**
@@ -296,34 +266,38 @@ public class PIDController {
         }
 
         double dT = lastUpdate == 0 ? 0 : (System.currentTimeMillis() - lastUpdate) / 1000.0; //because I like seconds
-        double error = errorFunction.apply(this.setpoint,current);
+        double error = getError(current);
 
-        switch(this.type) {
+        switch(type) {
             case FEED_FORWARD:
-                this.P = kp * error;
-                this.I = Range.clip(this.I + ki * error * dT, this.iClampLower, this.iClampUpper);
-                this.D = dT <= 0.0001 ? 0 : -kd * (current - lastState) / dT;
-                this.F = kf*setpoint;
-                this.lastState = current;
-                this.lastUpdate = System.currentTimeMillis();
+                P = kp * error;
+                I = Range.clip(I + ki * error * dT, iClampLower, iClampUpper);
+                D = dT <= 0.0001 ? 0 : -kd * (current - lastState) / dT;
+                F = kf*setpoint;
+                lastState = current;
+                lastUpdate = System.currentTimeMillis();
 
-                return Range.clip(this.P + this.I + this.D + this.F,this.clampLower,this.clampUpper);
+                return Range.clip(P + I + D + F,clampLower,clampUpper);
             case P_ON_M:
-                this.P = Range.clip(this.P-kp*(current - lastState),this.pClampLower,this.pClampUpper);
-                this.I = Range.clip(this.I + ki * error * dT, this.iClampLower, this.iClampUpper);
-                this.D = dT <= 0.0001 ? 0 : -kd * (current - lastState) / dT;
-                this.lastState = current;
-                this.lastUpdate = System.currentTimeMillis();
+                P = Range.clip(P-kp*(current - lastState),pClampLower,pClampUpper);
+                I = Range.clip(I + ki * error * dT, iClampLower, iClampUpper);
+                D = dT <= 0.0001 ? 0 : -kd * (current - lastState) / dT;
+                lastState = current;
+                lastUpdate = System.currentTimeMillis();
 
-                return Range.clip(this.P + this.I + this.D,this.clampLower,this.clampUpper);
+                return Range.clip(P + I + D,clampLower,clampUpper);
             default:
-                this.P = kp * error;
-                this.I = Range.clip(this.I + ki * error * dT, this.iClampLower, this.iClampUpper);
-                this.D = dT <= 0.0001 ? 0 : -kd * (current - lastState) / dT;
-                this.lastState = current;
-                this.lastUpdate = System.currentTimeMillis();
+                P = kp * error;
+                I = Range.clip(I + ki * error * dT, iClampLower, iClampUpper);
+                D = dT <= 0.0001 ? 0 : -kd * (current - lastState) / dT;
+                lastState = current;
+                lastUpdate = System.currentTimeMillis();
 
-                return Range.clip(this.P + this.I + this.D,this.clampLower,this.clampUpper);
+                return Range.clip(P + I + D,clampLower,clampUpper);
         }
+    }
+    
+    public double getError(double current) {
+        return errorFunction.apply(setpoint, current);
     }
 }
