@@ -7,6 +7,8 @@
 
 package org.firstinspires.ftc.teamcode.system.subsystems;
 
+import android.util.Log;
+
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -1346,6 +1348,7 @@ public class MechanumDrive extends SubSystem {
 
             this.driveType = DriveType.STANDARD;
             driveStick = new Button(1, Button.VectorInputs.right_stick);
+            Log.wtf("def",driveStick.getInputEnum().name());
             driveStickLeft = new Button(1, Button.VectorInputs.noButton);
             driveStickRight = new Button(1, Button.VectorInputs.noButton);
             turnStick = new Button(1,Button.DoubleInputs.left_stick_x);

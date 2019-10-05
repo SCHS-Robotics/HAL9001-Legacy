@@ -57,23 +57,22 @@ public abstract class BaseTeleop extends LinearOpMode {
     protected void onStop(){}
 
     @Override
-    public void runOpMode() {
+    public final void runOpMode() {
         robot = buildRobot();
         try {
             robot.init();
             onInit();
 
-            while(opModeIsActive() && !isStarted() && !isStopRequested()) {
+            while(!isStarted() && !isStopRequested()) {
                 robot.init_loop();
                 onInitLoop();
             }
 
             if(!isStopRequested()) {
-
                 robot.onStart();
                 onStart();
 
-                while (opModeIsActive() && !isStopRequested()) {
+                while (!isStopRequested()) {
                     robot.driverControlledUpdate();
                     onUpdate();
                 }
@@ -84,9 +83,9 @@ public abstract class BaseTeleop extends LinearOpMode {
         }
         catch (Exception ex){
             telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.addData("ERROR!!!", ex.toString());
             telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+            Log.e(this.getClass().getSimpleName(), ex.toString(), ex);
         }
     }
 

@@ -202,7 +202,7 @@ public class EncoderDistanceCalib extends SubSystem {
      * @throws InterruptedException - Throws this exception when the program is interrupted unexpectedly.
      */
     private void usingMechanumDrive() throws InterruptedException {
-        ((MechanumDrive) driveSubSystem).drive(new Vector(0,1), 2000);
+        ((MechanumDrive) driveSubSystem).driveTime(new Vector(0,1), 2000);
         sleep(100);
         endingEncoderPos.put("BotLeft", ((MechanumDrive) driveSubSystem).getBotLeftEncoderPos());
         endingEncoderPos.put("BotRight", ((MechanumDrive) driveSubSystem).getBotRightEncoderPos());

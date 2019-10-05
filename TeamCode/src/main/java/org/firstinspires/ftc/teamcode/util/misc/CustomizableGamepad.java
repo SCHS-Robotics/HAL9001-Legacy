@@ -342,10 +342,8 @@ public class CustomizableGamepad {
     public Vector getVectorInput(String buttonName) {
         if(inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.VectorInputs) inputs.get(buttonName).getInputEnum()) {
-                case left_stick:
-                    return new Vector(robot.gamepad1.left_stick_x, -robot.gamepad1.left_stick_y);
-                case right_stick:
-                    return new Vector(robot.gamepad1.right_stick_x, -robot.gamepad1.right_stick_y);
+                case left_stick: return new Vector(robot.gamepad1.left_stick_x, -robot.gamepad1.left_stick_y);
+                case right_stick: return new Vector(robot.gamepad1.right_stick_x, -robot.gamepad1.right_stick_y);
 
                 default:
                     return new Vector(0,0);
@@ -353,10 +351,8 @@ public class CustomizableGamepad {
         }
         else {
             switch ((Button.VectorInputs) inputs.get(buttonName).getInputEnum()) {
-                case left_stick:
-                    return new Vector(robot.gamepad2.left_stick_x, -robot.gamepad2.left_stick_y);
-                case right_stick:
-                    return new Vector(robot.gamepad2.right_stick_x, -robot.gamepad2.right_stick_y);
+                case left_stick: return new Vector(robot.gamepad2.left_stick_x, -robot.gamepad2.left_stick_y);
+                case right_stick: return new Vector(robot.gamepad2.right_stick_x, -robot.gamepad2.right_stick_y);
 
                 default:
                     return new Vector(0,0);
