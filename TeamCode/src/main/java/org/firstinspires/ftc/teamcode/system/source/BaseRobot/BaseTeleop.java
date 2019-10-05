@@ -9,12 +9,12 @@ package org.firstinspires.ftc.teamcode.system.source.BaseRobot;
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 /**
  * An abstract class used to more easily create teleop programs
  */
-public abstract class BaseTeleop extends OpMode {
+public abstract class BaseTeleop extends LinearOpMode {
 
     //The robot running the opmode.
     private Robot robot;
@@ -57,74 +57,35 @@ public abstract class BaseTeleop extends OpMode {
     protected void onStop(){}
 
     @Override
-    public final void init() {
+    public final void runOpMode() {
         robot = buildRobot();
-
         try {
             robot.init();
             onInit();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
 
-    @Override
-    public final void init_loop() {
-        try {
-            robot.init_loop();
-            onInitLoop();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
+            while(!isStarted() && !isStopRequested()) {
+                robot.init_loop();
+                onInitLoop();
+            }
 
-    @Override
-    public final void start() {
-        try {
-            robot.onStart();
-            onStart();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
+            if(!isStopRequested()) {
+                robot.onStart();
+                onStart();
 
-    @Override
-    public final void loop() {
-        try {
-            robot.driverControlledUpdate();
-            onUpdate();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
+                while (!isStopRequested()) {
+                    robot.driverControlledUpdate();
+                    onUpdate();
+                }
+            }
 
-    @Override
-    public final void stop() {
-        try {
             onStop();
             robot.stopAllComponents();
         }
         catch (Exception ex){
             telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.addData("ERROR!!!", ex.toString());
             telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+            Log.e(this.getClass().getSimpleName(), ex.toString(), ex);
         }
     }
 

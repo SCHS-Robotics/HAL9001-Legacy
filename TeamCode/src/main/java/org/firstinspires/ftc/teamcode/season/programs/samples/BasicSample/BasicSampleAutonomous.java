@@ -27,10 +27,12 @@ public class BasicSampleAutonomous extends BaseAutonomous {
     public void main() throws InterruptedException {
         //runs the init(), init_loop(), and start functions behind the scenes. Runs this once you press start.
         //runs main on start
-
+/*
         robot.drive.reverseDirection();
         robot.drive.driveTime(1000,0.7);
         robot.drive.turnEncoders(1000,0.7);
         robot.drive.driveEncoders(2000,0.3);
+        */
+        robot.drive.reverseDirection();
     }
 }
