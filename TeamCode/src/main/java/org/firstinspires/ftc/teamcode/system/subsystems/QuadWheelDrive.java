@@ -14,6 +14,8 @@ import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.annotations.AutonomousConfig;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
 import org.firstinspires.ftc.teamcode.util.control.PIDController;
+import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
+import org.firstinspires.ftc.teamcode.util.exceptions.InvalidMoveCommandException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotBooleanInputException;
 import org.firstinspires.ftc.teamcode.util.exceptions.NotDoubleInputException;
 import org.firstinspires.ftc.teamcode.util.math.Vector;
@@ -137,12 +139,14 @@ public class QuadWheelDrive extends SubSystem{
         }
         //drives forward and turns at the same time
         if (turnAndMove) {
-            if (inputs.getDoubleInput(DRIVESTICK) != 0 && inputs.getDoubleInput(TURNSTICK) != 0) {
+            if (inputs.getDoubleInput(DRIVESTICK)!= 0 && inputs.getDoubleInput(TURNSTICK) != 0) {
                 turnAndMove(new Vector(inputs.getDoubleInput(DRIVESTICK), inputs.getDoubleInput(TURNSTICK)));
             } else if (inputs.getDoubleInput(DRIVESTICK) != 0) {
                 drive(inputs.getDoubleInput(DRIVESTICK));
-            } else if (inputs.getDoubleInput(TURNSTICK) != 0) {
+            } else if (inputs.getDoubleInput(TURNSTICK)!= 0){
                 turn(inputs.getDoubleInput(TURNSTICK));
+            } else {
+                stopMovement();
             }
         }
         //drives forward and turns but not at the same time
@@ -217,7 +221,7 @@ public class QuadWheelDrive extends SubSystem{
         botLeft.setPower(-(speed * constantSpeedModifier) * currentSpeedModeModifier);
         botRight.setPower((speed * constantSpeedModifier) * currentSpeedModeModifier);
         topLeft.setPower(-(speed * constantSpeedModifier) * currentSpeedModeModifier);
-        topRight.setPower(-(speed * constantSpeedModifier) * currentSpeedModeModifier);
+        topRight.setPower((speed * constantSpeedModifier) * currentSpeedModeModifier);
     }
 
     /**
@@ -271,9 +275,15 @@ public class QuadWheelDrive extends SubSystem{
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public void driveTime(double timeMs, double power) throws InterruptedException{
+        if(timeMs < 0) {
+            throw new DumpsterFireException("HAL is cool, but can't travel back in time. Time must be positive.");
+        }
+
         double startTime = System.currentTimeMillis();
         drive(power);
-        while(System.currentTimeMillis() - startTime <= timeMs) {sleep(1);}
+        while (System.currentTimeMillis() - startTime <= timeMs) {
+            sleep(1);
+        }
         stopMovement();
     }
 
@@ -286,6 +296,11 @@ public class QuadWheelDrive extends SubSystem{
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public void turnTime(double timeMs, double power) throws InterruptedException{
+
+        if(timeMs < 0) {
+            throw new DumpsterFireException("HAL is cool, but can't travel back in time. Time must be positive.");
+        }
+
         double startTime = System.currentTimeMillis();
         turn(power);
         while(System.currentTimeMillis() - startTime <= timeMs){sleep(1);}
@@ -301,6 +316,10 @@ public class QuadWheelDrive extends SubSystem{
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public void turnAndMoveTime(double timeMs, Vector input) throws InterruptedException{
+        if(timeMs < 0) {
+            throw new DumpsterFireException("HAL is cool, but can't travel back in time. Time must be positive.");
+        }
+
         double startTime = System.currentTimeMillis();
         turnAndMove(input);
         while(System.currentTimeMillis() - startTime <= timeMs){sleep(1);}
@@ -315,7 +334,15 @@ public class QuadWheelDrive extends SubSystem{
      *
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
-    public void moveEncoders(int encoderDistance, double power) throws InterruptedException{
+    public void driveEncoders(int encoderDistance, double power) throws InterruptedException{
+        if(power == 0 && encoderDistance != 0) {
+            throw new InvalidMoveCommandException("Power cannot be zero with a non zero target");
+        }
+
+        if (encoderDistance < 0) {
+            throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
+        }
+
         int startEncoderPos = topLeft.getCurrentPosition();
         drive(power);
         while(Math.abs(topLeft.getCurrentPosition() - startEncoderPos) <= encoderDistance) {sleep(1);}
@@ -331,6 +358,11 @@ public class QuadWheelDrive extends SubSystem{
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public void turnEncoders(int encoderDistance, double power) throws InterruptedException{
+
+        if(encoderDistance < 0) {
+            throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
+        }
+
         int leftStartEncoderPos = topLeft.getCurrentPosition();
         int rightStartEncoderPos = topRight.getCurrentPosition();
         if(power > 0) {
@@ -354,6 +386,11 @@ public class QuadWheelDrive extends SubSystem{
      * @throws InterruptedException - Throws this exception if the program is unexpectedly interrupted.
      */
     public void turnAndMoveEncoders(int encoderDistance, Vector input) throws InterruptedException{
+
+        if(encoderDistance < 0) {
+            throw new DumpsterFireException("Where you're going, you don't need roads! (distance must be positive)");
+        }
+
         int leftStartEncoderPos = topLeft.getCurrentPosition();
         int rightStartEncoderPos = topRight.getCurrentPosition();
         turnAndMove(input);
@@ -545,16 +582,16 @@ public class QuadWheelDrive extends SubSystem{
             return new ConfigParam[]{
                     new ConfigParam(DRIVESTICK, Button.DoubleInputs.left_stick_y),
                     new ConfigParam(TURNSTICK, Button.DoubleInputs.right_stick_x),
-                    new ConfigParam(SPEEDMODEBUTTON, Button.DoubleInputs.noButton),
-                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, "true")
+                    new ConfigParam(SPEEDMODEBUTTON, Button.BooleanInputs.noButton),
+                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, true)
             };
         }
         else {
             return new ConfigParam[]{
                     new ConfigParam(DRIVESTICK, Button.DoubleInputs.left_stick_y),
                     new ConfigParam(TURNSTICK, Button.DoubleInputs.right_stick_x),
-                    new ConfigParam(SPEEDMODEBUTTON, Button.DoubleInputs.noButton),
-                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, "true"),
+                    new ConfigParam(SPEEDMODEBUTTON, Button.BooleanInputs.noButton),
+                    new ConfigParam("Turn and Move", ConfigParam.booleanMap, true),
                     new ConfigParam("SpeedModeModifier", ConfigParam.numberMap(0,100, .05), 1.0),
                     new ConfigParam("ConstantSpeedModifier", ConfigParam.numberMap(0,100, .05), 1.0)
             };
@@ -691,7 +728,7 @@ public class QuadWheelDrive extends SubSystem{
         private void setDefaultButtons(){
             buttonsToSet[0] = new Button(1, Button.DoubleInputs.left_stick_y);
             buttonsToSet[1] = new Button(1, Button.DoubleInputs.right_stick_x);
-            buttonsToSet[2] = new Button(1, Button.DoubleInputs.noButton);
+            buttonsToSet[2] = new Button(1, Button.BooleanInputs.noButton);
         }
     }
 

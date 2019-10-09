@@ -113,7 +113,6 @@ public class CustomizableGamepad {
      * @param buttonName - Key of boolean button to get input from.
      */
     public boolean getBooleanInput(String buttonName) {
-        //Log.e(buttonName,""+(inputs.get(buttonName)==null));
 
         if (inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.BooleanInputs) inputs.get(buttonName).getInputEnum()) {

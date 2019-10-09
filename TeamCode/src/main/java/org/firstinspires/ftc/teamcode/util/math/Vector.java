@@ -71,13 +71,15 @@ public class Vector {
      * @param theta - The angle to rotate the vector in radians. Counterclockwise is positive, clockwise is negative.
      */
     public void rotate(double theta) {
-        double rotx = this.x*Math.cos(theta)-this.y*Math.sin(theta);
-        double roty = this.x*Math.sin(theta)+this.y*Math.cos(theta);
-        this.x = rotx;
-        this.y = roty;
+        if(!isZeroVector()) {
+            double rotx = this.x * Math.cos(theta) - this.y * Math.sin(theta);
+            double roty = this.x * Math.sin(theta) + this.y * Math.cos(theta);
+            this.x = rotx;
+            this.y = roty;
 
-        this.theta += theta;
-        this.theta = this.theta > 0 ? this.theta : this.theta + 2 * Math.PI; //To make everything positive, because I don't like negative angles as much
+            this.theta += theta;
+            this.theta = this.theta > 0 ? this.theta : this.theta + 2 * Math.PI; //To make everything positive, because I don't like negative angles as much
+        }
     }
 
     /**
@@ -95,9 +97,11 @@ public class Vector {
      * @param length - The length to normalize the vector to.
      */
     public void normalize(double length) {
-        x = length*(x/r);
-        y = length*(y/r);
-        this.r = length;
+        if(!isZeroVector()) {
+            x = length * (x / r);
+            y = length * (y / r);
+            this.r = length;
+        }
     }
 
     /**

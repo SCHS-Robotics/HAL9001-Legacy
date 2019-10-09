@@ -30,19 +30,19 @@ public abstract class BaseTeleop extends LinearOpMode {
      * Method that runs when the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onInit() {};
+    protected void onInit(){}
 
     /**
      * Method that runs in a loop after the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onInitLoop() {};
+    protected void onInitLoop(){}
 
     /**
      * Method that runs when the robot is started. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onStart() {}
+    protected void onStart(){}
 
     /**
      * Method that runs every loop cycle. It is not an abstract method so that it does not have to be implemented if it

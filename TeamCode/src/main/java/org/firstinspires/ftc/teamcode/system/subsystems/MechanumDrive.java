@@ -237,6 +237,7 @@ public class MechanumDrive extends SubSystem {
         }
 
         Vector input = inputs.getVectorInput(DRIVESTICK);
+
         Vector left = inputs.getVectorInput(LEFT_DRIVESTICK);
         Vector right = inputs.getVectorInput(RIGHT_DRIVESTICK);
 
@@ -256,7 +257,6 @@ public class MechanumDrive extends SubSystem {
 
             //Standard vector drive. 1 control for driving, one for turning.
             case STANDARD:
-                input.rotate(-(PI / 4));
 
                 correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS).firstAngle) : 0;
 
@@ -264,22 +264,12 @@ public class MechanumDrive extends SubSystem {
                     stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
                     correction = 0;
                 }
-
                 if (!turnLeft && !turnRight) {
-                    topLeft.setPower(Range.clip(input.x + turnPower - correction, -1, 1));
-                    topRight.setPower(Range.clip(input.y - turnPower + correction, -1, 1));
-                    botLeft.setPower(Range.clip(input.y + turnPower - correction, -1, 1));
-                    botRight.setPower(Range.clip(input.x - turnPower + correction, -1, 1));
+                    turnAndMove(input,turnPower-correction);
                 } else if (turnLeft) {
-                    topLeft.setPower(Range.clip(input.x - turnLeftPower, -1, 1));
-                    topRight.setPower(Range.clip(input.y + turnLeftPower, -1, 1));
-                    botLeft.setPower(Range.clip(input.y - turnLeftPower, -1, 1));
-                    botRight.setPower(Range.clip(input.x + turnLeftPower, -1, 1));
+                    turnAndMove(input,-turnLeftPower);
                 } else {
-                    topLeft.setPower(Range.clip(input.x + turnRightPower, -1, 1));
-                    topRight.setPower(Range.clip(input.y - turnRightPower, -1, 1));
-                    botLeft.setPower(Range.clip(input.y + turnRightPower, -1, 1));
-                    botRight.setPower(Range.clip(input.x - turnRightPower, -1, 1));
+                    turnAndMove(input,turnRightPower);
                 }
 
                 break;
@@ -1055,6 +1045,17 @@ public class MechanumDrive extends SubSystem {
         topRight.setPower(turnPower);
         botLeft.setPower(-turnPower);
         botRight.setPower(turnPower);
+    }
+
+    public void turnAndMove(Vector v, double turnPower) {
+
+        Vector vcpy = v.clone();
+        vcpy.rotate(-PI / 4);
+
+        topLeft.setPower(vcpy.x + turnPower);
+        topRight.setPower(vcpy.y - turnPower);
+        botLeft.setPower(vcpy.y + turnPower);
+        botRight.setPower(vcpy.x - turnPower);
     }
 
     /**
