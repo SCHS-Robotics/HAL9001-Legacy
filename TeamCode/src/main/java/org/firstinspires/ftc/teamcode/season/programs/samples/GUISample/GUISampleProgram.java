@@ -32,4 +32,3 @@ public class GUISampleProgram extends BaseTeleop {
         robot.displayMenu2.addLine("This quote is plagiarised");
     }
 }
-

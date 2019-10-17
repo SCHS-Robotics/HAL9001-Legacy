@@ -368,6 +368,12 @@ public class ConfigMenu extends ScrollingListMenu {
                         String[] data = parseOptionLine(lines.get(cursor.y));
 
                         List<ConfigParam> subsystemParams = config.get(selectedSubsystemName);
+
+                        if(subsystemParams == null) {
+                            Log.w("Config Menu Warning", "Selected Subsystem wasn't found! Setting config for that subsystem to an empty list.");
+                            subsystemParams = new ArrayList<>();
+                        }
+
                         ConfigParam currentParam = new ConfigParam("", new String[]{}, "");
 
                         for (ConfigParam param : subsystemParams) {
@@ -398,6 +404,12 @@ public class ConfigMenu extends ScrollingListMenu {
                     String[] data = parseOptionLine(lines.get(cursor.y));
 
                     List<ConfigParam> subsystemParams = config.get(selectedSubsystemName);
+
+                    if(subsystemParams == null) {
+                        Log.w("Config Menu Warning", "Selected Subsystem wasn't found! Setting config for that subsystem to an empty list.");
+                        subsystemParams = new ArrayList<>();
+                    }
+
                     ConfigParam currentParam = new ConfigParam("", new String[]{}, "");
 
                     for (ConfigParam param : subsystemParams) {
@@ -427,6 +439,12 @@ public class ConfigMenu extends ScrollingListMenu {
                         currentOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + 1, unparsedLine.indexOf('|') + tempIdx).trim();
                         currentGamepadOptionValue = unparsedLine.substring(unparsedLine.indexOf('|') + tempIdx + 3).trim();
                         List<ConfigParam> subsystemParams = config.get(selectedSubsystemName);
+
+                        if(subsystemParams == null) {
+                            Log.w("Config Menu Warning", "Selected Subsystem wasn't found! Setting config for that subsystem to an empty list.");
+                            subsystemParams = new ArrayList<>();
+                        }
+
                         ConfigParam currentParam = new ConfigParam("", new String[]{}, "");
 
                         for (ConfigParam param : subsystemParams) {
@@ -590,7 +608,14 @@ public class ConfigMenu extends ScrollingListMenu {
     private void setConfigureSubsystemLines() {
         List<GuiLine> newLines = new ArrayList<>();
 
-        for(ConfigParam param : config.get(selectedSubsystemName)) {
+        List<ConfigParam> subsystemParams = config.get(selectedSubsystemName);
+
+        if(subsystemParams == null) {
+            Log.w("Config Menu Warning", "Selected Subsystem wasn't found! Setting config for that subsystem to an empty list.");
+            subsystemParams = new ArrayList<>();
+        }
+
+        for(ConfigParam param : subsystemParams) {
             newLines.add(new GuiLine("#",param.usesGamepad ? param.name+ " | " + param.currentOption + " | " + param.currentGamepadOption : param.name+ " | " + param.currentOption));
         }
         newLines.add(new GuiLine("#","Done"));
@@ -671,7 +696,14 @@ public class ConfigMenu extends ScrollingListMenu {
         if(configState == ConfigurationState.AUTONOMOUS) {
             for (String subsystem : Robot.autonomousConfig.keySet()) {
                 List<ConfigParam> params = new ArrayList<>();
-                for (ConfigParam param : Robot.autonomousConfig.get(subsystem)) {
+                List<ConfigParam> autoConfig = Robot.autonomousConfig.get(subsystem);
+
+                if(autoConfig == null) {
+                    Log.w("Config Menu Warning", "Autonomous global config doesn't exist! Setting it to an empty list.");
+                    autoConfig = new ArrayList<>();
+                }
+
+                for (ConfigParam param : autoConfig) {
                     params.add(param.clone());
                 }
                 config.put(subsystem, params);
@@ -680,7 +712,14 @@ public class ConfigMenu extends ScrollingListMenu {
         else  {
             for (String subsystem : Robot.teleopConfig.keySet()) {
                 List<ConfigParam> params = new ArrayList<>();
-                for (ConfigParam param : Robot.teleopConfig.get(subsystem)) {
+                List<ConfigParam> teleopConfig = Robot.teleopConfig.get(subsystem);
+
+                if(teleopConfig == null) {
+                    Log.w("Config Menu Warning", "Teleop global config doesn't exist! Setting it to an empty list.");
+                    teleopConfig = new ArrayList<>();
+                }
+
+                for (ConfigParam param : teleopConfig) {
                     params.add(param.clone());
                 }
                 config.put(subsystem, params);
@@ -702,7 +741,7 @@ public class ConfigMenu extends ScrollingListMenu {
             config.get(subsystemName).get(i).name = data[0];
             config.get(subsystemName).get(i).currentOption = data[1];
 
-            if(config.get(subsystemName).get(i).usesGamepad) {
+            if (config.get(subsystemName).get(i).usesGamepad) {
                 config.get(subsystemName).get(i).currentGamepadOption = data[2];
             }
         }
@@ -725,7 +764,14 @@ public class ConfigMenu extends ScrollingListMenu {
             Robot.autonomousConfig = new HashMap<>();
             for (String subsystem : config.keySet()) {
                 List<ConfigParam> params = new ArrayList<>();
-                for (ConfigParam param : config.get(subsystem)) {
+                List<ConfigParam> subsystemParams = config.get(subsystem);
+
+                if(subsystemParams == null) {
+                    Log.w("Config Menu Warning", "Autonomous config for subsystem " + subsystem + " does not exist! Setting the config to an empty list.");
+                    subsystemParams = new ArrayList<>();
+                }
+
+                for (ConfigParam param : subsystemParams) {
                     params.add(param.clone());
                 }
                 Robot.autonomousConfig.put(subsystem, params);
@@ -735,7 +781,14 @@ public class ConfigMenu extends ScrollingListMenu {
             Robot.teleopConfig = new HashMap<>();
             for (String subsystem : config.keySet()) {
                 List<ConfigParam> params = new ArrayList<>();
-                for (ConfigParam param : config.get(subsystem)) {
+                List<ConfigParam> subsystemParams = config.get(subsystem);
+
+                if(subsystemParams == null) {
+                    Log.w("Config Menu Warning", "Teleop config for subsystem " + subsystem + " does not exist! Setting the config to an empty list.");
+                    subsystemParams = new ArrayList<>();
+                }
+
+                for (ConfigParam param : subsystemParams) {
                     params.add(param.clone());
                 }
                 Robot.teleopConfig.put(subsystem, params);
