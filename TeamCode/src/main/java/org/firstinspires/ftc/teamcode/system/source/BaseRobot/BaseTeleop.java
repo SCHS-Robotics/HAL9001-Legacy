@@ -9,12 +9,14 @@ package org.firstinspires.ftc.teamcode.system.source.BaseRobot;
 
 import android.util.Log;
 
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+
+import org.firstinspires.ftc.teamcode.util.functional_interfaces.BiFunction;
 
 /**
  * An abstract class used to more easily create teleop programs
  */
-public abstract class BaseTeleop extends OpMode {
+public abstract class BaseTeleop extends LinearOpMode {
 
     //The robot running the opmode.
     private Robot robot;
@@ -30,19 +32,19 @@ public abstract class BaseTeleop extends OpMode {
      * Method that runs when the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onInit() {};
+    protected void onInit(){}
 
     /**
      * Method that runs in a loop after the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onInitLoop() {};
+    protected void onInitLoop(){}
 
     /**
      * Method that runs when the robot is started. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onStart() {}
+    protected void onStart(){}
 
     /**
      * Method that runs every loop cycle. It is not an abstract method so that it does not have to be implemented if it
@@ -57,74 +59,35 @@ public abstract class BaseTeleop extends OpMode {
     protected void onStop(){}
 
     @Override
-    public final void init() {
+    public final void runOpMode() {
         robot = buildRobot();
-
         try {
             robot.init();
             onInit();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
 
-    @Override
-    public final void init_loop() {
-        try {
-            robot.init_loop();
-            onInitLoop();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
+            while(!isStarted() && !isStopRequested()) {
+                robot.init_loop();
+                onInitLoop();
+            }
 
-    @Override
-    public final void start() {
-        try {
-            robot.onStart();
-            onStart();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
+            if(!isStopRequested()) {
+                robot.onStart();
+                onStart();
 
-    @Override
-    public final void loop() {
-        try {
-            robot.driverControlledUpdate();
-            onUpdate();
-        }
-        catch (Exception ex){
-            telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
-            telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
-        }
-    }
+                while (!isStopRequested()) {
+                    robot.driverControlledUpdate();
+                    onUpdate();
+                }
+            }
 
-    @Override
-    public final void stop() {
-        try {
             onStop();
             robot.stopAllComponents();
         }
         catch (Exception ex){
             telemetry.clearAll();
-            telemetry.addData("ERROR!!!", ex.getMessage());
+            telemetry.addData("ERROR!!!", ex.toString());
             telemetry.update();
-            Log.e(this.getClass().getSimpleName(), ex.getMessage(), ex);
+            Log.e(this.getClass().getSimpleName(), ex.toString(), ex);
         }
     }
 
@@ -135,5 +98,32 @@ public abstract class BaseTeleop extends OpMode {
      */
     protected final Robot getRobot(){
         return robot;
+    }
+
+    /**
+     * Waits for a specified number of milliseconds.
+     *
+     * @param millis - The number of milliseconds to wait.
+     */
+    protected final void waitFor(long millis) {
+        long stopTime = System.currentTimeMillis() + millis;
+        while (opModeIsActive() && System.currentTimeMillis() < stopTime) {
+            sleep(1);
+        }
+    }
+
+    /**
+     * Waits for a boolean function with two inputs to return true. param1 and 2 must be updated from separate thread.
+     *
+     * @param condition - An arbitrary function taking two inputs and outputting a boolean.
+     * @param param1 - The function's first parameter.
+     * @param param2 - The function's second parameter.
+     * @param <T> - The first parameter's object type.
+     * @param <X> - The second parameter's object type.
+     */
+    protected final <T,X> void waitFor(BiFunction<T,X,Boolean> condition, T param1, X param2) {
+        while (opModeIsActive() && !condition.apply(param1,param2)) {
+            sleep(1);
+        }
     }
 }

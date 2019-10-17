@@ -104,10 +104,7 @@ public class CustomizableGamepad {
      * @param buttonName - Key of button to be checked.
      */
     public boolean checkNoButton(String buttonName) {
-        if (inputs.get(buttonName).getInputEnum() == Button.DoubleInputs.noButton || inputs.get(buttonName).getInputEnum() == Button.BooleanInputs.noButton) {
-            return true;
-        }
-        return false;
+        return inputs.get(buttonName).getInputEnum() == Button.DoubleInputs.noButton || inputs.get(buttonName).getInputEnum() == Button.BooleanInputs.noButton || inputs.get(buttonName).getInputEnum() == Button.VectorInputs.noButton;
     }
 
     /**
@@ -116,7 +113,6 @@ public class CustomizableGamepad {
      * @param buttonName - Key of boolean button to get input from.
      */
     public boolean getBooleanInput(String buttonName) {
-        //Log.e(buttonName,""+(inputs.get(buttonName)==null));
 
         if (inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.BooleanInputs) inputs.get(buttonName).getInputEnum()) {
@@ -345,10 +341,8 @@ public class CustomizableGamepad {
     public Vector getVectorInput(String buttonName) {
         if(inputs.get(buttonName).gamepadNumber == 1) {
             switch ((Button.VectorInputs) inputs.get(buttonName).getInputEnum()) {
-                case left_stick:
-                    return new Vector(robot.gamepad1.left_stick_x, -robot.gamepad1.left_stick_y);
-                case right_stick:
-                    return new Vector(robot.gamepad1.right_stick_x, -robot.gamepad1.right_stick_y);
+                case left_stick: return new Vector(robot.gamepad1.left_stick_x, -robot.gamepad1.left_stick_y);
+                case right_stick: return new Vector(robot.gamepad1.right_stick_x, -robot.gamepad1.right_stick_y);
 
                 default:
                     return new Vector(0,0);
@@ -356,10 +350,8 @@ public class CustomizableGamepad {
         }
         else {
             switch ((Button.VectorInputs) inputs.get(buttonName).getInputEnum()) {
-                case left_stick:
-                    return new Vector(robot.gamepad2.left_stick_x, -robot.gamepad2.left_stick_y);
-                case right_stick:
-                    return new Vector(robot.gamepad2.right_stick_x, -robot.gamepad2.right_stick_y);
+                case left_stick: return new Vector(robot.gamepad2.left_stick_x, -robot.gamepad2.left_stick_y);
+                case right_stick: return new Vector(robot.gamepad2.right_stick_x, -robot.gamepad2.right_stick_y);
 
                 default:
                     return new Vector(0,0);

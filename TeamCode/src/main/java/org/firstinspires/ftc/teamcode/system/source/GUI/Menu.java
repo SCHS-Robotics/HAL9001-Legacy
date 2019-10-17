@@ -228,7 +228,7 @@ public abstract class Menu {
     /**
      * Empties the screen display.
      */
-    protected void displayNothing(){
+    protected final void displayNothing(){
         displayLine(new GuiLine("", "", ""), 0);
     }
 

@@ -18,7 +18,7 @@ public abstract class SubSystem {
     protected boolean usesConfig;
 
     /**
-     * Ctor for subsystem.
+     * Constructor for subsystem.
      *
      * @param robot - The robot the subsystem is contained within.
      */

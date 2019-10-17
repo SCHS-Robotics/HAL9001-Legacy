@@ -126,8 +126,11 @@ public class Button {
         if(isBoolean){
             return booleanInput;
         }
-        else {
+        else if(isDouble){
             return doubleInput;
+        }
+        else {
+            return vectorInput;
         }
     }
 }

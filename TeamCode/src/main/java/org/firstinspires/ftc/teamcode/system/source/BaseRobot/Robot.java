@@ -10,6 +10,7 @@ package org.firstinspires.ftc.teamcode.system.source.BaseRobot;
 import android.os.Environment;
 import android.util.Log;
 
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -141,7 +142,7 @@ public abstract class Robot {
      *
      * @param cycleButton - The button used to cycle through multiple menus in GUI.
      */
-    public final void startGui(Button cycleButton) {
+    protected final void startGui(Button cycleButton) {
         if(!useGui) {
             gui = new GUI(this, cycleButton);
             useGui = true;
@@ -468,8 +469,25 @@ public abstract class Robot {
         return opMode instanceof BaseTeleop;
     }
 
+    /**
+     * Gets if the program the robot is running is an autonomous program.
+     *
+     * @return Whether the program being run is an autonomous program.
+     */
     public final boolean isAutonomous() {
         return opMode instanceof BaseAutonomous;
+    }
+
+    /**
+     * Gets whether the robot's current program is running.
+     *
+     * @return Whether the robot's current program is running.
+     */
+    public final boolean isRunning() {
+        if(!isTeleop() && !isAutonomous()) {
+            throw new DumpsterFireException("Program is not an instance of BaseAutonomous or BaseTeleop, cannot tell if its running. A lot of other things are probably broken too if you're seeing this.");
+        }
+        return ((LinearOpMode) opMode).opModeIsActive();
     }
 
     /**

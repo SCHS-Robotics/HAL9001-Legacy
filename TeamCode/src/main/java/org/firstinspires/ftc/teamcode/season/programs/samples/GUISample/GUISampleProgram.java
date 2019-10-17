@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseTeleop;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
-import org.firstinspires.ftc.teamcode.util.misc.Button;
 
 
 //@StandAlone is not required but stops it from auto using configs from autonomous
@@ -25,10 +24,6 @@ public class GUISampleProgram extends BaseTeleop {
         return robot;
     }
 
-    Button button = new Button(1, Button.BooleanInputs.a);
-    Button button2 = new Button(1, Button.DoubleInputs.left_stick_x);
-    Button button3 = new Button(1, Button.VectorInputs.left_stick);
-
     //There are other methods that you can use to do stuff in teleop, refer to TankSample to see them.
 
     @Override
@@ -37,4 +32,3 @@ public class GUISampleProgram extends BaseTeleop {
         robot.displayMenu2.addLine("This quote is plagiarised");
     }
 }
-

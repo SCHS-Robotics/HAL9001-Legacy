@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 public class SubSystemSample extends SubSystem {
 
     /**
-     * Ctor for subsystem.
+     * Constructor for subsystem.
      *
      * @param robot - The robot the subsystem is contained within.
      */
