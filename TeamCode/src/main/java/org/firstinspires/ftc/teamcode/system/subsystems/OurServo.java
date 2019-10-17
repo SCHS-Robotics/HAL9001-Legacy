@@ -37,16 +37,13 @@ public class OurServo extends SubSystem {
     @Override
     public void handle() throws InterruptedException {
 
-        if (robot.gamepad1.b)
+        if (robot.gamepad1.b == true) {
             servo.setPosition(1);
-        if(robot.gamepad1.a)
+        } else if (robot.gamepad1.a == true) {
             servo.setPosition(0);
-
-
+        }
     }
-
     @Override
     public void stop() throws InterruptedException {
-
     }
 }

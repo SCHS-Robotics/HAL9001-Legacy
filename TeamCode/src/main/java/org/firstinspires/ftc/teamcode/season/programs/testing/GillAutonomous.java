@@ -16,24 +16,22 @@ public class GillAutonomous extends BaseAutonomous {
 
     @Override
     protected Robot buildRobot() {
-        billBot = new BillBot(this);
+        BillBot bb = new BillBot(this);
+        //billBot = new BillBot(this);
         return billBot;
     }
+
     @Override
     public void main() throws InterruptedException {
         Vector v = new Vector(0, 1);
         Vector c = new Vector(0, -1);
         billBot.mD.drive(v, 1000);
         billBot.mD.wait(2000);
+        billBot.mD.turnTo(Math.PI, 0.1);
         billBot.mD.wait(2000);
         billBot.mD.drive(v, 1000);
-    }
-    public void turnTo(double ang, double tol) throws InterruptedException{
-        if (!usingGyro) {
-            throw new GuiNotPresentException("turnTo use a gyroscope");
-        }
-        else {
-            billBot.mD.turnTo(ang, tol);
+        while(opModeIsActive()){
+            // pass
         }
     }
 }

@@ -36,6 +36,26 @@ public class ReallyProject extends SubSystem {
         bottomRight = r.hardwareMap.dcMotor.get(br);
     }
     public CustomizableGamepad gpad;
+
+
+    public void turnBot(double power, double ms) {
+        double startTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - startTime <= ms) {
+            bottomRight.setPower(-power);
+            topLeft.setPower(power);
+            topRight.setPower(-power);
+            bottomLeft.setPower(power);
+        }
+        bottomRight.setPower(0);
+        topLeft.setPower(0);
+        topRight.setPower(0);
+        bottomLeft.setPower(0);
+    }
+    public void waitt(double ms) {
+        double startTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - startTime <= ms) { }
+    }
+
     @Override
     public void init() throws InterruptedException {
         topLeft.setDirection(DcMotor.Direction.REVERSE);

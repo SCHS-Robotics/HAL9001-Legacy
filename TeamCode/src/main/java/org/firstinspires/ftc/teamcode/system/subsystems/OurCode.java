@@ -6,18 +6,44 @@ import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
+import org.firstinspires.ftc.teamcode.util.exceptions.DumpsterFireException;
+
+import static java.lang.Thread.sleep;
 
 
 public class OurCode extends SubSystem {
 
+    public enum turnType {
+        CLOCKWISE, COUNTER_CLOCKWISE, TURN_AROUND
+    }
 
     DcMotor FR;
     DcMotor FL;
     DcMotor BL;
     DcMotor BR;
+
+    public void stopMovement(){
+        FL.setPower(0);
+        BL.setPower(0);
+        FR.setPower(0);
+        BR.setPower(0);
+    }
+
+    public void turnTime(double timeMs, double power) throws InterruptedException{
+
+        if(timeMs < 0) {
+            throw new DumpsterFireException("HAL is cool, but can't travel back in time. Time must be positive. No jk Dylan is just dumb. Alex is the best and LITERALLY A GOD AT MINESWEEPER");
+        }
+
+        double startTime = System.currentTimeMillis();
+        turn(power);
+        while(System.currentTimeMillis() - startTime <= timeMs){sleep(1);}
+        stopMovement();
+    }
 
     public OurCode(Robot r) {
         super(r);
@@ -32,6 +58,15 @@ public class OurCode extends SubSystem {
 
 
     }
+
+
+    public void turn(double speed){
+        FL.setPower(speed);
+        BL.setPower(speed);
+        FR.setPower(-speed);
+        FR.setPower(-speed);
+    }
+
 
     @Override
     public void init() throws InterruptedException {

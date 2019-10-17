@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.season.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.season.robot.SumthinBot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.BaseAutonomous;
@@ -28,11 +29,10 @@ public class OurAutonomous extends BaseAutonomous {
 
     @Override
     public void main () throws InterruptedException {
-        Vector Yeet = new Vector(0, .1);
-        DESTROYER2.mechanumDrive.drive(Yeet, 1000);
-        DESTROYER2.mechanumDrive.wait(30000);
-        DESTROYER2.mechanumDrive.turnTo(Math.PI,.1);
-        DESTROYER2.mechanumDrive.wait(30000);
-        DESTROYER2.mechanumDrive.drive(Yeet, 1000);
+
+        DESTROYER2.mechanumDrive.drive(new Vector(0, 0.3), 3000);
+        DESTROYER2.asd.turnTime(5000,-0.3);
+        DESTROYER2.mechanumDrive.drive(new Vector(0, 0.3), 3000);
+
         }
     }

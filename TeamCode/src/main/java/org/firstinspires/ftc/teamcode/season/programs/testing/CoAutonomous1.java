@@ -19,13 +19,10 @@ public class CoAutonomous1 extends BaseAutonomous {
 
     @Override
     public void main() throws InterruptedException {
-        ReallyReallyBot.gyro();
-        ReallyReallyBot.asd.drive(new Vector(0, 1), 500);
-        ReallyReallyBot.asd.wait(3000);
-        ReallyReallyBot.asd.turnTo(Math.PI/2, 0.1);
-        ReallyReallyBot.asd.wait(3000);
-        ReallyReallyBot.asd.turnTo(Math.PI/2, 0.1);
-        ReallyReallyBot.asd.wait(3000);
-        ReallyReallyBot.asd.drive(new Vector(0, 1), 500);
+        bot.mDrive.drive(new Vector(0, 0.5), 2000);
+        bot.dsa.waitt(7000);
+        bot.dsa.turnBot(0.3, 700);
+        bot.dsa.waitt(7000);
+        bot.mDrive.drive(new Vector(0, 0.5), 2000);
     }
 }

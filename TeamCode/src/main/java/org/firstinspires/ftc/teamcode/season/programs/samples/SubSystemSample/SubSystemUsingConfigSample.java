@@ -42,7 +42,7 @@ public class SubSystemUsingConfigSample extends SubSystem {
     @Override
     public void start() throws InterruptedException {
         inputs = robot.pullControls(this); //gets all the gamepad controls from the config
-        Map<String,Object> nonGamepad = robot.pullNonGamepad(this);
+        Map<String,Object> nonGamepad = robot.pullNonGamepad(this); // gets all the setting from the non-gamepad controls from the config
 
         //Set shared setting here
         if(robot.isAutonomous()) {
@@ -82,7 +82,7 @@ public class SubSystemUsingConfigSample extends SubSystem {
         return new ConfigParam[] {
                 //This is a BooleanButton option. It is auto generated with all boolean inputs and b is the default option
                 new ConfigParam("MyBooleanButtonOption", Button.BooleanInputs.b),
-                //This is a Number option. It is auto generated with numbers starting at 0 and ending with 10 with an incrament of 1 and a default option of 1
+                //This is a Number option. It is auto generated with numbers starting at 0 and ending with 10 with an increment of 1 and a default option of 1
                 new ConfigParam("MyNumberOption", ConfigParam.numberMap(0,10,1),1),
                 //This is a boolean option and is auto generated with true and false. It defaults to false
                 new ConfigParam("MyBooleanOption",ConfigParam.booleanMap,false),

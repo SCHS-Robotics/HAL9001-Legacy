@@ -17,22 +17,23 @@ public class SumthinBot extends Robot{
          *
          * @param opMode - The opmode the robot is currently running.
          */
-public OurCode2 asd;
+public OurCode asd;
 
 
-        public MechanumDrive mechanumDrive = new MechanumDrive (this, new MechanumDrive.Params("topLeft", "topRight", "bottomLeft", "botomtRight")
+        public MechanumDrive mechanumDrive = new MechanumDrive (this, new MechanumDrive.Params("topLeft", "topRight", "bottomLeft", "bottomRight")
                 .setDriveType(MechanumDrive.DriveType.STANDARD)
                 .setDriveStick(new Button(1, Button.VectorInputs.left_stick))
                 .setTurnStick(new Button(1, Button.DoubleInputs.right_stick_x))
+
         );
 
 
 
         public SumthinBot(OpMode opMode) {
             super(opMode);
-            //asd = new OurCode2(this);
+            asd = new OurCode(this);
             super.putSubSystem("Driving", mechanumDrive);
-         //   super.putSubSystem("Alex", asd);
+            super.putSubSystem("Alex", asd);
 
 
         }

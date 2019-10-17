@@ -88,7 +88,7 @@ public class GillSubSystem extends SubSystem {
             fr.setPower(robot.gamepad1.right_stick_x);
             bl.setPower(-robot.gamepad1.right_stick_x);
             br.setPower(robot.gamepad1.right_stick_x);
-        }
+        }//
         else if (robot.gamepad1.right_stick_x < 0) {  // turn
             fl.setPower(-robot.gamepad1.right_stick_x);
             fr.setPower(robot.gamepad1.right_stick_x);
@@ -98,6 +98,15 @@ public class GillSubSystem extends SubSystem {
     }
 
     @Override
-    public void stop() throws InterruptedException {
+    public void stop() throws InterruptedException {//7
+    }
+
+    public void rotate(double milli, double rad) {
+        for (int ctr = 0; ctr < milli; ++ctr) {
+            fl.setPower(-rad / Math.PI);
+            fr.setPower(rad / Math.PI);
+            bl.setPower(-rad / Math.PI);
+            fr.setPower(rad / Math.PI);
+        }
     }
 }

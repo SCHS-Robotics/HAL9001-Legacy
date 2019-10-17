@@ -28,6 +28,13 @@ public class ServoProject extends SubSystem {
 
     public CustomizableGamepad gpad;
     public Toggle flip;
+
+
+    public void turnBot(int type, double ms) {
+        if(type == 1) {
+        }
+    }
+
     @Override
     public void init() throws InterruptedException {
         gpad = new CustomizableGamepad(robot);
