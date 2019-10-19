@@ -209,6 +209,12 @@ public class MechanumDrive extends SubSystem {
 
         useDegreesTurn = params.useDegreesTurn;
         useDegreesStability = params.useDegreesStability;
+
+        useDisplayMenu = robot.usesGUI();
+        if(useDisplayMenu) {
+            displayMenu = new DisplayMenu(robot.gui);
+            robot.gui.addMenu("Mechanum Display",displayMenu);
+        }
     }
 
     @Override
@@ -338,22 +344,21 @@ public class MechanumDrive extends SubSystem {
                 correction = stabilityPID.getCorrection(angleStability);
                 turnCorrection = turnPID.getCorrection(angleTurn);
 
-                robot.telemetry.addData("Correction",correction);
-                robot.telemetry.addData("Turn Correction",turnCorrection);
-                robot.telemetry.addData("Error",turnPID.getError(angleTurn));
-                robot.telemetry.addData("Angle",angleTurn);
-                robot.telemetry.update();
-
-                if ((!tta.isZeroVector() || turnLeft || turnRight || Math.abs(turnPID.getError(angleTurn)) < 0.01) && usesGyro) {
+                if ((!tta.isZeroVector() || turnLeft || turnRight) && usesGyro) {
                     turnPID.setSetpoint(useDegreesTurn ? Math.toDegrees(tta.theta) : tta.theta);
+                    stabilityPID.setSetpoint(angleStability);
                     correction = 0;
                     turnCorrection = 0;
                 }
 
-                if ((!tta.isZeroVector() || turnLeft || turnRight) && usesGyro) {
+                if(Math.abs(turnPID.getError(angleTurn)) < 0.05) {
+                    turnPID.setSetpoint(angleTurn);
+                    turnCorrection = 0;
+                }
+
+                if(Math.abs(stabilityPID.getError(angleStability)) < 0.05) {
                     stabilityPID.setSetpoint(angleStability);
                     correction = 0;
-                    turnCorrection = 0;
                 }
 
                 if (!turnLeft && !turnRight) {
@@ -404,24 +409,29 @@ public class MechanumDrive extends SubSystem {
 
             //Arcade drive with turn to angle functionality.
             case ARCADE_TTA:
-                correction = usesGyro ? stabilityPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle) : 0;
+                double angleStabilityArcade = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle;
+                double angleTurnArcade = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesTurn ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle;
 
-                if ((turnPower != 0 || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
-                    correction = 0;
-                }
-
-                if (!tta.isZeroVector() && usesGyro) {
-                    turnPID.setSetpoint(useDegreesTurn ? Math.toDegrees(tta.theta) : tta.theta);
-                }
-
-                turnCorrection = turnPID.getCorrection(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesTurn ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
+                correction = stabilityPID.getCorrection(angleStabilityArcade);
+                turnCorrection = turnPID.getCorrection(angleTurnArcade);
 
                 if ((!tta.isZeroVector() || turnLeft || turnRight) && usesGyro) {
-                    stabilityPID.setSetpoint(imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, useDegreesStability ? AngleUnit.DEGREES : AngleUnit.RADIANS).firstAngle);
+                    turnPID.setSetpoint(useDegreesTurn ? Math.toDegrees(tta.theta) : tta.theta);
+                    stabilityPID.setSetpoint(angleStabilityArcade);
                     correction = 0;
                     turnCorrection = 0;
                 }
+
+                if(Math.abs(turnPID.getError(angleTurnArcade)) < 0.05) {
+                    turnPID.setSetpoint(angleTurnArcade);
+                    turnCorrection = 0;
+                }
+
+                if(Math.abs(stabilityPID.getError(angleStabilityArcade)) < 0.05) {
+                    stabilityPID.setSetpoint(angleStabilityArcade);
+                    correction = 0;
+                }
+
 
                 if(!turnLeft && !turnRight) {
                     if(input.isZeroVector()) {
@@ -1411,8 +1421,8 @@ public class MechanumDrive extends SubSystem {
                 BiFunction<Double, Double, Double> mod = (Double x, Double m) -> (x % m + m) % m;
 
                 //cw - ccw +
-                double cw = -mod.apply(mod.apply(target,2*PI) - mod.apply(current,2*PI), 2*PI);
-                double ccw = mod.apply(mod.apply(current,2*PI) - mod.apply(target,2*PI), 2*PI);
+                double cw = -mod.apply(mod.apply(current,2*PI) - mod.apply(target,2*PI), 2*PI);
+                double ccw = mod.apply(mod.apply(target,2*PI) - mod.apply(current,2*PI), 2*PI);
 
                 return Math.abs(ccw) < Math.abs(cw) ? ccw : cw;
             });
@@ -1432,13 +1442,13 @@ public class MechanumDrive extends SubSystem {
             useGyro = true;
             useDegreesTurn = useDegrees;
             turnPID = new PIDController(kp, ki, kd, (Double target, Double current) -> {
-                BiFunction<Double, Double, Double> mod = (Double n, Double m) -> (n < 0) ? (m - (Math.abs(n) % m)) % m : (n % m);
+                BiFunction<Double, Double, Double> mod = (Double x, Double m) -> (x % m + m) % m;
 
                 double m = useDegrees ? 360 : 2*PI;
 
                 //cw - ccw +
-                double cw = -mod.apply(mod.apply(target,m) - mod.apply(current,m), m);
-                double ccw = mod.apply(mod.apply(current,m) - mod.apply(target,m), m);
+                double cw = -mod.apply(mod.apply(current,m) - mod.apply(target,m), m);
+                double ccw = mod.apply(mod.apply(target,m) - mod.apply(current,m), m);
 
                 return Math.abs(ccw) < Math.abs(cw) ? ccw : cw;
             });
@@ -1485,8 +1495,8 @@ public class MechanumDrive extends SubSystem {
                 BiFunction<Double, Double, Double> mod = (Double x, Double m) -> (x % m + m) % m;
 
                 //cw - ccw +
-                double cw = -mod.apply(mod.apply(target,2*PI) - mod.apply(current,2*PI), 2*PI);
-                double ccw = mod.apply(mod.apply(current,2*PI) - mod.apply(target,2*PI), 2*PI);
+                double cw = -mod.apply(mod.apply(current,2*PI) - mod.apply(target,2*PI), 2*PI);
+                double ccw = mod.apply(mod.apply(target,2*PI) - mod.apply(current,2*PI), 2*PI);
 
                 return Math.abs(ccw) < Math.abs(cw) ? ccw : cw;
             });
@@ -1511,8 +1521,8 @@ public class MechanumDrive extends SubSystem {
                 double m = useDegrees ? 360 : 2*PI;
 
                 //cw - ccw +
-                double cw = -mod.apply(mod.apply(target,m) - mod.apply(current,m), m);
-                double ccw = mod.apply(mod.apply(current,m) - mod.apply(target,m), m);
+                double cw = -mod.apply(mod.apply(current,m) - mod.apply(target,m), m);
+                double ccw = mod.apply(mod.apply(target,m) - mod.apply(current,m), m);
 
                 return Math.abs(ccw) < Math.abs(cw) ? ccw : cw;
             });

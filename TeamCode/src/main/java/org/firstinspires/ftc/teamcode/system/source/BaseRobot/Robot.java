@@ -170,6 +170,11 @@ public abstract class Robot {
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
 
+        File root = new File(Environment.getExternalStorageDirectory().getPath()+"/System64");
+        if(!root.exists()) {
+            Log.i("File Creation",root.mkdir() ? "Directory created!" : "File error, couldn't create directory");
+        }
+
         if(useConfig) {
 
             //create overall robot folder
@@ -185,6 +190,7 @@ public abstract class Robot {
                 Log.i("File Creation",autoDir.mkdir() ? "Directory created!" : "File error, couldn't create directory");
                 writeFile(autoDir.getPath() + "/robot_info.txt", "");
             }
+
             //create teleop directory in robot folder
             File teleopDir = new File(robotConfigDirectory.getPath() + "/teleop");
             if(!teleopDir.exists()) {
