@@ -15,7 +15,7 @@ public class OpBob extends BaseAutonomous {
 
     @Override
     public void main() throws InterruptedException {
-        equalityBob.sampleMechanum.drive(new Vector(0,1),2000);
+       // equalityBob.sampleMechanum.drive(new Vector(0,1),2000);
 
     }
 }

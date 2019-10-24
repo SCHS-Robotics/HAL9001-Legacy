@@ -25,11 +25,11 @@ public class GillAutonomous extends BaseAutonomous {
     public void main() throws InterruptedException {
         Vector v = new Vector(0, 1);
         Vector c = new Vector(0, -1);
-        billBot.mD.drive(v, 1000);
+        //billBot.mD.drive(v, 1000);
         billBot.mD.wait(2000);
         billBot.mD.turnTo(Math.PI, 0.1);
         billBot.mD.wait(2000);
-        billBot.mD.drive(v, 1000);
+        //billBot.mD.drive(v, 1000);
         while(opModeIsActive()){
             // pass
         }

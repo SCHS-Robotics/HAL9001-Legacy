@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.system.subsystems.RobotSubsystems;
 
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
@@ -25,9 +26,15 @@ public class FoundationGrabberSubsystem extends SubSystem {
 
     CustomizableGamepad gpad;
     Toggle toggle;
+    DisplayMenu fMenu;
+
     @Override
     public void init() throws InterruptedException {
         toggle = new Toggle(Toggle.ToggleTypes.flipToggle, false);
+        if(robot.usesGUI()) {
+            fMenu = new DisplayMenu(robot.gui);
+            robot.gui.addMenu("buttonData", fMenu);
+        }
     }
 
     @Override
@@ -42,6 +49,7 @@ public class FoundationGrabberSubsystem extends SubSystem {
 
     @Override
     public void handle() throws InterruptedException {
+        fMenu.addData("ArmButton", gpad.getBooleanInput(ARMBUTTON));
         toggle.updateToggle(gpad.getBooleanInput(ARMBUTTON));
         if(toggle.getCurrentState()) {
             arm.setPosition(DOWN);
@@ -60,6 +68,13 @@ public class FoundationGrabberSubsystem extends SubSystem {
     @Override
     public void initVars() { super.initVars(); }
 
+    public void toggleDown() {
+        arm.setPosition(DOWN);
+    }
+
+    public void toggleUp() {
+        arm.setPosition(UP);
+    }
 
     @TeleopConfig
     public static ConfigParam[] teleopConfig() {

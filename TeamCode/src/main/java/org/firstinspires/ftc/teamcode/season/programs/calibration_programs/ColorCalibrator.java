@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
  * A simple teleop program for calibrating colorspaces for computer vision algorithms.
  */
 @StandAlone
-@Disabled
 @TeleOp(name = "Color Calibrator", group = "Calibration")
 public class ColorCalibrator extends BaseTeleop {
 
@@ -37,6 +36,7 @@ public class ColorCalibrator extends BaseTeleop {
     protected void onStart() {
         super.onStart();
         robot.calibSystem.startVision();
+
     }
 
     @Override

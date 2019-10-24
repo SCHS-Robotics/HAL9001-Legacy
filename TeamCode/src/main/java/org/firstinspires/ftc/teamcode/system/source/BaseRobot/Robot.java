@@ -170,6 +170,11 @@ public abstract class Robot {
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
 
+        File root = new File(Environment.getExternalStorageDirectory().getPath()+"/System64");
+        if(!root.exists()) {
+            Log.i("File Creation",root.mkdir() ? "Directory created!" : "File error, couldn't create directory");
+        }
+
         if(useConfig) {
 
             //create overall robot folder

@@ -19,10 +19,10 @@ public class CoAutonomous1 extends BaseAutonomous {
 
     @Override
     public void main() throws InterruptedException {
-        bot.mDrive.drive(new Vector(0, 0.5), 2000);
+       // bot.mDrive.drive(new Vector(0, 0.5), 2000);
         bot.dsa.waitt(7000);
         bot.dsa.turnBot(0.3, 700);
         bot.dsa.waitt(7000);
-        bot.mDrive.drive(new Vector(0, 0.5), 2000);
+        //bot.mDrive.drive(new Vector(0, 0.5), 2000);
     }
 }

@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.util.annotations.StandAlone;
 @Disabled
 public class AutonomousConfigSelectorOpModeSample extends BaseAutonomous {
 
-    //Robot to be used int the program
+    //Robot to be used in the program
     private AutonomousConfigSelectorBotSample robot;
 
     @Override

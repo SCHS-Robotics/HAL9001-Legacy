@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.R;
+import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 import org.firstinspires.ftc.teamcode.util.annotations.TeleopConfig;
@@ -28,12 +29,17 @@ public class IntakeSubSystem extends SubSystem {
     }
 
     CustomizableGamepad gpad;
+    private DisplayMenu dMenu;
 
     @Override
     public void init() throws InterruptedException {
         gpad = new CustomizableGamepad(robot);
         gpad.addButton(INBUTTON, new Button(1, Button.BooleanInputs.right_bumper));
         gpad.addButton(OUTBUTTON, new Button(1, Button.BooleanInputs.left_bumper));
+        if(robot.usesGUI()) {
+            dMenu = new DisplayMenu(robot.gui);
+            robot.gui.addMenu("buttonData", dMenu);
+        }
     }
 
     @Override
@@ -45,27 +51,29 @@ public class IntakeSubSystem extends SubSystem {
     public void start() throws InterruptedException {
         inputs = robot.pullControls(this);
     }
-        @Override
-        public void handle () throws InterruptedException {
-            if (gpad.getBooleanInput(INBUTTON) && gpad.getBooleanInput(OUTBUTTON)) {
-                InL.setPower(0);
-                InR.setPower(0);
-            } else if (gpad.getBooleanInput(INBUTTON)) {
-                InL.setPower(-1);
-                InR.setPower(1);
-            } else if (gpad.getBooleanInput(OUTBUTTON)) {
-                InL.setPower(1);
-                InR.setPower(-1);
-            } else {
-                InL.setPower(0);
-                InR.setPower(0);
-            }
+    @Override
+    public void handle () throws InterruptedException {
+        dMenu.addData("InButton", gpad.getBooleanInput(INBUTTON));
+        dMenu.addData("OutButton", gpad.getBooleanInput(OUTBUTTON));
+        if (gpad.getBooleanInput(INBUTTON) && gpad.getBooleanInput(OUTBUTTON)) {
+            InL.setPower(0);
+            InR.setPower(0);
+        } else if (gpad.getBooleanInput(INBUTTON)) {
+            InL.setPower(-1);
+            InR.setPower(1);
+        } else if (gpad.getBooleanInput(OUTBUTTON)) {
+            InL.setPower(1);
+            InR.setPower(-1);
+        } else {
+            InL.setPower(0);
+            InR.setPower(0);
         }
+    }
 
-        @Override
-        public void stop () throws InterruptedException {
+    @Override
+    public void stop () throws InterruptedException {
 
-        }
+    }
 
     @Override
     protected void initVars() {
