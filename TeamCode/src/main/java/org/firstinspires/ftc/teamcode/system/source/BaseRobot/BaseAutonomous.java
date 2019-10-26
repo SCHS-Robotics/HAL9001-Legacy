@@ -32,20 +32,20 @@ public abstract class BaseAutonomous extends LinearOpMode {
      * Method that runs when the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onInit() {};
+    protected void onInit() {}
 
     /**
      * Method that runs in a loop after the robot is initialized. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onInitLoop() {};
+    protected void onInitLoop() {}
 
 
     /**
      * Method that runs when the robot is stopped. It is not an abstract method so that it does not have to be implemented if it
      * is unneeded.
      */
-    protected void onStop(){}
+    protected void onStop() {}
 
     /**
      * An abstract method that contains the code for the robot to run.
@@ -104,7 +104,9 @@ public abstract class BaseAutonomous extends LinearOpMode {
      */
     protected final void waitFor(long millis) {
         long stopTime = System.currentTimeMillis() + millis;
-        while (opModeIsActive() && System.currentTimeMillis() < stopTime);
+        while (opModeIsActive() && System.currentTimeMillis() < stopTime) {
+            sleep(1);
+        }
     }
 
     /**
@@ -117,6 +119,8 @@ public abstract class BaseAutonomous extends LinearOpMode {
      * @param <X> - The second parameter's object type.
      */
     protected final <T,X> void waitFor(BiFunction<T,X,Boolean> condition, T param1, X param2) {
-        while (opModeIsActive() && !condition.apply(param1,param2));
+        while (opModeIsActive() && !condition.apply(param1,param2)) {
+            sleep(1);
+        }
     }
 }

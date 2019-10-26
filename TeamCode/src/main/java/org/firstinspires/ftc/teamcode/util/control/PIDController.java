@@ -240,6 +240,10 @@ public class PIDController {
         this.setpoint = setpoint;
     }
 
+    public double getSetpoint() {
+        return setpoint;
+    }
+
     /**
      * Sets the tuning values for the PID controller.
      *

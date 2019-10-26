@@ -142,7 +142,7 @@ public abstract class Robot {
      *
      * @param cycleButton - The button used to cycle through multiple menus in GUI.
      */
-    public final void startGui(Button cycleButton) {
+    protected final void startGui(Button cycleButton) {
         if(!useGui) {
             gui = new GUI(this, cycleButton);
             useGui = true;
@@ -170,6 +170,11 @@ public abstract class Robot {
         this.gamepad1 = opMode.gamepad1;
         this.gamepad2 = opMode.gamepad2;
 
+        File root = new File(Environment.getExternalStorageDirectory().getPath()+"/System64");
+        if(!root.exists()) {
+            Log.i("File Creation",root.mkdir() ? "Directory created!" : "File error, couldn't create directory");
+        }
+
         if(useConfig) {
 
             //create overall robot folder
@@ -185,6 +190,7 @@ public abstract class Robot {
                 Log.i("File Creation",autoDir.mkdir() ? "Directory created!" : "File error, couldn't create directory");
                 writeFile(autoDir.getPath() + "/robot_info.txt", "");
             }
+
             //create teleop directory in robot folder
             File teleopDir = new File(robotConfigDirectory.getPath() + "/teleop");
             if(!teleopDir.exists()) {
@@ -469,15 +475,49 @@ public abstract class Robot {
         return opMode instanceof BaseTeleop;
     }
 
+    /**
+     * Gets if the program the robot is running is an autonomous program.
+     *
+     * @return Whether the program being run is an autonomous program.
+     */
     public final boolean isAutonomous() {
         return opMode instanceof BaseAutonomous;
     }
 
-    public final boolean isRunning() {
+    /**
+     * Gets whether the robot's current program is running.
+     *
+     * @return Whether the robot's current program is running.
+     */
+    public final boolean opModeIsActive() {
         if(!isTeleop() && !isAutonomous()) {
             throw new DumpsterFireException("Program is not an instance of BaseAutonomous or BaseTeleop, cannot tell if its running. A lot of other things are probably broken too if you're seeing this.");
         }
         return ((LinearOpMode) opMode).opModeIsActive();
+    }
+
+    /**
+     * Gets whether the robot's current program has requested to be stopped.
+     *
+     * @return Whether the robot's current program has requested to be stopped.
+     */
+    public final boolean isStopRequested() {
+        if(!isTeleop() && !isAutonomous()) {
+            throw new DumpsterFireException("Program is not an instance of BaseAutonomous or BaseTeleop, cannot tell if its running. A lot of other things are probably broken too if you're seeing this.");
+        }
+        return ((LinearOpMode) opMode).isStopRequested();
+    }
+
+    /**
+     * Gets whether the robot's current program has been started.
+     *
+     * @return Whether the robot's current program has been started.
+     */
+    public final boolean isStarted() {
+        if(!isTeleop() && !isAutonomous()) {
+            throw new DumpsterFireException("Program is not an instance of BaseAutonomous or BaseTeleop, cannot tell if its running. A lot of other things are probably broken too if you're seeing this.");
+        }
+        return ((LinearOpMode) opMode).isStarted();
     }
 
     /**
