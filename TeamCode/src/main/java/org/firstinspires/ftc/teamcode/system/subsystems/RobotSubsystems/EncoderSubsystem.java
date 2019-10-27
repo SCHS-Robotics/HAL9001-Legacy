@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
 
 public class EncoderSubsystem extends SubSystem {
 
-    private DisplayMenu dMenu;
+    DisplayMenu dMenu;
     DcMotor motor;
 
     public EncoderSubsystem(Robot r, String encoderMotor) {

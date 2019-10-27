@@ -11,6 +11,7 @@ public class AutonomousSelectorSubsystemUsingConfig extends SubSystem {
 
     public String autonomous;
     public String color;
+    public String startPos;
     public AutonomousSelectorSubsystemUsingConfig(Robot r) {
         super(r);
         usesConfig = true;
@@ -30,7 +31,8 @@ public class AutonomousSelectorSubsystemUsingConfig extends SubSystem {
     public void start() throws InterruptedException {
         Map<String, Object> params = robot.pullNonGamepad(this);
         autonomous = (String) params.get("Autonomous");
-        color = (String) params.get("Side");
+        color = (String) params.get("Color");
+        startPos = (String) params.get("StartPosition");
     }
 
     @Override
@@ -46,14 +48,18 @@ public class AutonomousSelectorSubsystemUsingConfig extends SubSystem {
     public static ConfigParam[] autoConfig() {
         return new ConfigParam[] {
                 new ConfigParam("Autonomous", new String[] {
-                        "ParkOnBridgeResource",
+                        "ParkOnBridge",
                         "MoveFoundationPark",
-                        "El43Pointo"},
+                        "MaxPoints"},
                         "ParkOnBridgeResource"),
-                new ConfigParam("Side", new String[] {
+                new ConfigParam("Color", new String[] {
                         "Blue",
                         "Red"},
-                        "Blue")
+                        "Blue"),
+                new ConfigParam("StartPosition", new String[]{
+                        "Resourse",
+                        "Construction"},
+                        "Resourse")
         };
     }
 }
