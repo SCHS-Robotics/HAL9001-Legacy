@@ -5,8 +5,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import org.firstinspires.ftc.teamcode.system.menus.DisplayMenu;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.Robot;
 import org.firstinspires.ftc.teamcode.system.source.BaseRobot.SubSystem;
-import org.firstinspires.ftc.teamcode.util.misc.CustomizableGamepad;
-
 
 public class EncoderSubsystem extends SubSystem {
 

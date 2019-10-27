@@ -75,9 +75,30 @@ public class IntakeSubSystem extends SubSystem {
 
     }
 
+    public void intake(double ms) {
+        double startTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - startTime <= ms) {
+            InL.setPower(-1);
+            InR.setPower(1);
+        }
+        InL.setPower(0);
+        InR.setPower(0);
+    }
+
+    public void output(double ms) {
+        double startTime = System.currentTimeMillis();
+        while(System.currentTimeMillis() - startTime <= ms) {
+            InL.setPower(1);
+            InR.setPower(-1);
+        }
+        InL.setPower(0);
+        InR.setPower(0);
+    }
+
     @Override
     protected void initVars() {
         super.initVars();
+
     }
 
 

@@ -13,7 +13,7 @@ public class MainRobot extends Robot {
 
     public MechanumDrive mDrive;
     public FoundationGrabberSubsystem grabber;
-    public IntakeSubSystem intake;
+    public IntakeSubSystem blockIntake;
     public AutonomousSelectorSubsystemUsingConfig selector;
 
     public MainRobot(OpMode opMode) {
@@ -23,13 +23,13 @@ public class MainRobot extends Robot {
         mDrive = new MechanumDrive(this, new MechanumDrive.SpecificParams("topLeft", "topRight", "bottomLeft", "bottomRight"), false  );
 
         // we need to make the "2" thing
-        intake = new IntakeSubSystem(this,"1", "2");
+        blockIntake = new IntakeSubSystem(this,"1", "2");
         selector = new AutonomousSelectorSubsystemUsingConfig(this);
 
         super.putSubSystem("SubsystemSelector", selector);
         super.putSubSystem("MainRobot", mDrive);
         super.putSubSystem("FoundationGrabber", grabber);
-        super.putSubSystem("IntakeSubSystem", intake);
+        super.putSubSystem("IntakeSubSystem", blockIntake);
     }
 
 }
