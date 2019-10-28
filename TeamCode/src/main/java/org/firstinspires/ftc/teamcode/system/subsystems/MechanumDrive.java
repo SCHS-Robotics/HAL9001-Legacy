@@ -47,7 +47,6 @@ import java.util.Map;
 import static java.lang.Math.PI;
 import static java.lang.Thread.sleep;
 
-//TODO Javadocs
 /**
  * A built in mechanum drive class with 7 drive modes.
  */
