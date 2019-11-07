@@ -104,9 +104,6 @@ public class MechanumDrive extends SubSystem {
 
         driveType = params.driveType;
 
-        //2*PI*0.05 is theoretical circumference of a gobilda mechanum wheel.
-        encodersPerMeter = params.encodersPerMeter > 0 ? params.encodersPerMeter : topLeft.getMotorType().getTicksPerRev()/(2*PI*0.05);
-
         constantSpeedMultiplier = params.constantSpeedMultiplier;
         slowModeMultiplier = params.slowModeMultiplier;
         currentSpeedModeMultiplier = 1;
@@ -142,6 +139,9 @@ public class MechanumDrive extends SubSystem {
             botLeft.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(params.vkp, params.vki, params.vkd, params.vkf));
             botRight.setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, new PIDFCoefficients(params.vkp, params.vki, params.vkd, params.vkf));
         }
+
+        //2*PI*0.05 is theoretical circumference of a gobilda mechanum wheel.
+        encodersPerMeter = params.encodersPerMeter > 0 ? params.encodersPerMeter : topLeft.getMotorType().getTicksPerRev()/(2*PI*0.05);
 
         //Add buttons to controller.
         inputs = new CustomizableGamepad(robot);
@@ -381,7 +381,6 @@ public class MechanumDrive extends SubSystem {
                 } else {
                     turnAndMove(input,turnRightPower*currentTurnSpeedModeMultiplier);
                 }
-
                 break;
 
             //Standard drive, but the turn control is a joystick that tells the robot what angle to turn to.
@@ -804,7 +803,8 @@ public class MechanumDrive extends SubSystem {
         vcpy.scalarMultiply(Math.sqrt(2));
 
         switch(driveType) {
-            default:
+            case STANDARD:
+            case STANDARD_TTA:
                 vcpy.rotate(-PI / 4);
                 setPower(vcpy.x + turnPower, vcpy.y - turnPower, vcpy.y + turnPower, vcpy.x - turnPower);
                 break;
